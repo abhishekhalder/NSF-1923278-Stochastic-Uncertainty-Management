@@ -1,0 +1,307 @@
+\documentclass[11pt,twoside,a4paper]{article}
+\usepackage{amsmath,amssymb,mathrsfs,euscript,yfonts,psfrag,latexsym,dsfont,graphicx,bbm,color,amstext,wasysym,subfig,flushend,parskip,url,soul,bm,cite,balance}
+\usepackage{amsthm}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{algorithmicx}
+\usepackage[symbol]{footmisc}
+%\usepackage{showkeys}
+%\usepackage{epstopdf,hyperref,pdfsync,url}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[makeroom]{cancel}
+\graphicspath{{./},{./figures/}}
+
+\DeclareMathOperator*{\argmax}{arg\:max}
+\DeclareMathOperator*{\argmin}{arg\:min}
+\DeclareMathOperator*{\arginf}{arg\:inf}
+
+\begin{document}
+\newtheorem{thm}{Theorem}
+\newtheorem{corollary}[thm]{Corollary}
+\newtheorem{conj}[thm]{Conjecture}
+\newtheorem{lemma}[thm]{Lemma}
+\newtheorem{proposition}[thm]{Proposition}
+\newtheorem{problem}{Problem}
+\newtheorem{remark}{Remark}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+\newcommand{\pinf}{\rho_{\infty}}
+\newcommand{\prox}{\rm{prox}}
+\newcommand{\bp}{{\bm{p}}}
+\newcommand{\bq}{{\bm{q}}}
+\newcommand{\bmm}{{\bm{m}}}
+\newcommand{\bc}{{\bm{c}}}
+\newcommand{\be}{{\bm{e}}}
+\newcommand{\bps}{{\bm{\psi}}}
+\newcommand{\br}{{\bm{r}}}
+\newcommand{\bw}{{\bm{w}}}
+\newcommand{\bx}{{\bm{x}}}
+\newcommand{\bxx}{{\bm{X}}}
+\newcommand{\by}{{\bm{y}}}
+\newcommand{\bz}{{\bm{z}}}
+\newcommand{\bth}{{\bm{\theta}}}
+\newcommand{\bg}{{\bm{\gamma}}}
+\newcommand{\bsim}{{\bm{\sigma}}}
+\newcommand{\bom}{{\bm{\omega}}}
+\newcommand{\bxi}{{\bm{\xi}}}
+\newcommand{\bet}{{\bm{\eta}}}
+\newcommand{\bzz}{{\bm{Z}}}
+\newcommand{\bbf}{{\bm{f}}}
+\newcommand{\brh}{{\bm{\varrho}}}
+\newcommand{\balpha}{{\bm{\alpha}}}
+\newcommand{\bbeta}{{\bm{\beta}}}  .   
+\newcommand{\bdelta}{{\bm{\delta}}}
+\newcommand{\bPi}{{\bm{\Pi}}}
+\newcommand{\bE}{{\mathbb{R}}}
+\newcommand{\bC}{{\bm{C}}}
+\newcommand{\bL}{{\bm{L}}}
+\newcommand{\diff}{{\rm{d}}}
+\newcommand{\diag}{{\rm{diag}}}
+\newcommand{\bI}{{\bm{I}}}
+\newcommand{\bP}{{\bm{P}}}
+\newcommand{\bR}{{\bm{R}}}
+\newcommand{\bD}{{\bm{D}}}
+\newcommand{\bQ}{{\bm{Q}}}
+\newcommand{\ptwo}{\mathcal{P}_{2}(\Omega)}
+\newcommand{\epin}{{ \epsilon^{-1}}}
+\renewcommand{\dagger}{{T}}
+
+
+
+
+
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+
+
+\newcommand{\differential}{{\rm{d}}}
+
+\newcommand{\interior}[1]{%
+  {\kern0pt#1}^{\mathrm{o}}%
+}
+
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\tr}{\operatorname{trace}}
+%\renewcommand{\odot}{\circ}
+\newcommand{\ignore}[1]{}
+
+\newcommand{\magenta}{\color{magenta}}
+\newcommand{\red}{\color{red}}
+\newcommand{\blue}{\color{blue}}
+\newcommand{\gray}{\color{gray}}
+\definecolor{grey}{rgb}{0.6,0.3,0.3}
+\definecolor{lgrey}{rgb}{0.9,.7,0.7}
+
+
+%\renewcommand{\qedsymbol}{\hfill\ensuremath{\blacksquare}}
+
+\newcommand{\symsum}{\displaystyle\sum_{\rm{symm}}}
+
+\def\spacingset#1{\def\baselinestretch{#1}\small\normalsize}
+\setlength{\parindent}{20pt}
+\setlength{\parskip}{12pt}
+\spacingset{1}
+
+\title{\huge{Lamperti Transform For Power Systems
+}}
+
+\author{Kenneth Caluya}
+
+\markboth{\today}{}
+
+\maketitle
+We consider the system of 2nd-order SDEs given by
+\begin{align*}
+    m_i\ddot{\theta}p
+    +  \gamma_i \dot{\theta}_i = 
+P_i - \sum_{j=1}^{n} k_{ij} \sin(\theta_i-\theta_j)+ \sigma_i \times \:\text{stochastic forcing}\: i=1,\dots,n.
+\end{align*}
+We can transform the system into 
+\begin{align} \label{ODEsystem}
+    \diff \bth &= \bom \: \diff t \nonumber \\ 
+    \diff \bom & = -\diag(\bg \oslash \bmm)\: \bom-\nabla_{\bth} V(\bth) + \diag(\bsim \oslash \bmm) \: \diff \bw
+\end{align}
+where $\bth=(\theta_1,\theta_2,\dots,\theta_n)$ and $\bom=(\dot{\theta}_1,\dot{\theta}_2,\dots,\dot{\theta}_n)$ and the potential function is given by 
+\begin{align}
+    V(\theta):= \sum_{i=1}^{n} \frac{1}{m_i}P_i \theta_i + \sum_{(i,j)\in \mathcal{E}}\frac{1}{m_i}k_{ij}(1-\cos(\theta_i-\theta_j))
+\end{align}
+\begin{thm}[Lamperti Transform] \label{LampertiTransform} Let $X_t$ be the solution to the (Ito) SDE 
+\begin{align}
+    \diff \bxx_t = \bbf(\bxx_t,t) \: 
+    \diff t + \bbeta(\bxx_t,t) \: \bR(t)\diff \bm{W}_t
+\end{align}
+where $\bxx_t,w_t \in \mathbb{R}^d$, $\bR(t)\in \mathbb{R}^{d \times d}$ is any matrix function of $t$ and $\bbeta \in \mathbb{R}^{d \times d} $ is a diagonal matrix whose diagonal elements which we denote 
+\begin{align*}
+    \beta_{i,i}(\bxx_t.t)= \beta_i(X_{i,t},t),
+\end{align*}
+i.e., each diagonal element depend only on the $i$th component of $\bxx_t$. Then, the transformation defined by 
+\begin{align} \label{ChangeofVariable}
+Z_{i,t} = \psi_i(X_{i,t},t) = \int \frac{1}{\beta_i(x,t)} \: \diff x \bigg |_{x=X_{i,t}}
+\end{align}
+will result in the diffusion process 
+\begin{align} \label{CoVDiffusion}
+    \diff Z_{i,t} = \left(\frac{\partial}{\partial t}\psi_i(x,t)\bigg|_{x=X_{i,y}} + \frac{f_i(\bps^{-1}(\bzz,t).t)}{\beta_i(\psi_i^{-1}(Z_{i,t},t),t)} +\frac{1}{2}  \frac{\partial}{\partial x}
+    \beta_i(\psi_i^{-1}(Z_{i,t},t),t) \right)\diff t + \sum_{j=1}^{d}
+ r_{i,j}(t)\: \diff w_{j,t}
+\end{align}
+where $r_{i,j}(t)$ are the elements of $\bR(t)$ and $\bxx_t = \psi^{-1}(\bzz,t)$.
+\end{thm}
+
+\begin{proposition}
+Let $d=2n$ and set 
+\begin{align} \label{partitionvector}
+     \bxx_t = \begin{bmatrix}\bth \\ 
+    \bom
+    \end{bmatrix}, \quad  \bzz_t := \begin{bmatrix}
+    \bxi \\
+    \bet 
+    \end{bmatrix}.
+\end{align}
+Let 
+\begin{align}
+    \bbeta(\bxx,t) \equiv   \begin{bmatrix}
+    \bI & 0 \\ 
+    0 & \diag(\bsim \oslash \bmm )
+    \end{bmatrix} ,
+    \quad 
+    \bR(t) \equiv 
+     \begin{bmatrix}
+    0 & 0 \\ 
+    0 & \bI
+    \end{bmatrix} 
+\end{align}
+then applying Theorem \ref{LampertiTransform} to (\ref{ODEsystem}) results in the diffusion process
+\begin{align}
+    \diff \bz_t
+\end{align}
+\end{proposition}
+\begin{proof}
+Notice that performing the change of variable (\ref{ChangeofVariable})
+results in 
+\begin{align}
+    \bzz_t = \bps(\bxx,t) = 
+     \begin{bmatrix}
+    \bI & 0 \\ 
+    0 & \diag(\bmm \oslash \bsim )
+    \end{bmatrix} \bxx_t
+\end{align}
+so that 
+\begin{align}
+    \bxx_t = \bps^{-1}(\bzz,t) =
+      \begin{bmatrix}
+    \bI & 0 \\ 
+    0 & \diag(\bsim \oslash \bmm )
+    \end{bmatrix}
+    \bzz_t.
+\end{align}
+Using (\ref{partitionvector}), the inverse transformation can be written component wise as 
+\begin{align} \label{compontentwisetransform}
+    \theta_i = \xi_i,\quad \omega_i = \frac{\sigma_i}{m_i}  \eta_i
+\end{align}
+Notice that since $\bps$ and $\bbeta$ are independent of $t$ and $x$, then the first and third term in the drift of (\ref{CoVDiffusion}) vanish and we are left with the second term. Notice that we have
+\begin{align}
+  \frac{f_i(\bxx_t,t)}{\beta_i(\bxx_{i,t},t)} = \begin{cases}
+  \omega_i & 1\leq i \leq n \\ 
+  -\frac{\gamma_i}{m_i}\frac{m_i}{\sigma_i} \omega_i -\frac{m_i}{\sigma_i}\frac{P_i}{m_i} - \displaystyle \sum_{j=1}^{n} \frac{m_i}{\sigma_i} \frac{1}{m_i}k_{ij} \sin(\theta_i-\theta_j) & n+1\leq i \leq 2n
+  \end{cases}
+\end{align}
+which means that 
+\begin{align}
+    \frac{f_i(\bps(\bzz,t),t)}{\beta_i(\psi(Z{i,t},t),t)} = \begin{cases}
+    \frac{\sigma_i}{m_i} \eta _i & 1\leq i \leq n \\ 
+    -\frac{\gamma_i}{m_i}\eta_i-\frac{P_i}{\sigma_i} -\displaystyle \sum_{j=1}^{n}\frac{1}{\sigma_i} k_{i,j}\sin(\xi_i-\xi_j) & n+1\leq i \leq 2n
+    \end{cases}.
+\end{align}
+This results in the diffusion process 
+\begin{align}
+\diff \begin{bmatrix}
+ \bxi \\ \bet 
+\end{bmatrix}
+&= 
+\begin{bmatrix}
+\diag(\bsim \oslash \bmm) \bet \\
+- \diag(\bg \oslash \bmm) \bet- \nabla_{\bxi} U(\bxi) 
+   \end{bmatrix}
+   \: \diff t
+   + \begin{bmatrix}
+    0 & 0 \\ 
+    0 & \bI
+    \end{bmatrix} \: \diff \bm{W}_t \\ 
+    :&=\begin{bmatrix}
+ \bm{G}_1 \bet \\
+ -\nabla _{\bet} F(\bet)  - \nabla_{\bxi} U(\bxi)
+\end{bmatrix} \: \diff t   + \begin{bmatrix}
+    0 & 0 \\ 
+    0 & \bI
+    \end{bmatrix} \: \diff \bm{W}_t
+\end{align}
+where $F(\bet) =\frac{1}{2} \bet^{\top} \bm{G}_2 \bet$
+where the potential function $U$ is given by 
+\begin{align}
+U(\bxi):= \sum_{i=1}^{n} \frac{P_i}{\sigma_i} \xi_i - \sum_{i,j\in \mathcal{E}}\frac{1}{\sigma_i} k_{i,j}(1-\cos(\xi_i-\xi_j))\end{align}
+\end{proof}
+
+The Fokker-Planck equation of this SDE is 
+\begin{align}
+    \frac{\partial \rho}{\partial t} = -\langle \bm{G}_1\bet, \nabla_{\bxi} \rho\rangle + \nabla_{\bet} \cdot \left( \left( \nabla _{\bet}F(\bet)  + \nabla_{\bxi} U(\bxi)
+    \right) \rho\right) + \Delta_{\bet} \rho
+ \end{align}
+
+\subsection{Stationary Solution}
+To compute the stationary solution, we set 
+\begin{align} \label{EqualZeroPDE}
+    0 = \langle \bm{G}_1\bet, \nabla_{\bxi} \rho\rangle + \nabla_{\bet} \cdot \left( \left( \nabla _{\bet}F(\bet)  + \nabla_{\bxi} U(\bxi)
+    \right) \rho\right) + \Delta_{\bet} \rho
+\end{align}
+and we have the ansatz 
+\begin{align}
+    \rho_{\infty} \propto \exp\left(-(F(\bet)+U(\bxi)\right).
+\end{align}
+From this, we get the derivatives 
+\begin{align} \label{derivatives}
+    \nabla_{\bxi} \rho_{\infty} = -\pinf \nabla_{\bxi}U(\bxi) ,
+    \quad \nabla_{\bet} \pinf = -\pinf \nabla_{\bet} F(\bet).
+\end{align}
+Using (\ref{derivatives}), we obtain 
+\begin{align}
+    \Delta_{\eta}\pinf = \pinf \lVert G_2 \eta \rVert^2 - \pinf {\rm{tr}}(G_2) 
+\end{align}
+and 
+\begin{align}
+      \nabla_{\bet} \cdot \left( \left( \nabla _{\bet}F(\bet)  + \nabla_{\bxi} U(\bxi)
+    \right)\right)= -\pinf \lVert G_2 \eta \rVert^2 - \pinf \langle G_2\bet , \nabla_{\bxi}U(\bxi) + \pinf {\rm{tr}}(G_2)
+\end{align}t
+which implies that (\ref{EqualZeroPDE}) reduces to 
+\begin{align}
+    0 = \pinf \langle (G_2-G_1)\bet, \nabla_{\bxi} U(\bxi) \rangle.
+\end{align}
+In order for this to hold for all $\bet,\bxi$ we must have $G_2=G_1$ which means that $\bsim=\bg$, i.e., $\sigma_i=\gamma_i$ for all $i$.
+
+\subsection{Free Energy}
+Consider the functional 
+\begin{align}
+    \Phi(\rho)& =\int \rho(\bet,\bxi) \log  \rho(\bet,\bxi) \: \diff \bet \diff \bxi  + \beta
+    \int \rho(\bet,\bxi) U(\bxi)\: \diff \bet \diff \bxi  
+    +
+   \beta \int \rho(\bet,\bxi) F(\bet) \: \diff \bet \diff \bxi \nonumber \\ 
+   & = \beta \widetilde{\Phi}(\rho) 
+\end{align}
+We compute 
+\begin{align}
+    \frac{\diff \Phi}{\diff t}&=\int \frac{\partial \rho}{\partial t} \left( \log \rho + \beta F +  \beta U\right)\: \diff \bet \diff \bxi \: \diff \bet \diff \bxi    \nonumber \\
+    &  = \int \nabla_{\bet} \cdot \left( \rho \left( \nabla_{\bet} \log \rho+ \nabla_{\bet} F + \nabla_{\bxi }U\right)\right) \left( \log \rho + \beta F +  \beta U\right) \: \diff \bet \diff \bxi   \nonumber \\ 
+    & \: \: -  \int \langle G_1\bet , \nabla_{\bxi} \rho \rangle \left( \log \rho + \beta F + \beta U\right)\: \diff \bet \diff \bxi   \nonumber \\ 
+    & = \int - \lvert \nabla_{\bet} \log \rho \lvert^2\rho  -( \beta+1) \langle \nabla_{\bet} \log \rho ,\nabla_{\eta}F\rangle\rho    - \beta \lvert \nabla_{\bet} F \rvert^2\rho \: \diff \bet \diff \bxi   \nonumber \\ 
+    &  \int -\langle \nabla_{\bxi} U , \nabla_{
+    \bet} \log \rho \rangle\rho  -\beta \langle \nabla_{\bxi} U , \nabla_{
+    \bet} F \rangle\rho  + \langle G_1 \bet, \nabla_{\bxi} \log \rho\rangle \rho  + \beta  \langle G_1 \bet, \nabla_{\bxi} U \rangle\rho  \: \diff \bet \diff \bxi   \nonumber  \\
+    & = \int - \lvert \nabla_{\bet} \log \rho \lvert^2\rho  - (\beta+1) \langle \nabla_{\bet} \log \rho ,\nabla_{\eta}F\rangle\rho    - \beta \lvert \nabla_{\bet} F \rvert^2\rho \: \diff \bet \diff \bxi   \nonumber \\
+    &+t  \int -\beta \langle \nabla_{\bxi} U , \nabla_{
+    \bet} F \rangle\rho +  \beta  \langle G_1 \bet, \nabla_{\bxi} U \rangle\rho. \nonumber 
+\end{align}
+A sufficient condition for $  \dfrac{\diff \Phi}{\diff t}\leq 0$ is to set  $G_!\bet =\nabla_{\bet} F = G_2 \bet \Rightarrow 
+\bsim = \bg \Rightarrow \sigma_i=\gamma_i$ for all $i$.
+\end{document}
+
