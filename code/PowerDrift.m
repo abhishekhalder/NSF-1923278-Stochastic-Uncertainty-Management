@@ -1,42 +1,33 @@
-function [driftk,GradU] = PowerDrift(zeta,eta,nSample,dim)
+function [driftk,GradU] = PowerDrift(xi,eta,nSample)
 
-global Gamma
-global M
-global P
-global S
-
-
-
-%dzeta = @(x)[x(1),x(2)];
+global num_Oscillator dim Gamma M Sigma Pmech K
  
 GradF_eta = ((Gamma/M)*eta')';
 
-GradU_2=repmat([P(1,1)/S(1,1),P(2,2)/S(2,2)],nSample,1);
+GradU_2 = repmat((diag(Pmech/Sigma))',nSample,1);
 
-K=rand(2,2);
-F=zeros(nSample,dim/2,1);
 
 for l=1:nSample
 
-    summ=0;
+    summ = 0;
     
-    for k=1:dim/2
+    for k = 1:num_Oscillator
         
-        for j=1:dim/2
+        for j = 1:num_Oscillator
          
-            summ=summ+K(k,j)/S(k,k)*sin(S(k,k)/M(k,k)*zeta(l,k)-S(j,j)/M(j,j)*zeta(l,j));
+            summ = summ + K(k,j)/Sigma(k,k)*sin(Sigma(k,k)/M(k,k)*xi(l,k)-Sigma(j,j)/M(j,j)*xi(l,j));
   
         end
-       GradU_1(l,k)=summ;
+       GradU_1(l,k) = summ;
     end
     
 end
 
-GradU_zeta= GradU_1+GradU_2;
+    GradU_xi = GradU_1 + GradU_2;
 
-driftk =[eta, -GradF_eta-GradU_zeta];
+    driftk =[eta, -GradF_eta-GradU_xi];
 
-GradU = GradU_zeta;
+    GradU = GradU_xi;
    
 end
 

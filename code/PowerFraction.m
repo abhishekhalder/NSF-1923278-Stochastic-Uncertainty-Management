@@ -1,14 +1,7 @@
-function P = PowerFraction(eta)
+function exp_neg_beta_F_eta = PowerFraction(beta,eta)
 
-global Gamma
-global M
+global Gamma M
 
-n = length(eta);
+F_eta = (0.5*dot(eta',(Gamma/M)*eta'))';
 
-F = @(x) .5*x*(Gamma/M)*x';
-
-for i = 1:n    
-    
-    P(i,:) = F(eta(i,:));
-    
-end
+exp_neg_beta_F_eta = exp(-beta*F_eta);

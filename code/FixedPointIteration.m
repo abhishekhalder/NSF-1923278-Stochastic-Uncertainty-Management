@@ -1,4 +1,4 @@
-function [rho_next,comptime,k] = FixedPointIteration(beta,epsilon,h,rho_prev,D1,D2,ksi,GradU,dim)
+function [rho_next,comptime,k] = FixedPointIteration(beta,epsilon,h,rho_prev,OldState,NewState,ksi,GradU,dim)
 
 % tolerance
 tol = 1e-3;   
@@ -6,7 +6,7 @@ tol = 1e-3;
 % max number of iterations for k                                                    
 maxiter = 300; 
 
-nSample = length(D1);
+nSample = length(OldState);
 
 % xi =  D1(:,1:dim/2); 
 % xiprime = D2(:,1:dim/2);   
@@ -19,14 +19,16 @@ nSample = length(D1);
 % 
 % CC = C_1+C_2;
  
-transcost = @(q,p,qprime,pprime,gradu)  vecnorm( ((qprime-q)/h)-((pprime+p)/2) ).^2 +vecnorm((pprime-p +h*gradu)).^2;
+transcost = @(q,p,qprime,pprime,gradu) vecnorm( ((qprime-q)/h)-((pprime+p)/2) ).^2 + vecnorm((pprime-p +h*gradu)).^2;
+
 for i = 1:nSample
     
     for j = 1:nSample
     
-        C(i,j) = transcost(D1(i,1:dim/2),D1(i,dim/2+1:dim),D2(j,1:dim/2),D2(j,dim/2+1:dim),GradU(i,:));
+        C(i,j) = transcost(OldState(i,1:dim/2),OldState(i,dim/2+1:dim),NewState(j,1:dim/2),NewState(j,dim/2+1:dim),GradU(i,:));
    
     end
+    
 end
  
 % exponential of the cost matrix

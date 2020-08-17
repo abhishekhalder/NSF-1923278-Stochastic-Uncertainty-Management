@@ -1,4 +1,4 @@
-function n = VecNorm(A, p, dim)
+function n = vecnorm(A, p, dim)
 if(nargin < 2)
     p = 2; dim = find(size(A)>1,1);
 elseif (nargin < 3) 
