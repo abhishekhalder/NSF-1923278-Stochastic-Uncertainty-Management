@@ -55,7 +55,7 @@ walltime = toc
 set(0,'defaulttextinterpreter','latex')
 figure(1)
 semilogy(comptime, 'LineWidth', 2)
-xlabel('Phytical time $t=kh$','FontSize',20)
+xlabel('Physical time $t=kh$','FontSize',20)
 ylabel('Computational time','FontSize',20)
 
 
