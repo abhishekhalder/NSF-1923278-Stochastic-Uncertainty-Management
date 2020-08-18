@@ -6,20 +6,15 @@ GradF_eta = ((Gamma/M)*eta')';
 
 GradU_2 = repmat((diag(Pmech/Sigma))',nSample,1);
 
+ 
+
 
 for l=1:nSample
 
-    summ = 0;
-    
-    for k = 1:num_Oscillator
-        
-        for j = 1:num_Oscillator
-         
-            summ = summ + K(k,j)/Sigma(k,k)*sin(Sigma(k,k)/M(k,k)*xi(l,k)-Sigma(j,j)/M(j,j)*xi(l,j));
+
+    GradU_1(l,:)=K*inv(Sigma)*sin(diag(diag(Sigma/M)*xi(l,:))-(diag(Sigma/M)*xi(l,:)*ones(num_Oscillator,1)));
   
-        end
-       GradU_1(l,k) = summ;
-    end
+    
     
 end
 
