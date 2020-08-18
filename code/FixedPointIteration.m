@@ -8,29 +8,17 @@ maxiter = 300;
 
 nSample = length(OldState);
 
-% xi =  D1(:,1:dim/2); 
-% xiprime = D2(:,1:dim/2);   
-% eta = D1(:,dim/2+1:dim); 
-% etaprime= D2(:,dim/2+1:dim);
-% 
-% C_1 = pdist2(etaprime,eta-(h*GradU),'squaredeuclidean');
-% 
-% C_2 = pdist2((xiprime-xi)/h,(eta+etaprime)/2,'squaredeuclidean');
-% 
-% CC = C_1+C_2;
- 
-transcost = @(q,p,qprime,pprime,gradu) vecnorm( ((qprime-q)/h)-((pprime+p)/2) ).^2 + vecnorm((pprime-p +h*gradu)).^2;
+xi =  OldState(:,1:dim/2); 
+xiprime = NewState(:,1:dim/2);   
+eta = OldState(:,dim/2+1:dim); 
+etaprime = NewState(:,dim/2+1:dim);
 
-for i = 1:nSample
-    
-    for j = 1:nSample
-    
-        C(i,j) = transcost(OldState(i,1:dim/2),OldState(i,dim/2+1:dim),NewState(j,1:dim/2),NewState(j,dim/2+1:dim),GradU(i,:));
-   
-    end
-    
-end
- 
+C_1 = pdist2(eta-(h*GradU),etaprime,'squaredeuclidean');
+
+C_2 = 12*pdist2( -eta / 2 - xi / h,-(-etaprime / 2 + xiprime /h ),'squaredeuclidean');
+
+C = C_1+C_2;
+%  
 % exponential of the cost matrix
 G = exp((-C)/(2*epsilon)); 
 %psi = @(t) ((t.^4)/4)-((t.^2)/2) ;                      

@@ -13,8 +13,8 @@ gamma = rand(num_Oscillator,1); m = rand(num_Oscillator,1); sigma = rand(num_Osc
 Gamma = diag(gamma); M = diag(m); Sigma = diag(sigma); Pmech = diag(pmech); K = rand(num_Oscillator);
 
 % parameters for proximal recursion
-nSample = 100;                      % number of samples                                                           
-epsilon = 1e-2;                     % regularizing coefficient                                      
+nSample = 700;                      % number of samples                                                           
+epsilon = .5;                     % regularizing coefficient                                      
 h = 1e-3;                           % time step
 numSteps= 1000;                     % number of steps k, in discretization t=kh
              
@@ -50,7 +50,7 @@ for j=1:numSteps
     
  
 end
-walltime = toc
+walltime = toc;
 
 %% plots
 figure(1)
