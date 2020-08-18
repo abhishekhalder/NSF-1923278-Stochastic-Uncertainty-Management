@@ -15,7 +15,7 @@ etaprime = NewState(:,dim/2+1:dim);
 
 C_1 = pdist2(eta-(h*GradU),etaprime,'squaredeuclidean');
 
-C_2 = 12*pdist2( -eta / 2 - xi / h,-(-etaprime / 2 + xiprime /h ),'squaredeuclidean');
+C_2 = 12*pdist2( -eta/2 - xi/h,-(-etaprime/2 + xiprime/h ),'squaredeuclidean');
 
 C = C_1+C_2;
 %  
@@ -31,11 +31,9 @@ z0 = exp((h*lambda_1)/epsilon);
 % initial conditions for y and z
 z = [z0,zeros(nSample,maxiter-1)];  
 
-
 y = [rho_prev./(G*z0),zeros(nSample,maxiter-1)];
 
 Xi = (ksi)/exp(1);
-
 
 k = 1;
 tic;
@@ -55,24 +53,3 @@ k;
 comptime = toc;
 
 rho_next = z(:,k).*(G'*y(:,k));
-
-
-
-
-
-
-    
-
-
-
-      
-
-
-
-
-
-    
-
-
-
-      

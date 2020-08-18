@@ -13,7 +13,7 @@ gamma = rand(num_Oscillator,1); m = rand(num_Oscillator,1); sigma = rand(num_Osc
 Gamma = diag(gamma); M = diag(m); Sigma = diag(sigma); Pmech = diag(pmech); K = rand(num_Oscillator);
 
 % parameters for proximal recursion
-nSample = 700;                      % number of samples                                                           
+nSample = 500;                      % number of samples                                                           
 epsilon = .5;                     % regularizing coefficient                                      
 h = 1e-3;                           % time step
 numSteps= 1000;                     % number of steps k, in discretization t=kh
@@ -42,19 +42,18 @@ for j=1:numSteps
      
     [driftk,GradU] = PowerDrift(Xupd(:,1:num_Oscillator,j),Xupd(:,num_Oscillator+1:dim,j),nSample);
    
-    % SDE update
-  
+    % SDE update for state
     Xupd(:,:,j+1) = PowerEulerMaruyama(h,Xupd(:,:,j),driftk,nSample,num_Oscillator); 
-    
+    % proximal update for joint PDF
     [rhoupd(:,j+1),comptime(j),niter(j)] = FixedPointIteration(beta,epsilon,h,rhoupd(:,j),Xupd(:,:,j),Xupd(:,:,j+1),PowerFraction(beta,Xupd(:,num_Oscillator+1:dim,j)),GradU,dim);  
     
  
 end
-walltime = toc;
+walltime = toc
 
 %% plots
-figure(1)
 set(0,'defaulttextinterpreter','latex')
+figure(1)
 semilogy(comptime, 'LineWidth', 2)
 xlabel('Phytical time $t=kh$','FontSize',20)
 ylabel('Computational time','FontSize',20)
