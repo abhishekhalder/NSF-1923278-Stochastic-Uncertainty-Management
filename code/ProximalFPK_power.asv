@@ -85,7 +85,6 @@ for jj = 1:numSteps
     
     theta_upd(:,:,jj) = wrapTo2Pi((psi_upper_diag\xi_eta_upd(:,1:num_Oscillator,jj)')');
     
-    xi_upd(:,:,jj) = (psi_lower_diag\xi_eta_upd(:,num_Oscillator+1:dim,jj)')';
     
     rho_theta_omega_upd(:,jj) = rho_xi_eta_upd(:,jj)*det(M/Sigma);
     
