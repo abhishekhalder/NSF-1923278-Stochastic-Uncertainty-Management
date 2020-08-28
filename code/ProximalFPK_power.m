@@ -40,21 +40,31 @@ psi_lower_diag = psi_upper_diag;
 
 psi = kron(eye(num_Oscillator),M/Sigma);
 
+invpsi =kron(eye(num_Oscillator),Sigma/M);
+
 xi_0 = wrapTo2Pi((psi_upper_diag*theta_0')');
 
 eta_0 = (psi_lower_diag*omega_0')';
 
 xi_eta_0 = [xi_0,eta_0];
 
-
-rho_xi_eta_0 = rho_theta_omega_0/det(M/Sigma);
+rho_xi_eta_0 = rho_theta_omega_0/(prod(m./sigma));
 
 % stores all the updated (states from the governing SDE
 xi_eta_upd = zeros(nSample,dim,numSteps+1);
 
+theta_upd = zeros(nSample,num_Oscillator,numSteps+1);
+
+omega_upd = zeros(nSample,num_Oscillator,numSteps+1);
+
 theta_omega_upd = zeros(nSample,dim,numSteps+1);
+
 % sets initial state
 xi_eta_upd(:,:,1) = xi_eta_0; 
+theta_upd(:,:,1) = theta_0;
+omega_upd(:,:,1) = omega_0;
+
+
 % stores all the updated joint PDF values
 rho_xi_eta_upd = zeros(nSample,numSteps+1);
 % sets initial PDF values
@@ -69,9 +79,16 @@ for j=1:numSteps
     % SDE update for state
     xi_eta_upd(:,:,j+1) = PowerEulerMaruyama(h,xi_eta_upd(:,:,j),drift_j,nSample,num_Oscillator);
     
-  
+    theta_upd(:,:,j+1) = wrapTo2Pi((psi_upper_diag\xi_eta_upd(:,1:num_Oscillator,j+1)')');
+    
+    omega_upd(:,:,j+1) = (psi_lower_diag\xi_eta_upd(:,num_Oscillator+1:dim,j+1)')';
+    
+ 
+ 
     % proximal update for joint PDF
     [rho_xi_eta_upd(:,j+1),comptime(j),niter(j)] = FixedPointIteration(beta,epsilon,h,rho_xi_eta_upd(:,j),xi_eta_upd(:,:,j),xi_eta_upd(:,:,j+1),PowerFraction(beta,xi_eta_upd(:,num_Oscillator+1:dim,j)),GradU,dim);  
+    
+    rho_theta_omega_upd(:,j+1) = rho_xi_eta_upd(:,j+1)*(prod(m./sigma));
     
 end
 
@@ -83,11 +100,7 @@ walltime = toc;
 for jj = 1:numSteps
   
     
-    theta_upd(:,:,jj) = wrapTo2Pi((psi_upper_diag\xi_eta_upd(:,1:num_Oscillator,jj)')');
     
-    xi_upd(:,:,jj) = (psi_lower_diag\xi_eta_upd(:,num_Oscillator+1:dim,jj)')';
-    
-    rho_theta_omega_upd(:,jj) = rho_xi_eta_upd(:,jj)*det(M/Sigma);
     
 end
 
