@@ -1,36 +1,47 @@
-close all; clear; clc;
+close all; clear all; clc;
 %% Parameters
 
 beta = 2; % inverse temperature
 
 % golbal parameters 
-global num_Oscillator dim Gamma M Sigma Pmech K
+global num_Oscillator dim Gamma M Sigma K Pmech cc
 
-num_Oscillator = 2; dim  = 2*num_Oscillator; % dim = dimension of state space
+num_Oscillator = 10; dim  = 2*num_Oscillator; % dim = dimension of state space
 
-gamma = rand(num_Oscillator,1); m = rand(num_Oscillator,1); sigma = rand(num_Oscillator,1); pmech = rand(num_Oscillator,1);
+Y = zeros(num_Oscillator);
 
-Gamma = diag(gamma); M = diag(m); Sigma = diag(sigma); Pmech = diag(pmech); K = rand(num_Oscillator);
+f0 = 60;
+g_a = 20 ; g_b = 30; m_a = 2; m_b =12 ; s_a = 1  ; s_b = 5;
+p_a = 0; p_b = 10 ;  k_a =.7 ; k_b = 1.2;
+
+gamma = ((g_a-g_b)*rand(num_Oscillator,1) + g_a)/(2*pi*f0);
+m = ((m_b-m_a)*rand(num_Oscillator,1) + m_a)/(2*pi*f0);
+sigma = (s_b-s_a)*rand(num_Oscillator,1) + s_a;
+pmech = (p_b-p_a)*rand(num_Oscillator,1) + p_b;
+
+Gamma = diag(gamma);  M = diag(m); Sigma = diag(sigma); Pmech = diag(pmech); K = (k_b-k_a)*rand(num_Oscillator)+ k_a;
+
+theta0_a = 0 ; theta0_b = 2*pi; omega0_a = -.1 ; omega0_b = .1;
 
 % parameters for proximal recursion
-nSample = 500;                      % number of samples                                                           
-epsilon = .5;                     % regularizing coefficient                                      
-h = 1e-3;                           % time step
-numSteps= 1000;                     % number of steps k, in discretization t=kh
-             
+nSample = 1000;                      % number of samples                                                           
+epsilon = 0.5;                      % regularizing coefficient                                      
+h = 1e-3;                         % time step
+numSteps= 1e3;                    % number of steps k, in discretization t=kh
+cc = 1e7;
 %% propagate joint PDF
 
 % initial mean and covariance
 mean0 = rand(1,num_Oscillator); covariance0 = generateRandomSPD(num_Oscillator);
 % samples from initial joint PDF 
-theta_0 = 2*pi.*rand(nSample,num_Oscillator);
+theta_0 = (theta0_b-theta0_a)*rand(nSample,num_Oscillator) + theta0_a;
 
-rho_theta_0 = (1/(2*pi))^num_Oscillator;
+rho_theta_0 = ones(nSample,1)*(1/(theta0_b-theta0_a))^num_Oscillator;
 
-omega_0 = mvnrnd(mean0, covariance0, nSample);
+omega_0 =(omega0_b-omega0_a)*rand(nSample,num_Oscillator) + omega0_a;
 
 % joint PDF values at the initial samples
-rho_omega_0 = mvnpdf(omega_0, mean0, covariance0);
+rho_omega_0 = ones(nSample,1)*(1/(theta0_b-theta0_a))^num_Oscillator;
 
 rho_theta_omega_0 = rho_omega_0.*rho_theta_0;
 
@@ -42,7 +53,15 @@ psi = kron(eye(num_Oscillator),M/Sigma);
 
 invpsi =kron(eye(num_Oscillator),Sigma/M);
 
-xi_0 = wrapTo2Pi((psi_upper_diag*theta_0')');
+sumcov_prox = zeros(dim,dim);
+    
+sumcov_mc = zeros(dim,dim);
+
+for ii=1:num_Oscillator
+
+xi_0(:,ii) = wrapTo2PiMSigma(m(ii)/sigma(ii)*theta_0(:,ii),m(ii),sigma(ii));
+
+end
 
 eta_0 = (psi_lower_diag*omega_0')';
 
@@ -69,12 +88,14 @@ omega_upd(:,:,1) = omega_0;
 rho_xi_eta_upd = zeros(nSample,numSteps+1);
 % sets initial PDF values
 rho_xi_eta_upd(:,1) = rho_xi_eta_0/sum(rho_xi_eta_0);
+mean_prox(1,:) = sum(xi_eta_upd(:,:,1).*rho_xi_eta_upd(:,1))';
 
-tic
+tic;
 for j=1:numSteps
    
     
    [drift_j,GradU] = PowerDrift(xi_eta_upd(:,1:num_Oscillator,j),xi_eta_upd(:,num_Oscillator+1:dim,j),nSample);
+  
    
     % SDE update for state
     xi_eta_upd(:,:,j+1) = PowerEulerMaruyama(h,xi_eta_upd(:,:,j),drift_j,nSample,num_Oscillator);
@@ -82,27 +103,31 @@ for j=1:numSteps
     theta_upd(:,:,j+1) = wrapTo2Pi((psi_upper_diag\xi_eta_upd(:,1:num_Oscillator,j+1)')');
     
     omega_upd(:,:,j+1) = (psi_lower_diag\xi_eta_upd(:,num_Oscillator+1:dim,j+1)')';
+        
+  %proximal update for joint PDF
+   [rho_xi_eta_upd(:,j+1),comptime(j),niter(j)] = FixedPointIteration(beta,epsilon,h,rho_xi_eta_upd(:,j),xi_eta_upd(:,:,j),xi_eta_upd(:,:,j+1),PowerFraction(beta,xi_eta_upd(:,num_Oscillator+1:dim,j)),GradU,dim);  
     
- 
- 
-    % proximal update for joint PDF
-    [rho_xi_eta_upd(:,j+1),comptime(j),niter(j)] = FixedPointIteration(beta,epsilon,h,rho_xi_eta_upd(:,j),xi_eta_upd(:,:,j),xi_eta_upd(:,:,j+1),PowerFraction(beta,xi_eta_upd(:,num_Oscillator+1:dim,j)),GradU,dim);  
+   rho_theta_omega_upd(:,j+1) = rho_xi_eta_upd(:,j+1)*(prod(m./sigma));
+
+   mean_prox_omega(j+1,:) = sum(omega_upd(:,:,j+1).*rho_theta_omega_upd(:,j+1))/sum(rho_theta_omega_upd(:,j+1));  
     
-    rho_theta_omega_upd(:,j+1) = rho_xi_eta_upd(:,j+1)*(prod(m./sigma));
-    
+   mean_prox_theta(j+1,:) = weighted_angle_mean(theta_upd(:,:,j+1),rho_theta_omega_upd(:,j+1));
+   
+
 end
 
-walltime = toc;
+toc
+
+mean_mc_omega  = mean(squeeze(omega_upd));
+
+mean_mc_theta = weighted_angle_mean(theta_upd,ones(nSample,1)/nSample);
+mean_mc_omega = squeeze(mean_mc_omega);
+mean_mc_theta = squeeze(mean_mc_theta);
+
+mean_mc = [mean_mc_theta;mean_mc_omega];
+mean_prox = [mean_prox_theta';mean_prox_omega'];
 
 
-%% Conversion back to theta,omega coordinates 
-
-for jj = 1:numSteps
-  
-    
-    
-    
-end
 
 
 %% plots
@@ -111,6 +136,46 @@ figure(1)
 semilogy(comptime, 'LineWidth', 2)
 xlabel('Physical time $t=kh$','FontSize',20)
 ylabel('Computational time','FontSize',20)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+fs  = 15;
+for i=1:dim
+    
+  
+   
+    if i<=num_Oscillator
+        figure(2);
+      subplot(1,num_Oscillator,i)
+    plot(mean_mc(i,2:end),'Linewidth',1)
+    
+    hold on
+    plot(mean_prox(i,2:end),'--k','Linewidth',.5)
+   
+    xlabel('$t$','fontsize',fs,'interpreter','latex')
+    ylabel(sprintf('$\\theta_{%d}$', i),'fontsize',fs, 'Interpreter','latex','rotation',0);
+    axis tight
+    
+    else 
+     figure(3);
+     subplot(1,num_Oscillator,i-num_Oscillator)   
+    plot(mean_mc(i,2:end),'Linewidth',1)
+    
+    hold on
+    
+    plot(mean_prox(i,2:end),'--k','Linewidth',.5)
+    xlabel('$t$','fontsize',fs,'interpreter','latex')
+    ylabel(sprintf('$\\omega_{%d}$', i-num_Oscillator),'fontsize',fs, 'Interpreter','latex','rotation',0);
+    axis tight
+    end
+    
+  
+end
+
+ legend('Mean MC','Mean Proximal')
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 
 
 
