@@ -1,0 +1,583 @@
+\documentclass[11pt,twoside,a4paper]{article}
+\usepackage{amsmath,amssymb,mathrsfs,euscript,yfonts,psfrag,latexsym,dsfont,graphicx,bbm,color,amstext,wasysym,subfig,flushend,parskip,url,soul,bm,cite,balance}
+\usepackage{amsthm}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{algorithmicx}
+\usepackage[symbol]{footmisc}
+%\usepackage{showkeys}
+%\usepackage{epstopdf,hyperref,pdfsync,url}
+\usepackage[dvipsnames]{xcolor}\graphicspath{{./},{./figures/}}
+
+\DeclareMathOperator*{\argmax}{arg\:max}
+\DeclareMathOperator*{\argmin}{arg\:min}
+\DeclareMathOperator*{\arginf}{arg\:inf}
+
+\begin{document}
+\newtheorem{thm}{Theorem}
+\newtheorem{corollary}[thm]{Corollary}
+\newtheorem{conj}[thm]{Conjecture}
+\newtheorem{lemma}[thm]{Lemma}
+\newtheorem{proposition}[thm]{Proposition}
+\newtheorem{problem}{Problem}
+\newtheorem{remark}{Remark}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+\newcommand{\pinf}{\rho_{\infty}}
+\newcommand{\prox}{\rm{prox}}
+\newcommand{\bp}{{\bm{p}}}
+\newcommand{\bq}{{\bm{q}}}
+\newcommand{\bmm}{{\bm{m}}}
+\newcommand{\bc}{{\bm{c}}}
+\newcommand{\be}{{\bm{e}}}
+\newcommand{\bps}{{\bm{\psi}}}
+\newcommand{\br}{{\bm{r}}}
+\newcommand{\bw}{{\bm{w}}}
+\newcommand{\bx}{{\bm{x}}}
+\newcommand{\bxx}{{\bm{X}}}
+\newcommand{\by}{{\bm{y}}}
+\newcommand{\bz}{{\bm{z}}}
+\newcommand{\bth}{{\bm{\theta}}}
+\newcommand{\bg}{{\bm{\gamma}}}
+\newcommand{\bsim}{{\bm{\sigma}}}
+\newcommand{\bSim}{{\bm{\Sigma}}}
+\newcommand{\bGam}{{\bm{\Gamma}}}
+\newcommand{\bom}{{\bm{\omega}}}
+\newcommand{\bxi}{{\bm{\xi}}}
+\newcommand{\bet}{{\bm{\eta}}}
+\newcommand{\bzz}{{\bm{Z}}}
+\newcommand{\bbf}{{\bm{f}}}
+\newcommand{\brh}{{\bm{\varrho}}}
+\newcommand{\balpha}{{\bm{\alpha}}}
+\newcommand{\bbeta}{{\bm{\beta}}}  .   
+\newcommand{\bdelta}{{\bm{\delta}}}
+\newcommand{\bPi}{{\bm{\Pi}}}
+\newcommand{\bE}{{\mathbb{R}}}
+\newcommand{\bC}{{\bm{C}}}
+\newcommand{\bL}{{\bm{L}}}
+\newcommand{\diff}{{\rm{d}}}
+\newcommand{\diag}{{\rm{diag}}}
+\newcommand{\bI}{{\bm{I}}}
+\newcommand{\bP}{{\bm{P}}}
+\newcommand{\bG}{{\bm{G}}}
+\newcommand{\bR}{{\bm{R}}}
+\newcommand{\bD}{{\bm{D}}}
+\newcommand{\bQ}{{\bm{Q}}}
+\newcommand{\bM}{{\bm{M}}}
+\newcommand{\ptwo}{\mathcal{P}_{2}(\Omega)}
+\newcommand{\epin}{{ \epsilon^{-1}}}
+\renewcommand{\dagger}{{T}}w
+\newcommand{\tr}{{\rm{trace}}}
+
+
+
+
+
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+
+
+\newcommand{\interior}[1]{%
+  {\kern0pt#1}^{\mathrm{o}}%
+}
+
+%\renewcommand{\odot}{\circ}
+\newcommand{\ignore}[1]{}
+
+\newcommand{\magenta}{\color{magenta}}
+\newcommand{\red}{\color{red}}
+\newcommand{\blue}{\color{blue}}
+\newcommand{\gray}{\color{gray}}
+\definecolor{grey}{rgb}{0.6,0.3,0.3}
+\definecolor{lgrey}{rgb}{0.9,.7,0.7}
+
+
+%\renewcommand{\qedsymbol}{\hfill\ensuremath{\blacksquare}}
+
+\newcommand{\symsum}{\displaystyle\sum_{\rm{symm}}}
+
+\def\spacingset#1{\def\baselinestretch{#1}\small\normalsize}
+\setlength{\parindent}{20pt}
+\setlength{\parskip}{12pt}
+\spacingset{1}
+
+\title{\huge{Lamperti Transform For Power Systems
+}}
+
+\author{Kenneth Caluya}
+
+\markboth{\today}{}
+
+\section{Gradient Drift Case}
+\begin{align}
+    \diff \bx = -\nabla \psi (\bx) \diff t + \sqrt{2\beta^{-1}} dw
+\end{align}
+\begin{align} \label{FPk}
+    \frac{\partial \rho}{\partial t} = \nabla \cdot (\rho \nabla \psi) + \beta^{-1}\Delta \rho 
+\end{align}
+
+
+
+We claim that 
+\begin{align}
+    F(\rho) &= \mathbb{E}_{\rho}[\psi + \beta^{-1} \log \rho ] \nonumber \\ 
+    & = \int \psi(\bx) \rho(\bx) \: \diff \bx + \beta^{-1}\int \rho(\bx) \log \rho(\bx) \: \diff \bx \nonumber \\
+    & = \beta^{-1}\int \rho \log \rho-\rho \log( \exp (-\beta \psi)) \: \diff \bx \nonumber \\ 
+    & = \beta^{-1} \int \rho \log \left( \frac{\rho}{\exp(-\beta \psi)} \right) \: \diff \bx  \nonumber \\ 
+    & =  \beta^{-1} \int \rho \log \left( \frac{\rho}{\frac{1}{Z}\exp(-\beta \psi)} \right) \: \diff \bx  + C  \nonumber 
+\end{align}
+is a Lyapunov functional along the trajectories of (\ref{FPk}) and $Z= \int\exp(-\beta \psi) \: \diff \bx  $ is a normalization constant.
+If you have 
+\begin{align}
+    \dot{\bx} = \bm{\phi}(\bx)
+\end{align}
+\begin{align}
+    \frac{\diff V}{\diff t } = \langle \nabla V , \dot{x}\rangle =  \langle \nabla V , \bm{\phi}(\bx) \rangle  \leq 0
+    \end{align} 
+\begin{align}
+\frac{\diff F}{\diff t} &= \langle \frac{\delta F}{\delta \rho }, \frac{\partial \rho  }{\partial t}\rangle \nonumber \\ 
+& = \langle  \frac{\delta F}{\delta \rho }, \nabla \cdot (\rho \nabla \psi) + \beta^{-1}\Delta \rho  \rangle \nonumber  \\
+& = \int  \frac{\delta F}{\delta \rho } (\nabla \cdot (\rho \nabla \psi) + \beta^{-1}\Delta \rho) \: \diff \bx \nonumber \\
+& = \int (\psi(\bx) + \beta^{-1}(\log \rho(\bx) +1)) (\nabla \cdot (\rho \nabla \psi) + \beta^{-1}\Delta \rho)\: \diff \bx  \nonumber \\
+& = \int (\psi(\bx) + \beta^{-1}(\log \rho(\bx) +1)) (\nabla \cdot (\rho ( \nabla \psi + \beta^{-1}\nabla \log \rho)))\: \diff \bx \nonumber \\
+&= - \int  \langle \nabla (\psi(\bx) + \beta^{-1} \log \rho (\bx)), \nabla \psi(\bx) + \beta^{-1} \nabla \log \rho  \rangle \rho \: \diff \bx \nonumber \\
+& = -\int \lVert \nabla (\psi(\bx) + \beta^{-1} \log \rho )\rVert^2 \rho(\bx) \: \diff \bx  \nonumber  \\
+&=- \mathbb{E}_{\rho}[\lVert \nabla \zeta \rVert^2] \leq 0
+ \end{align}
+ where $\zeta = \psi + \log \rho $.
+\\ 
+We consider the system of 2nd-order SDEs given by
+\begin{align*}
+m_i\ddot{\theta}_i
+    +  \gamma_i \dot{\theta}_i = 
+P_i - \sum_{j=1}^{n} K_{ij} \sin(\theta_i-\theta_j+\varphi_{ij})+ \sigma_i \times \:\text{stochastic forcing}\: i=1,\dots,n.
+\end{align*}
+We can transform the system into 
+\begin{align} \label{ODEsystem}
+    \diff \bth &= \bom \: \diff t \nonumber \\ 
+   \bM \diff \bom & = (-\Gamma \bom-\nabla_{\bth} V(\bth)) \diff t + \bSim \: \diff \bw
+\end{align}
+where $\bth=(\theta_1,\theta_2,\dots,\theta_n), \bom=(\dot{\theta}_1,\dot{\theta}_2,\dots,\dot{\theta}_n), \bM = \diag(m_1,m_2,\dots,m_n), \bm{\Gamma}= \diag(\gamma_1,\gamma_2,\dots,\gamma_n ),\bSim = \diag(\sigma_1,\sigma_2,\dots,\sigma_n)$ and the potential function is given by 
+\begin{align}
+    V(\bth):= -\sum_{i=1}^{n} P_i \theta_i + \sum_{(i,j)\in \mathcal{E}}k_{ij}(1-\cos(\theta_i-\theta_j+\varphi_{ij}))
+\end{align}
+we can rewrite as 
+\begin{align}
+    \diff \underbrace{\begin{bmatrix}
+    \bth \\ \bom 
+    \end{bmatrix}}_{\bx}
+    = \underbrace{\begin{bmatrix}
+    \bom  \\ 
+ -\bM^{-1}\bm{\Gamma} \bom - \bM^{-1} \nabla_{\bth} V(\bth)
+    \end{bmatrix}}_{\bm{f}} \diff t + 
+    \underbrace{\begin{bmatrix}
+    \bm{0}_{n\times n}  &  \bm{0}_{n\times n}  \\ 
+   \bm{0}_{n\times n}  &\bm M^{-1}\bSim  
+    \end{bmatrix}}_{\bm{g}}
+    \diff \bm{w}
+    \end{align}
+\subsection{Fokker Planck}
+\begin{align}
+    \frac{\partial \rho}{\partial t} &= - \nabla_{\theta,\omega} \cdot \left( \rho\begin{bmatrix}
+    \bom  \\ 
+ -\bM^{-1}\bm{\Gamma} \bom - \bM^{-1} \nabla_{\bth} V(\bth)
+    \end{bmatrix} \right) + \frac{1}{2}\sum_{i,j=1}^{n} \frac{\partial^2}{\partial \omega_{i}\omega_j } (\rho \bM^{-1}\Sigma \Sigma^{\top} \bM^{-1} )_{i,j} \nonumber \\
+     &= -\nabla_{\theta} \cdot( \rho \bom) + \nabla_{\bom} \cdot \left( \rho (\bM^{-1}\bm{\Gamma}\bom + \bM^{-1}\nabla_{\bth}V(\bth) )\right) + \nabla_{\bom} \cdot \left( \rho D \nabla_{\bom} \log \rho \right) \nonumber \\
+     &= - \langle \bom ,\nabla_{\bth}\rho \rangle  + \nabla_{\bom} \cdot \left( \rho \left( \bM^{-1}\bm{\Gamma}\bom + \bM^{-1}\nabla_{\bth}V(\bth) +\bD \nabla_{\bom} \log \rho \right) \right)
+\end{align}
+where $\bD=\frac{1}{2} \bM^{-1}\bSim \bSim^{\top}\bM^{-1}$.
+
+
+\begin{thm} {(Ito's Lemma for Multi-Dimensional Processes)} \label{multivariateItoLemma}
+Let 
+\begin{align}
+    \diff \bxx_t = \bbf(\bxx_t,t) \: \diff t + \bm{g}(\bxx_t,t) \diff\bm{w}_t
+\end{align}
+with $\bxx_t,\bm{w}_t,\bbf(\cdot,) \in \mathbb{R}^n$ and $\bm{g}(\cdot) \in \mathbb{R}^{n \times n}$. Then for a given transformation 
+\begin{align}
+    \bzz_t = \bm{\psi}(\bxx_t,t) =[\psi_1(\bxx_t,t),\dots,\psi_n(\bxx_t,t)]
+\end{align}
+where $\bps$ is a function from $\mathbb{R}^n\times [0,\infty]$ into $\mathbb{R}^n$, then $\bzz_t$ is again an Ito process given by 
+\begin{align} \label{Itorule}
+    \diff Z_{k,t} &= \frac{\partial \psi_k}{\partial t}(\bxx_t,t) \: \diff t + \sum_{i=1}^n \frac{\partial \psi_k}{\partial x_i}(\bxx_t,t) \diff X_{i,t} \nonumber  \\ 
+    &+ \frac{1}{2} \sum_{i=1}^n \sum_{j=1}^n \frac{\partial^2  \psi_k}{\partial x_i \partial x_j}(\bxx_t,t) \diff X_{j,t} \diff X_{i,t} 
+\end{align}
+\end{thm}
+\begin{thm}
+Let $n=2d$ and consider the transformation defined by 
+\begin{align} \label{Itotransformation}
+\bzz_t=\bps(\bxx_t)=\begin{bmatrix}
+\bxi \\ 
+\bet
+\end{bmatrix}
+: = \begin{bmatrix}
+\diag(\bmm \oslash \bsim) & 0 \\ 
+0 & \diag(\bmm \oslash \bsim)
+\end{bmatrix}
+\begin{bmatrix}
+\bth \\ 
+\bom 
+\end{bmatrix}
+\end{align} i.e.
+\begin{align}
+    \bzz_t&= [\psi_1(X_{1,t}),\dots,\psi_d(X_{d,t}), \psi_{d+1}(X_{d+1,t}), \dots, \psi_{2d}(X_{2d,t})]^{\top} \nonumber \\     & =\left[\frac{m_1}{\sigma_1}\theta_{1,t},\:\dots\:,\frac{m_d}{\sigma_d}\theta_{d,t} ,  \dots , \frac{m_1}{\sigma_1} \omega_{1,t} , \dots,\frac{m_d}{\sigma_d} \omega_{d,t} \right]^{\top}
+\end{align}
+\end{thm}
+\begin{proof}
+Since the transformation (\ref{Itotransformation}) is a linear transformation and doesn't depend on $t$, the first and third term in (\ref{Itorule})  vanish so we are left with
+\begin{align}
+    \diff Z_{k,t}& = \sum_{i=1}^{2d} \frac{\partial \psi_k}{\partial x_i}(\bxx_t) \diff X_{i,t} \nonumber \\ &= \sum_{i=1}^{2d} \frac{\partial \psi_k}{\partial x_i}(X_{k,t}) \diff X_{i,t} \nonumber  \\
+    &= \frac{\partial \psi_k}{\partial x_k} \diff X_{k,t} \nonumber \\ 
+    & = \begin{cases}
+    \dfrac{m_k}{\sigma_k}\diff \theta_{k,t} & 1\leq k \leq d \nonumber \\ 
+     \dfrac{m_k}{\sigma_k}\diff \omega_{k,t} & n+1 \leq k \leq 2d \\ 
+    \end{cases} \nonumber \\ 
+    &=  \begin{cases}
+    \dfrac{m_k}{\sigma_k} \omega_{k,t} \diff t & 1\leq k \leq d \nonumber \\ 
+  \dfrac{m_k}{\sigma_k}  \left(-\dfrac{\gamma_k}{m_k} \omega_{k,t}- \dfrac{P_k}{\sigma_k}- \displaystyle \sum_{j=1}^d \dfrac{K_{k,j}}{m_k}\sin(\theta_{k,t}-\theta_{j,t})+ \dfrac{\sigma_k}{m_k}\diff w_{k,t}\right) & n+1 \leq k \leq 2d
+    \end{cases} \nonumber \\ 
+    & = \begin{cases}
+    \eta_{k,t} \diff t & 1\leq k \leq d \nonumber \\ 
+    -\dfrac{\gamma_k}{m_k} \eta_{k,t}- \dfrac{P_k}{\sigma_k}- \displaystyle \sum_{j=1}^d \dfrac{K_{k,j}}{\sigma_k}\sin\left(\dfrac{\sigma_k}{m_k}\xi_{k,t}-\dfrac{\sigma_j}{m_j}\xi_{j,t}+\varphi_{ij}\right)+\diff w_{k,t} & n+1 \leq k \leq 2d
+    \end{cases} 
+\end{align}
+Writing in vector form, we get 
+\begin{align}
+\begin{bmatrix}
+\diff \bxi \\
+  \diff \bet
+\end{bmatrix}
+= \begin{bmatrix}
+ \bet \\ 
+      -\nabla_{\bet}F(\bet)- \nabla_{\bxi}U(\bxi) 
+\end{bmatrix} \diff t
++
+ \begin{bmatrix}
+     \bm{0}_{d\times d} & \bm{0}_{d\times d} \\ 
+   \bm{0}_{d\times d}&\bm{I}_{d\times d}
+    \end{bmatrix} \diff \bm{w}
+\end{align}
+where $F=\frac{1}{2} \langle \bet,\diag(\bg\oslash \bmm)\bet \rangle$ and the potential function in $\bxi$ is given by
+\begin{align}
+    U(\bxi) = \sum_{i=1}^{2d}\frac{P_i}{\sigma_i} \xi_i + \sum_{(i,j)\in \mathcal{E}} K_{i,j}\frac{m_i}{\sigma_i^2}\left( 1-\cos\left(\dfrac{\sigma_i}{m_i}\xi_i-\frac{\sigma_j}{m_j}\xi_j + \varphi_{ij}\right)\right)
+\end{align}
+\end{proof}
+The Fokker-Planck equation of this SDE is 
+\begin{align}
+    \frac{\partial \rho}{\partial t} = -\langle \bet, \nabla_{\bxi} \rho\rangle + \nabla_{\bet} \cdot \left( \left( \nabla _{\bet}F(\bet)  + \nabla_{\bxi} U(\bxi)
+    \right) \rho\right) + \frac{1}{2} \Delta_{\bet} \rho
+ \end{align}
+ 
+ 
+ \begin{remark} Given a random vector $X$, who joint pdf is given by $f_{X}(x)$ and if $H:\mathbb{R}^n \mapsto \mathbb{R}^n$ is a $1-1$ differentiable function, then the random vector $Y=H(X)$ also has a density function given by 
+ \begin{align}
+     f_{Y}(y)= \frac{f_X(x)}{\lvert {\rm{det}} \nabla H(x)\rvert}, 
+     \quad x\in H^{-1}(y)
+ \end{align}
+ \end{remark}
+% We claim that 
+% \begin{align}
+% \rho_{\infty} \propto \exp\left(- \frac{1}{2} \langle \bom, \bM \bom \rangle -V(\theta) \right)
+% \end{align}
+% is the stationary solution. 
+% \\
+% \\
+% {\color{red} Use rule: $\nabla(\rho F)=(\nabla \rho). F+\rho (\nabla. F)$}
+
+
+% \begin{align}
+%     0 &=- \langle \bom ,\nabla_{\bth}\rho_{\infty} \rangle  + \nabla_{\bom} \cdot \left( \rho_{\infty} \left( \bM^{-1} \Gamma \bom + \bM^{-1}\nabla_{\bth}V(\bth) +\bD \nabla_{\bom} \log \rho_{\infty}  \right) \right) \nonumber \\ 
+%     & = \rho_{\infty} \langle \bom, \nabla_{\bth}V(\bth) \rangle  + \langle \nabla_{\bom} \rho_{\infty}, \bM^{-1}\Gamma \bom + \bM^{-1}\nabla_{\bth}V(\bth) +\bD \nabla_{\bom} \log \rho_{\infty} \rangle \nonumber \\ 
+% &+ \rho_{\infty} \nabla_{\bom} \cdot(\bM^{-1} \Gamma \bom + D \nabla_{\bom} \log \rho_{\infty }) \nonumber \\ 
+% & = \rho_{\infty} \langle \bom, \nabla_{\bth}V \rangle -\rho_{\infty} \langle  \bM \bom ,\bM^{-1}\Gamma \bom \rangle -\rho_{\infty} \langle  \bM \bom ,\bM^{-1}\nabla_{\bth}V(\bth)  \rangle- \rho_{\infty}\langle  \bM \bom ,\bD \bM \omega  \rangle \nonumber \\ 
+% &+ \rho_{\infty} \tr(\bM^{-1}\Gamma) - \rho_{\infty} \tr(\bD \bM) \nonumber \\ 
+% &= {-}\rho_{\infty} \langle \bom, \Gamma \bom \rangle - \frac{1}{2} \rho_{\infty} \langle \bom, \bSim \bSim^{\top}\bom \rangle  + \rho_{\infty} \tr(\bM^{-1}\Gamma) {-}\rho_{\infty} \tr(\bD \bM) \nonumber \\ 
+% & = \rho_{\infty} \tr\left( \bM^{-1} \left( \Gamma-\frac{1}{2}  \bSim \bSim^{\top}\right)+\left( \Gamma -\frac{1}{2} \bSim\bSim^{\top}\right)\bom \bom^{\top}\right)
+% \end{align}
+
+
+% \begin{align}
+%     2\Gamma = \bSim \bSim^{\top}
+% \end{align}
+
+% The Lyapunov functional for this system is 
+% \begin{align}
+%   F(\rho)=  \int \rho(\bom,\bth) \log \rho(\bom,\bth) \: \diff \bom \diff \bth  + \int \left( \rho(\bom,\bth) ( \frac{1}{2} \langle \bom, \bM \bom \rangle +   V(\bth) \right)   \: \diff \bom \diff \bth 
+% \end{align}
+
+
+% \begin{align}
+% \frac{\diff F}{\diff t} &= \langle \frac{\delta F}{\delta \rho }, \frac{\partial \rho  }{\partial t}\rangle \nonumber \\ 
+% & = \langle  \frac{\delta F}{\delta \rho }, -\langle \bom ,\nabla_{\bth}\rho \rangle  + \nabla_{\bom} \cdot \left( \rho \left( \bM^{-1}\bm{\Gamma}\bom + \bM^{-1}\nabla_{\bth}V(\bth) +\bD \nabla_{\bom} \log \rho \right) \right \rangle \nonumber  \\
+% & = \int \left ( \log \rho(\bom,\bth) +1 + \frac{1}{2}\langle \bom, \bM \bom \rangle + V(\bth) \right) (-\langle \bom ,\nabla_{\bth}\rho \rangle ) \nonumber\\
+% & +\left ( \log \rho(\bom,\bth) +1 + \frac{1}{2}\langle \bom, \bM \bom \rangle + V(\bth) \right)   \nabla_{\bom} \cdot \left(  \rho  \bM^{-1}\bm{\Gamma}\bom  \right. \nonumber\\
+% &+ \left. \bM^{-1}\nabla_{\bth}V(\bth) +\bD \nabla_{\bom} \log \rho \right) \diff \bom \diff \bth  \nonumber\\
+% &= \int \rho   \nabla_{\bth} \cdot \left ( \bom \left( \log \rho(\bom,\bth) +1 + \frac{1}{2}\langle \bom, \bM \bom \rangle + V(\bth)  \right) \right)  \nonumber\\
+% &- \int \nabla_{\bom} \left ( \log \rho  (\bom,\bth) +1 + \frac{1}{2}\langle \bom, \bM \bom \rangle + V(\bth) \right)
+%  \cdot \left(  \bM^{-1}\bm{\Gamma}\bom  \right. \nonumber\\
+% &+ \left. \bM^{-1}\nabla_{\bth}V(\bth) +\bD \nabla_{\bom} \log \rho \right) \rho  \diff \bom \diff \bth  \nonumber\\
+% &= \int \langle \nabla_{\bth} \rho,  \bom \rangle+\rho \langle \nabla_{\bth} V(\bth),  \bom \rangle- 
+% \rho \langle \nabla_{\bom} \log \rho,  \bM^{-1} \bGam \bom  \rangle- \rho \langle \bM \bom,  \bM^{-1} \bGam \bom  \rangle \nonumber\\
+% &-\rho \langle \nabla_{\bom} \log \rho,  \bM^{-1} \nabla_{\bth}V(\bth) \rangle- \rho \langle \bM \bom,  \bM^{-1} \nabla_{\bth}V(\bth)  \rangle \nonumber \\
+% &-
+% \rho \langle \nabla_{\bom} \log \rho,  D \nabla_{\bom} \log \rho \rangle- \rho \langle \bM \bom,  D \nabla_{\bom} \log \rho \rangle \nonumber \: \diff \bom \diff \bth \\
+% &= \int \rho \langle \nabla_{\bth} V(\bth),  \bom \rangle- 
+% \rho \langle \nabla_{\bom} \log \rho,  \bM^{-1} \bGam \bom  \rangle-\rho \langle \bM \bom,  \bM^{-1} \bGam \bom  \rangle \nonumber\\
+% &-\rho \langle \bM \bom,  \bM^{-1} \nabla_{\bth}V(\bth)  \rangle 
+% -\rho \langle \nabla_{\bom} \log \rho,  D \nabla_{\bom} \log \rho \rangle- \rho \langle \bM \bom,  D \nabla_{\bom} \log \rho \rangle \nonumber \: \diff \bom \diff \bth \\
+% &= \int - \rho \left(
+%  \langle \nabla_{\bom} \log \rho,  \bM^{-1} \bGam \bom + D\bM \bom \rangle + \langle  \bom,   \bGam \bom  \rangle \right. \nonumber\\
+% &+ \left. \langle \nabla_{\bom} \log \rho,  D \nabla_{\bom} \log \rho \rangle \right )  \: \diff \bom \diff \bth \nonumber\\
+% &=-\mathbb{E}_{\rho} \{ \lVert \nabla_{\bom} \log \rho+\bM \bom \rVert_{D}^{2} \} \leq 0
+% \end{align}
+
+
+  
+ 
+
+
+
+% The function $L(\bom,\bth) = \frac{1}{2} \langle \bom , M \bom \rangle  + V(\bth)$ is a Lyapunov for the determinstic system i.e. no noise. 
+
+% \begin{align}
+%     \dot{L} &= \langle \nabla_{\bth} L , \dot{\bth} \rangle + \langle \nabla_{\bom} L , \dot{\bom} \rangle \nonumber  \\ 
+%             & = \langle \nabla_{\bth} ,(\bth), \bom \rangle + \langle \bM \bom, -\bM^{-1} \bGam \bom - \bM^{-1}\nabla_{\bth} V(\bth)\rangle \nonumber  \\ 
+%             & = - \langle \bom, \bGam \bom \rangle  \leq 0
+% \end{align}
+
+
+
+
+% \begin{thm}[Lamperti Transform] \label{LampertiTransform} Let $X_t$ be the solution to the (Ito) SDE 
+% \begin{align}
+%     \diff \bxx_t = \bbf(\bxx_t,t) \: 
+%     \diff t + \bbeta(\bxx_t,t) \: \bR(t)\diff \bm{W}_t
+% \end{align}
+% where $\bxx_t,w_t \in \mathbb{R}^d$, $\bR(t)\in \mathbb{R}^{d \times d}$ is any matrix function of $t$ and $\bbeta \in \mathbb{R}^{d \times d} $ is a diagonal matrix whose diagonal elements which we denote 
+% \begin{align*}
+%     \beta_{i,i}(\bxx_t.t)= \beta_i(X_{i,t},t),
+% \end{align*}
+% i.e., each diagonal element depend only on the $i$th component of $\bxx_t$. Then, the transformation defined by 
+% \begin{align} \label{ChangeofVariable}
+% Z_{i,t} = \psi_i(X_{i,t},t) = \int \frac{1}{\beta_i(x,t)} \: \diff x \bigg |_{x=X_{i,t}}
+% \end{align}
+% will result in the diffusion process 
+% \begin{align} \label{CoVDiffusion}
+%     \diff Z_{i,t} = \left(\frac{\partial}{\partial t}\psi_i(x,t)\bigg|_{x=\psi^{-1}(Z_{i,t},t)} + \frac{f_i(\bps^{-1}(\bzz,t),tt)}{\beta_i(\psi_i^{-1}(Z_{i,t},t),t)} +\frac{1}{2}  \frac{\partial}{\partial x}
+%     \beta_i(\psi_i^{-1}(Z_{i,t},t) \right)\diff t + \sum_{j=1}^{d}
+%  r_{i,j}(t)\: \diff w_{j,t}
+% \end{align}
+% where $r_{i,j}(t)$ are the elements of $\bR(t)$ and $\bxx_t = \psi^{-1}(\bzz,t)$.
+% \end{thm}
+
+% \begin{proposition}
+% Let $d=2n$ and set 
+% \begin{align} \label{partitionvector}
+%      \bxx_t = \begin{bmatrix}\bth \\ 
+%     \bom
+%     \end{bmatrix}, \quad  \bzz_t := \begin{bmatrix}
+%     \bxi \\
+%     \bet 
+%     \end{bmatrix}.
+% \end{align}
+% Let 
+% \begin{align}
+%     \bbeta(\bxx_t,t) \equiv   \begin{bmatrix}
+%     \bI & 0 \\ 
+%     0 & \diag(\bsim \oslash \bmm )
+%     \end{bmatrix} ,
+%     \quad 
+%     \bR(t) \equiv 
+%      \begin{bmatrix}
+%     0 & 0 \\ 
+%     0 & \bI
+%     \end{bmatrix} 
+% \end{align}
+% then applying Theorem \ref{LampertiTransform} to (\ref{ODEsystem}) results in the diffusion process
+% \begin{align}
+%     \diff \bz_t
+% \end{align}
+% \end{proposition}
+% \begin{proof}
+% Notice that performing the change of variable (\ref{ChangeofVariable})
+% results in 
+% \begin{align}
+%     \bzz_t = \bps(\bxx_t,t) = 
+%      \begin{bmatrix}
+%     \bI & 0 \\ 
+%     0 & \diag(\bmm \oslash \bsim )
+%     \end{bmatrix} \bxx_t
+% \end{align}
+% so that 
+% \begin{align}
+%     \bxx_t = \bps^{-1}(\bzz_t,t) =
+%       \begin{bmatrix}
+%     \bI & 0 \\ 
+%     0 & \diag(\bsim \oslash \bmm )
+%     \end{bmatrix}
+%     \bzz_t.
+% \end{align}
+% Using (\ref{partitionvector}), the inverse transformation can be written component wise as 
+% \begin{align} \label{compontentwisetransform}
+%     \theta_i = \xi_i,\quad \omega_i = \frac{\sigma_i}{m_i}  \eta_i
+% \end{align}
+% Notice that since $\bps$ and $\bbeta$ are independent of $t$ and $x$, then the first and third term in the drift of (\ref{CoVDiffusion}) vanish and we are left with the second term. Notice that we have
+% \begin{align}
+%   \frac{f_i(\bxx_t,t)}{\beta_i(\bxx_{i,t},t)} = \begin{cases}
+%   \omega_i & 1\leq i \leq n \\ 
+%   -\frac{\gamma_i}{m_i}\frac{m_i}{\sigma_i} \omega_i -\frac{m_i}{\sigma_i}\frac{P_i}{m_i} - \displaystyle \sum_{j=1}^{n} \frac{m_i}{\sigma_i} \frac{1}{m_i}k_{ij} \sin(\theta_i-\theta_j) & n+1\leq i \leq 2n
+%   \end{cases}
+% \end{align}
+% which means that 
+% \begin{align}
+%     \frac{f_i(\bps^{-1}(\bzz_T,t),t)}{\beta_i(\psi^{-1}(Z_{i,t},t),t)} = \begin{cases}
+%     \frac{\sigma_i}{m_i} \eta _i & 1\leq i \leq n \\ 
+%     -\frac{\gamma_i}{m_i}\eta_i-\frac{P_i}{\sigma_i} -\displaystyle \sum_{j=1}^{n}\frac{1}{\sigma_i} k_{i,j}\sin(\xi_i-\xi_j) & n+1\leq i \leq 2n
+%     \end{cases}.
+% \end{align}
+% This results in the diffusion process 
+% \begin{align} \label{LampertiSDE}
+% \diff \begin{bmatrix}
+%  \bxi \\ \bet 
+% \end{bmatrix}
+% &= 
+% \begin{bmatrix} 
+% \diag(\bsim \oslash \bmm) \bet \\
+% - \diag(\bg \oslash \bmm) \bet- \nabla_{\bxi} U(\bxi) 
+%   \end{bmatrix}
+%   \: \diff t
+%   + \begin{bmatrix}
+%     0 & 0 \\ 
+%     0 & \bI
+%     \end{bmatrix} \: \diff \bm{W}_t \\ 
+%     :&=\begin{bmatrix}
+%  \bm{G}_1 \bet \\
+%  -\nabla _{\bet} F(\bet)  - \nabla_{\bxi} U(\bxi)
+% \end{bmatrix} \: \diff t   + \begin{bmatrix}
+%     0 & 0 \\ 
+%     0 & \bI
+%     \end{bmatrix} \: \diff \bm{W}_t
+% \end{align}
+% where $F(\bet) =\frac{1}{2} \bet^{\top} \bm{G}_2 \bet$
+% where the potential function $U$ is given by 
+% \begin{align}
+% U(\bxi):= \sum_{i=1}^{n} \frac{P_i}{\sigma_i} \xi_i + \sum_{i,j\in \mathcal{E}}\frac{1}{\sigma_i} k_{i,j}(1-\cos(\xi_i-\xi_j))\end{align}
+% \end{proof}
+
+
+
+
+% % %\subsection{Stationary Solution}
+% % 5To compute the stationary solution, we set 
+% % \begin{align} \label{EqualZeroPDE}
+% %     0 = \langle \bm{G}_1\bet, \nabla_{\bxi} \rho\rangle + \nabla_{\bet} \cdot \left( \left( \nabla _{\bet}F(\bet)  + \nabla_{\bxi} U(\bxi)
+% %     \right) \rho\right) + \Delta_{\bet} \rho
+% % \end{align}
+% % and we have the ansatz 
+% % \begin{align}
+% %     \rho_{\infty} \propto \exp\left(-(F(\bet)+U(\bxi)\right).
+% % \end{align}
+% % From this, we get the derivatives 
+% % \begin{align} \label{derivatives}
+% %     \nabla_{\bxi} \rho_{\infty} = -\pinf \nabla_{\bxi}U(\bxi) ,
+% %     \quad \nabla_{\bet} \pinf = -\pinf \nabla_{\bet} F(\bet).
+% % \end{align}
+% % Using (\ref{derivatives}), we obtain 
+% % \begin{align}
+% %     \Delta_{\eta}\pinf = \pinf \lVert G_2 \eta \rVert^2 - \pinf {\rm{tr}}(G_2) 
+% % \end{align}
+% % and 
+% % \begin{align}
+% %       \nabla_{\bet} \cdot \left( \left( \nabla _{\bet}F(\bet)  + \nabla_{\bxi} U(\bxi)
+% %     \right)\right)= -\pinf \lVert G_2 \eta \rVert^2 - \pinf \langle G_2\bet , \nabla_{\bxi}U(\bxi) + \pinf {\rm{tr}}(G_2)
+% % \end{align}t
+% % which implies that (\ref{EqualZeroPDE}) reduces to 
+% % \begin{align}
+% %     0 = \pinf \langle (G_2-G_1)\bet, \nabla_{\bxi} U(\bxi) \rangle.
+% % \end{align}
+% % In order for this to hold for all $\bet,\bxi$ we must have $G_2=G_1$ which means that $\bsim=\bg$, i.e., $\sigma_i=\gamma_i$ for all $i$.
+
+% \subsection{Free Energy}
+% Consider the functional 
+% \begin{align}
+%     \Phi(\rho)& =\int \rho(\bet,\bxi) \log  \rho(\bet,\bxi) \: \diff \bet \diff \bxi  + \beta
+%     \int \rho(\bet,\bxi) U(\bxi)\: \diff \bet \diff \bxi  
+%     +
+%   \beta \int \rho(\bet,\bxi) F(\bet) \: \diff \bet \diff \bxi \nonumber \\ 
+%   & = \beta \widetilde{\Phi}(\rho) 
+% \end{align}
+% We compute 
+% \begin{align}
+%     \frac{\diff \Phi}{\diff t}&=\int \frac{\partial \rho}{\partial t} \left( \log \rho + \beta F +  \beta U\right)\: \diff \bet \diff \bxi \: \diff \bet \diff \bxi    \nonumber \\
+%     &  = \int \nabla_{\bet} \cdot \left( \rho \left( \nabla_{\bet} \log \rho+ \nabla_{\bet} F + \nabla_{\bxi }U\right)\right) \left( \log \rho + \beta F +  \beta U\right) \: \diff \bet \diff \bxi   \nonumber \\ 
+%     & \: \: -  \int \langle G_1\bet , \nabla_{\bxi} \rho \rangle \left( \log \rho + \beta F + \beta U\right)\: \diff \bet \diff \bxi   \nonumber \\ 
+%     & = \int - \lvert \nabla_{\bet} \log \rho \lvert^2\rho  -( \beta+1) \langle \nabla_{\bet} \log \rho ,\nabla_{\eta}F\rangle\rho    - \beta \lvert \nabla_{\bet} F \rvert^2\rho \: \diff \bet \diff \bxi   \nonumber \\ 
+%     &  \int -\langle \nabla_{\bxi} U , \nabla_{
+%     \bet} \log \rho \rangle\rho  -\beta \langle \nabla_{\bxi} U , \nabla_{
+%     \bet} F \rangle\rho  + \langle G_1 \bet, \nabla_{\bxi} \log \rho\rangle \rho  + \beta  \langle G_1 \bet, \nabla_{\bxi} U \rangle\rho  \: \diff \bet \diff \bxi   \nonumber  \\
+%     & = \int - \lvert \nabla_{\bet} \log \rho \lvert^2\rho  - (\beta+1) \langle \nabla_{\bet} \log \rho ,\nabla_{\eta}F\rangle\rho    - \beta \lvert \nabla_{\bet} F \rvert^2\rho \: \diff \bet \diff \bxi   \nonumber \\
+%     &+ \int -\beta \langle \nabla_{\bxi} U , \nabla_{
+%     \bet} F \rangle\rho +  \beta  \langle G_1 \bet, \nabla_{\bxi} U \rangle\rho. \nonumber 
+% \end{align}
+% A sufficient condition for $  \dfrac{\diff \Phi}{\diff t}\leq 0$ is to set 1 $G_!\bet =\nabla_{\bet} F = G_2 \bet \Rightarrow 
+% \bsim = \bg \Rightarrow \sigma_i=\gamma_i$ for all $i$.
+
+
+% Let $L$ be a Lyapunov function for the system 
+% \begin{align}
+% \begin{bmatrix}
+% \dot{\bxi} \\ \dot{\bet}
+% \end{bmatrix}
+% =\begin{bmatrix}
+%  \bm{G}_1 \bet \\
+%  -\nabla _{\bet} F(\bet)  - \nabla_{\bxi} U(\bxi)
+% \end{bmatrix} 
+% \end{align}
+% that is $L$ satisfies 
+% \begin{align} \label{lyapcondition}
+%     \dot{L}(\bxi,\bet) &= \nabla_{\bxi} L \dot{\bxi} + \nabla_{\bet} L\dot{\bet} =\nonumber\\ 
+%     &=\langle \nabla_{\bxi}L,\bG_1 \bet \rangle - 
+%     \langle \nabla_{\bet} L, \nabla _{\bet} F(\bet)  + \nabla_{\bxi} U(\bxi) \rangle \nonumber
+%     \\ 
+%     & =\langle \nabla_{\bxi}L,\bG_1 \bet \rangle 
+%      -\langle \nabla_{\bet} L, \nabla _{\bet} F(\bet)  \rangle - \langle \nabla_{\bet} L, \nabla_{\bxi} U(\bxi) \rangle
+%     \leq -W(\
+% \end{align} 
+% If $L=F+U$
+% \begin{align}
+%     \dot{L}(\bxi,\bet) &= \langle \nabla_{\bxi}U,\bG_1 \bet \rangle 
+%      -\langle \nabla_{\bet} F, \nabla _{\bet} F(\bet)  \rangle - \langle \nabla_{\bet} F, \nabla_{\bxi} U(\bxi) \rangle \nonumber \\
+%      & =\langle \nabla_{\bxi}U,\bG_1 \bet \rangle - \langle \bG_2 \bet , \bG_2\bet  \rangle - \langle \bG_2 \eta ,\nabla_{\bxi}U \rangle \nonumber \\ 
+%      & = - \lVert \bG_2 \bet \rVert^2 + \langle \nabla_{\bxi} U, (\bG_1-\bG_2) \bet  \rangle
+% \end{align}
+% We compute 
+% \begin{align}
+%     \frac{\diff \Phi}{\diff t}&=\int \frac{\partial \rho}{\partial t} \left( \log \rho + L\right)\: \diff \bet \diff \bxi \:   \nonumber \\
+%     &  = \int \nabla_{\bet} \cdot \left( \rho \left( \nabla_{\bet} \log \rho+ \nabla_{\bet} F + \nabla_{\bxi }U\right)\right) \left( \log \rho + L\right) \: \diff \bet \diff \bxi   \nonumber \\ 
+%     & \: \: -  \int \langle G_1\bet , \nabla_{\bxi} \rho \rangle \left( \log \rho + L\right)\: \diff \bet \diff \bxi   \nonumber \\ 
+%     & = \int - \lvert \nabla_{\bet} \log \rho \lvert^2\rho  - \langle \nabla_{\bet} \log \rho ,\nabla_{\eta}L\rangle\rho    - \langle \nabla_{\bet} \log \rho ,\nabla_{\eta}F\rangle\rho -\langle \nabla_{\bet} F,\nabla_{\eta}L\rangle\rho \: \diff \bet \diff \bxi   \nonumber \\ 
+%     &  \int -\langle \nabla_{\bxi} U , \nabla_{
+%     \bet} \log \rho \rangle\rho  -\langle \nabla_{\bxi} U , \nabla_{
+%     \bet} L \rangle\rho  + \langle G_1 \bet, \nabla_{\bxi} \log \rho\rangle \rho  +  \langle G_1 \bet, \nabla_{\bxi} U \rangle\rho  \: \diff \bet \diff \bxi   \nonumber  \\
+%     & = \int - \lvert \nabla_{\bet} \log \rho \lvert^2\rho    - \langle \nabla_{\bet} \log \rho ,\nabla_{\eta}L\rangle\rho    - \langle \nabla_{\bet} \log \rho ,\nabla_{\eta}F\rangle\rho  \: \diff \bet \diff \bxi   \nonumber \\
+%     &+  \int - \langle  \nabla_{
+%     \bet} L ,\nabla_{\bxi} U\rangle\rho +    \langle \nabla_{\bxi} L, G_1 \bet \rangle\rho -\langle \nabla_{\eta}L, \nabla_{\bet} F\rangle\rho \: \diff \bet \diff \bxi  \nonumber  \\ 
+%   %\leq & \int - \lvert \nabla_{\bet} \log \rho \lvert^2\rho    - \langle \nabla_{\bet} \log \rho ,\nabla_{\eta}L\rangle\rho    - \langle \nabla_{\bet} \log \rho ,\nabla_{\eta}F\rangle\rho \: \diff \bet \diff \bxi   \nonumber  
+%   &= \mathbb{E}[\dot{L}] - \mathbb{E}\left[\lvert \nabla_{\bet} \log \rho \rvert^2 + 2\langle \nabla_{\bet} \log \rho, \nabla_{\bet} F\rangle  \right]
+% \end{align}
+% If $\rho = \exp(-F+H)$ then $\log \rho  = -F + H$ 
+
+
+
+
+
+
+% where the inequality follows from (\ref{lyapcondition}). Provided that
+% $\nabla_{\bet} L =- \nabla_{\bet} F $ almost everywhere, we should have 
+% $\frac{\diff \Phi}{\diff t} \leq 0$.
+% \begin{align}
+%     L(\bxi,\bet) = L_0 + F(\bet)
+% \end{align}
+ \end{document}
+
