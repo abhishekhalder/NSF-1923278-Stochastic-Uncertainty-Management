@@ -1,4 +1,4 @@
-close all; clear all; clc;
+close all; clear; clc;
 %% Parameters
 
 beta = 2; % inverse temperature
