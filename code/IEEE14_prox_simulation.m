@@ -4,14 +4,18 @@ close all; clear; clc;
 beta = 2; % inverse temperature
 
 % golbal parameters 
-global num_Oscillator dim Gamma M Sigma K Pmech cc
+global num_Oscillator dim Gamma M Sigma K Pmech cc sigma m phi
 
-num_Oscillator = 10; dim  = 2*num_Oscillator; % dim = dimension of state space
+num_Oscillator = 5; dim  = 2*num_Oscillator; % dim = dimension of state space
 
-Y = zeros(num_Oscillator);
+E = [1.06 1.045 1.01 1.07 1.09];
+
+Y = Y_admittance_matrix;
+phi = phase_shift_matrix(Y);
+K = coupling_matrix(Y,E);
 
 f0 = 60;
-g_a = 20 ; g_b = 30; m_a = 2; m_b =12 ; s_a = 1  ; s_b = 5;
+g_a = 20 ; g_b = 30; m_a = 2; m_b = 12 ; s_a = 1  ; s_b = 5;
 p_a = 0; p_b = 10 ;  k_a =.7 ; k_b = 1.2;
 
 gamma = ((g_a-g_b)*rand(num_Oscillator,1) + g_a)/(2*pi*f0);
@@ -19,7 +23,9 @@ m = ((m_b-m_a)*rand(num_Oscillator,1) + m_a)/(2*pi*f0);
 sigma = (s_b-s_a)*rand(num_Oscillator,1) + s_a;
 pmech = (p_b-p_a)*rand(num_Oscillator,1) + p_b;
 
-Gamma = diag(gamma);  M = diag(m); Sigma = diag(sigma); Pmech = diag(pmech); K = (k_b-k_a)*rand(num_Oscillator)+ k_a;
+Gamma = diag(gamma);  M = diag(m); Sigma = diag(sigma); Pmech = diag(pmech)-E.^2.*real(diag(Y));
+
+%K = (k_b-k_a)*rand(num_Oscillator)+ k_a;
 
 theta0_a = 0 ; theta0_b = 2*pi; omega0_a = -.1 ; omega0_b = .1;
 
@@ -29,10 +35,8 @@ epsilon = 0.5;                      % regularizing coefficient
 h = 1e-3;                         % time step
 numSteps= 1e3;                    % number of steps k, in discretization t=kh
 cc = 1e7;
-%% propagate joint PDF
+%% popagate joint PDF
 
-% initial mean and covariance
-mean0 = rand(1,num_Oscillator); covariance0 = generateRandomSPD(num_Oscillator);
 % samples from initial joint PDF 
 theta_0 = (theta0_b-theta0_a)*rand(nSample,num_Oscillator) + theta0_a;
 
@@ -41,7 +45,7 @@ rho_theta_0 = ones(nSample,1)*(1/(theta0_b-theta0_a))^num_Oscillator;
 omega_0 =(omega0_b-omega0_a)*rand(nSample,num_Oscillator) + omega0_a;
 
 % joint PDF values at the initial samples
-rho_omega_0 = ones(nSample,1)*(1/(theta0_b-theta0_a))^num_Oscillator;
+rho_omega_0 = ones(nSample,1)*(1/(omega0_b-omega0_a))^num_Oscillator;
 
 rho_theta_omega_0 = rho_omega_0.*rho_theta_0;
 

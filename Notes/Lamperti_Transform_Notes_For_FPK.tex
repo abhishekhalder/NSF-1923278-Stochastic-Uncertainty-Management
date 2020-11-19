@@ -7,9 +7,7 @@
 \usepackage[symbol]{footmisc}
 %\usepackage{showkeys}
 %\usepackage{epstopdf,hyperref,pdfsync,url}
-\usepackage[dvipsnames]{xcolor}
-\usepackage[makeroom]{cancel}
-\graphicspath{{./},{./figures/}}
+\usepackage[dvipsnames]{xcolor}\graphicspath{{./},{./figures/}}
 
 \DeclareMathOperator*{\argmax}{arg\:max}
 \DeclareMathOperator*{\argmin}{arg\:min}
@@ -51,7 +49,7 @@
 \newcommand{\bbf}{{\bm{f}}}
 \newcommand{\brh}{{\bm{\varrho}}}
 \newcommand{\balpha}{{\bm{\alpha}}}
-\newcommand{\bbeta}{{\bm{\beta}}}   
+\newcommand{\bbeta}{{\bm{\beta}}}  .   
 \newcommand{\bdelta}{{\bm{\delta}}}
 \newcommand{\bPi}{{\bm{\Pi}}}
 \newcommand{\bE}{{\mathbb{R}}}
@@ -68,7 +66,7 @@
 \newcommand{\bM}{{\bm{M}}}
 \newcommand{\ptwo}{\mathcal{P}_{2}(\Omega)}
 \newcommand{\epin}{{ \epsilon^{-1}}}
-\renewcommand{\dagger}{{T}}
+\renewcommand{\dagger}{{T}}w
 \newcommand{\tr}{{\rm{trace}}}
 
 
@@ -153,7 +151,7 @@ We consider the system of 2nd-order SDEs given by
 \begin{align*}
 m_i\ddot{\theta}_i
     +  \gamma_i \dot{\theta}_i = 
-P_i - \sum_{j=1}^{n} K_{ij} \sin(\theta_i-\theta_j)+ \sigma_i \times \:\text{stochastic forcing}\: i=1,\dots,n.
+P_i - \sum_{j=1}^{n} K_{ij} \sin(\theta_i-\theta_j+\varphi_{ij})+ \sigma_i \times \:\text{stochastic forcing}\: i=1,\dots,n.
 \end{align*}
 We can transform the system into 
 \begin{align} \label{ODEsystem}
@@ -162,7 +160,7 @@ We can transform the system into
 \end{align}
 where $\bth=(\theta_1,\theta_2,\dots,\theta_n), \bom=(\dot{\theta}_1,\dot{\theta}_2,\dots,\dot{\theta}_n), \bM = \diag(m_1,m_2,\dots,m_n), \bm{\Gamma}= \diag(\gamma_1,\gamma_2,\dots,\gamma_n ),\bSim = \diag(\sigma_1,\sigma_2,\dots,\sigma_n)$ and the potential function is given by 
 \begin{align}
-    V(\bth):= \sum_{i=1}^{n} P_i \theta_i + \sum_{(i,j)\in \mathcal{E}}k_{ij}(1-\cos(\theta_i-\theta_j))
+    V(\bth):= -\sum_{i=1}^{n} P_i \theta_i + \sum_{(i,j)\in \mathcal{E}}k_{ij}(1-\cos(\theta_i-\theta_j+\varphi_{ij}))
 \end{align}
 we can rewrite as 
 \begin{align}
@@ -241,7 +239,7 @@ Since the transformation (\ref{Itotransformation}) is a linear transformation an
     \end{cases} \nonumber \\ 
     & = \begin{cases}
     \eta_{k,t} \diff t & 1\leq k \leq d \nonumber \\ 
-    -\dfrac{\gamma_k}{m_k} \eta_{k,t}- \dfrac{P_k}{\sigma_k}- \displaystyle \sum_{j=1}^d \dfrac{K_{k,j}}{\sigma_k}\sin\left(\dfrac{\sigma_k}{m_k}\xi_{k,t}-\dfrac{\sigma_j}{m_j}\xi_{j,t}\right)+\diff w_{k,t} & n+1 \leq k \leq 2d
+    -\dfrac{\gamma_k}{m_k} \eta_{k,t}- \dfrac{P_k}{\sigma_k}- \displaystyle \sum_{j=1}^d \dfrac{K_{k,j}}{\sigma_k}\sin\left(\dfrac{\sigma_k}{m_k}\xi_{k,t}-\dfrac{\sigma_j}{m_j}\xi_{j,t}+\varphi_{ij}\right)+\diff w_{k,t} & n+1 \leq k \leq 2d
     \end{cases} 
 \end{align}
 Writing in vector form, we get 
@@ -262,7 +260,7 @@ Writing in vector form, we get
 \end{align}
 where $F=\frac{1}{2} \langle \bet,\diag(\bg\oslash \bmm)\bet \rangle$ and the potential function in $\bxi$ is given by
 \begin{align}
-    U(\bxi) = \sum_{i=1}^{2d}\frac{P_i}{\sigma_i} \xi_i + \sum_{(i,j)\in \mathcal{E}} K_{i,j}\frac{m_i}{\sigma_i^2}\left( 1-\cos\left(\dfrac{\sigma_i}{m_i}\xi_i-\frac{\sigma_j}{m_j}\xi_j\right)\right)
+    U(\bxi) = \sum_{i=1}^{2d}\frac{P_i}{\sigma_i} \xi_i + \sum_{(i,j)\in \mathcal{E}} K_{i,j}\frac{m_i}{\sigma_i^2}\left( 1-\cos\left(\dfrac{\sigma_i}{m_i}\xi_i-\frac{\sigma_j}{m_j}\xi_j + \varphi_{ij}\right)\right)
 \end{align}
 \end{proof}
 The Fokker-Planck equation of this SDE is 
