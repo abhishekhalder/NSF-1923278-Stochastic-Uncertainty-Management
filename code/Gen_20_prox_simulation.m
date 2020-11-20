@@ -1,4 +1,4 @@
-close all; clear all; clc;
+close all; clear; clc;
 %% Parameters
 
 beta = 2; % inverse temperature
@@ -32,7 +32,7 @@ theta0_a = 0 ; theta0_b = 2*pi; omega0_a = -.1 ; omega0_b = .1;
 nSample = 1000;                      % number of samples                                                           
 epsilon = 0.5;                      % regularizing coefficient                                      
 h = 1e-3;                         % time step
-numSteps= 1e3;                    % number of steps k, in discretization t=kh
+numSteps= 1000;                    % number of steps k, in discretization t=kh
 cc = 1e7;
 %% propagate joint PDF
 
@@ -133,12 +133,18 @@ mean_mc_theta = squeeze(mean_mc_theta);
 mean_mc = [mean_mc_theta;mean_mc_omega];
 mean_prox = [mean_prox_theta';mean_prox_omega'];
 
+norm_diff_mean_mc_vs_prox = sqrt(sum((mean_mc - mean_prox).^2,1))/sqrt(sum(mean_mc.^2,1));
+
 
 
 
 %% plots
-set(0,'defaulttextinterpreter','latex')
+set(groot,'defaultAxesTickLabelInterpreter','latex');  
+set(groot,'defaulttextinterpreter','latex');
+set(groot,'defaultLegendInterpreter','latex');
+
 figure(1)
+set(gca,'FontSize',20)
 semilogy(comptime, 'LineWidth', 2)
 xlabel('Physical time $t=kh$','FontSize',20)
 ylabel('Computational time','FontSize',20)
@@ -153,10 +159,10 @@ for i=1:dim
     if i<=num_Oscillator
         figure(2);
       subplot(1,num_Oscillator,i)
-    plot(mean_mc(i,1:end),'Linewidth',1)
+    plot(mean_mc(i,1:end),'Linewidth',2)
     
     hold on
-    plot(mean_prox(i,1:end),'--k','Linewidth',.5)
+    plot(mean_prox(i,1:end),'--k','Linewidth',2)
    
     xlabel('$t$','fontsize',fs,'interpreter','latex')
     ylabel(sprintf('$\\theta_{%d}$', i),'fontsize',fs, 'Interpreter','latex','rotation',0);
@@ -165,11 +171,11 @@ for i=1:dim
     else 
      figure(3);
      subplot(1,num_Oscillator,i-num_Oscillator)   
-    plot(mean_mc(i,1:end),'Linewidth',1)
+    plot(mean_mc(i,1:end),'Linewidth',2)
     
     hold on
     
-    plot(mean_prox(i,1:end),'--k','Linewidth',.5)
+    plot(mean_prox(i,1:end),'--k','Linewidth',2)
     xlabel('$t$','fontsize',fs,'interpreter','latex')
     ylabel(sprintf('$\\omega_{%d}$', i-num_Oscillator),'fontsize',fs, 'Interpreter','latex','rotation',0);
     axis tight
@@ -181,7 +187,10 @@ end
  legend('Mean MC','Mean Proximal')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-
+figure(4)
+set(gca,'FontSize',20)
+semilogy(norm_diff_mean_mc_vs_prox(5:end),'-k','Linewidth',2)
+xlabel('Physical time $t=kh$','FontSize',20)
+ylabel('Realtive error $\frac{\|\mu_{\rm{MC}}-\mu_{\rm{Prox}}\|_{2}}{\|\mu_{\rm{MC}}\|_{2}}$','FontSize',20,'interpreter','latex')
 
 
