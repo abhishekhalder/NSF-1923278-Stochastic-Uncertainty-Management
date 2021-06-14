@@ -260,7 +260,7 @@ and define the invertible linear map
 \bm{\omega}	
 \end{pmatrix}. \label{ChangeOfVar}
 \end{align}
-Applying It\^{o}'s lemma, we find that the transformed state vector $(\bm{\xi},\bm{\eta})^{\top}$ solves the It\^{o} SDE 
+Applying It\^{o}'s lemma \cite[Ch. 4.2]{oksendal2013stochastic} to the map \eqref{ChangeOfVar}, we find that the transformed state vector $(\bm{\xi},\bm{\eta})^{\top}$ solves the It\^{o} SDE 
 \begin{align}
 \begin{pmatrix}
 {\mathrm{d}}\bm{\xi}\\
@@ -317,7 +317,7 @@ Looking at \eqref{NewPotentials} and \eqref{NewPDE}, it is natural to consider t
 \end{align}
 which is the sum of a potential energy (expected value of $U$), a kinetic energy (expected value of $F$), and an internal energy (scaled negative entropy). Indeed, the functional \eqref{LyapButNotProx} is a Lyapunov functional along the solution of \eqref{NewPDE}. To see this, ...
 
-However, it
+However, it is not possible  
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -515,13 +515,23 @@ L.~Ambrosio, N. Gigli, and G. Savar{\'e}, \emph{Gradient Flows: in Metric Spaces
 \bibitem{santambrogio2017euclidean}
 F.~Santambrogio, ``$\{$Euclidean, Metric, and Wasserstein$\}$ Gradient Flows: An Overview", \emph{Bulletin of Mathematical Sciences}, Vol. 7, No. 1, pp. 87--154, 2017. 
 
-% Einstein relation
+% ==== Einstein relation =====
 
 \bibitem{hernandez1989equilibrium}
 D.B.~Hernandez, and M.~Pavon, ``Equilibrium Description of A Particle System in A Heat Bath", \emph{Acta Applicandae Mathematica}, Vol. 14, No. 3, pp. 239--258, 1989.
 
 \bibitem{chen2015fast}
 Y.~Chen, T.T.~Georgiou, and M.~Pavon, ``Fast Cooling for A System of Stochastic Oscillators", \emph{Journal of Mathematical Physics}, Vol. 56, No. 11, pp. 113302, 2015.
+
+% ==== Ito's lemma ========
+
+\bibitem{oksendal2013stochastic}
+B.~Oksendal, \emph{Stochastic Differential Equations: An Introduction with Applications}, \emph{Springer Science \& Business Media}, 2013.
+
+
+
+
+
 
 	
 \end{thebibliography}
