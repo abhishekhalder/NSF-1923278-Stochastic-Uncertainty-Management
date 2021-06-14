@@ -260,7 +260,7 @@ and define the invertible linear map
 \bm{\omega}	
 \end{pmatrix}. \label{ChangeOfVar}
 \end{align}
-Applying It\^{o}'s lemma \cite[Ch. 4.2]{oksendal2013stochastic} to the map \eqref{ChangeOfVar}, we find that the transformed state vector $(\bm{\xi},\bm{\eta})^{\top}$ solves the It\^{o} SDE 
+Applying It\^{o}'s lemma \cite[Ch. 4.2]{oksendal2013stochastic} to the map \eqref{ChangeOfVar}, and using \eqref{XiEtaVectorSDE}, we find that the transformed state vector $(\bm{\xi},\bm{\eta})^{\top}$ solves the It\^{o} SDE 
 \begin{align}
 \begin{pmatrix}
 {\mathrm{d}}\bm{\xi}\\
@@ -306,7 +306,7 @@ where we used the standard properties of the Kronecker product. The transient jo
 \end{subequations}
 In other words, \eqref{TransformedPDEivp} is the macroscopic dynamics corresponding to the sample path dynamics \eqref{XiEtaVectorSDE}.
 
-Since \eqref{NewPDE} is a kinetic Fokker-Planck PDE with isotropic degenerate diffusion, our strategy is to perform a proximal recursion of the form \eqref{ProxRecursionInfiniteDim} for \eqref{TransformedPDEivp}, and then to pushforward the resulting joint PDFs via $\bm{\Psi}^{-1}$ to the original state space. This is what we detail next.
+Since \eqref{NewPDE} is a kinetic Fokker-Planck PDE with isotropic degenerate diffusion, our strategy is to perform a proximal recursion of the form \eqref{ProxRecursionInfiniteDim} for \eqref{TransformedPDEivp} in $(\bm{\xi},\bm{\eta})$ coordinates, and then to pushforward the resulting joint PDFs via $\bm{\Psi}^{-1}$ to the original state space. This is what we detail next.
 
 
 \subsection{Proximal Update}\label{subsec:ProxUpdate}
