@@ -347,7 +347,7 @@ $$\dfrac{\partial\tilde{\rho}}{\partial t} = - \nabla\cdot\left(\tilde{\rho}\bm{
 where $\nabla$ is the $2n\times 1$ Euclidean gradient w.r.t. the vector $(\bm{\xi},\bm{\eta})^{\top}$, and the vector field
 $$\bm{v} := \begin{pmatrix}
  \bm{\eta}\\
- -\nabla_{\bm{\xi}}U(\bm{\xi}) - \bm{M}\bm{\Gamma}^{-1}\bm{\eta} - \bm{\ell}_{\bm{\eta}}	
+ -\nabla_{\bm{\xi}}U(\bm{\xi}) - \bm{M}^{-1}\bm{\Gamma}\bm{\eta} - \bm{\ell}_{\bm{\eta}}	
  \end{pmatrix}
 .$$
 
@@ -368,7 +368,7 @@ Recalling $F(\bm{\eta})$ from \eqref{defF}, the relation \eqref{dPhidt} simplifi
 \bm{M}^{-1}\bm{\Gamma}\bm{\eta} + \bm{\ell}_{\bm{\eta}}	
 \end{pmatrix}, \begin{pmatrix}
  \bm{\eta}\\
- -\nabla_{\bm{\xi}}U(\bm{\xi}) - \bm{M}\bm{\Gamma}^{-1}\bm{\eta} - \bm{\ell}_{\bm{\eta}}	
+ -\nabla_{\bm{\xi}}U(\bm{\xi}) - \bm{M}^{-1}\bm{\Gamma}\bm{\eta} - \bm{\ell}_{\bm{\eta}}	
  \end{pmatrix}\!\!\bigg\rangle\tilde{\rho}\:\differential\bm{\xi}\differential\bm{\eta}	\nonumber\\
 &= 
 \end{align}
