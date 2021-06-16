@@ -239,7 +239,7 @@ H(\bm{\theta},\bm{\omega}) &:= V(\bm{\theta}) + \frac{1}{2}\langle\bm{\omega},\b
 \bm{\Sigma}\bm{\Sigma}^{\top} = \beta^{-1}\left(\bm{\Gamma} + \bm{\Gamma}^{\top}\right) \quad\text{for some}\;\beta > 0.
 \label{EinsteinRelation}	
 \end{align}
-In our case, $\bm{\Sigma,\Gamma}$ are positive diagonal, and \eqref{EinsteinRelation} is equivalent to $\sigma_{i}^{2} \propto \gamma_{i}$ for all $i=1,\hdots,n$.
+In our case, $\bm{\Sigma,\Gamma}$ are positive diagonal, and \eqref{EinsteinRelation} is equivalent to the proportionality constraint: $\sigma_{i}^{2} \propto \gamma_{i}$ for all $i=1,\hdots,n$.
 
 In the power systems context, we cannot relate the damping coefficients $\gamma_i$ with the squared intensities of stochastic forcing $\sigma_{i}^{2}$ for the generators. Thus, \eqref{EinsteinRelation} will not hold in practice, meaning either we cannot guarantee existence-uniqueness for $\rho_{\infty}$, or even if $\rho_{\infty}$ exists, it will not be of the form \eqref{BoltzmannPDF}. On one hand, this implies that our construction of $\Phi$ may not be guided by free energy considerations. On the other hand, since we are only interested in computing the transient joint PDFs, i.e., \emph{non-equilibrium} statistical mechanics, the lack of a fluctuation-dissipation relation like \eqref{EinsteinRelation} should not be a fundamental impediment in setting up a recursion such as \eqref{ProxRecursionInfiniteDim}. We next show that a simple change of variable can indeed circumvent this issue. 
 
