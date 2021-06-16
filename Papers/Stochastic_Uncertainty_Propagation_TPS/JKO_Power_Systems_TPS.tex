@@ -133,7 +133,7 @@ m_{i}\ddot{\theta}_{i} + \gamma_{i}\dot{\theta}_{i} &= P_{i} - \displaystyle\sum
 \end{align}
 where the stochastic forcing is standard Gaussian white noise. 
 
-We define the positive diagonal matrices
+We define the \emph{positive diagonal} matrices
 \begin{align*}
 \bm{M} &:= {\rm{diag}}\left(m_{1},\hdots,m_{n}\right), \nonumber\\
 \bm{\Gamma} &:= {\rm{diag}}\left(\gamma_{1},\hdots,\gamma_{n}\right),\nonumber\\
@@ -314,10 +314,10 @@ Since \eqref{NewPDE} is a kinetic Fokker-Planck PDE with isotropic degenerate di
 \subsection{Proximal Update}\label{subsec:ProxUpdate}
 Looking at \eqref{NewPotentials} and \eqref{NewPDE}, it is natural to consider the energy functional 
 \begin{align}
-\Phi(\tilde{\rho}) := \displaystyle\int_{\mathbb{T}^{n}\times\mathbb{R}^{n}}\left(U(\bm{\xi})+F\left(\bm{\eta}\right) + \frac{1}{2}\log\tilde{\rho}\right)\tilde{\rho}\:\differential\bm{\xi}\differential\bm{\eta},
+\Phi(\tilde{\rho}) := \displaystyle\int_{\mathbb{T}^{n}\times\mathbb{R}^{n}}\left(U(\bm{\xi})+ \frac{1}{2}\|\bm{\eta}\|_{2}^{2} + \frac{1}{2}\log\tilde{\rho}\right)\tilde{\rho}\:\differential\bm{\xi}\differential\bm{\eta},
 \label{LyapButNotProx}	
 \end{align}
-which is the sum of a potential energy (expected value of $U$), a kinetic energy (expected value of $F$), and an internal energy (scaled negative entropy, the entropy being $-\int\tilde{\rho}\log\tilde{\rho}$). Indeed, the functional \eqref{LyapButNotProx} is a Lyapunov functional along the solution of \eqref{NewPDE}. To see this, ...
+which is the sum of a potential energy (expected value of $U$), a kinetic energy (expected value of $\frac{1}{2}\|\bm{\eta}\|_{2}^{2}$), and an internal energy (scaled negative entropy, the entropy being $-\int\tilde{\rho}\log\tilde{\rho}$). Indeed, it can be shown that (Appendix \ref{AppLyap}) the functional \eqref{LyapButNotProx} is a Lyapunov functional, i.e., $\frac{\differential}{\differential t}\Phi \leq 0$ along the solution of \eqref{NewPDE}.
 
 However, it is not possible  
 
@@ -338,9 +338,9 @@ However, it is not possible
 The conclusion goes here.
 
 
-%\appendices
-%\section{Proof of the First Zonklar Equation}
-%Appendix one text goes here.
+\appendices
+\section{Showing $\frac{\differential}{\differential t}\Phi(\tilde{\rho})$ along \eqref{NewPDE}}\label{AppLyap}
+The ma
 
 
 
