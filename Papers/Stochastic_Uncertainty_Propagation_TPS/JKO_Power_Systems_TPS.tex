@@ -321,8 +321,9 @@ Looking at \eqref{NewPotentials} and \eqref{NewPDE}, it is natural to consider a
 \end{align}
 which is the sum of a potential energy (expected value of scaled $U$), a weighted kinetic energy (expected value of $F\left(\bm{\eta}\right)$), and an internal energy (scaled negative entropy, the entropy being $-\int\tilde{\rho}\log\tilde{\rho}$). Indeed, it can be shown that (Appendix \ref{AppLyap}) the functional \eqref{LyapButNotProx} is a Lyapunov-like functional, i.e., $\Phi$ is decreasing along the solution of \eqref{NewPDE}.
 
-However, unlike the gradient drift case mentioned in Sec. \ref{subsec:GenGradDescent}, it is not possible to express the right hand side of \eqref{NewPDE} as the Wasserstein gradient of the functional \eqref{LyapButNotProx}. 
-
+However, unlike the gradient drift case mentioned in Sec. \ref{subsec:GenGradDescent}, it is not possible to express the right hand side of \eqref{NewPDE} as the Wasserstein gradient of the functional \eqref{LyapButNotProx}. The latter is defined as \cite[Ch. 8]{ambrosio2008gradient} 
+$$\nabla^{\text{Wasserstein}}\Phi := -\nabla\cdot\left(\rho\nabla\dfrac{\delta\Phi}{\delta\rho}\right),$$
+where $\nabla$ denotes the standard Euclidean gradient w.r.t. the vector $(\bm{\xi},\bm{\eta})^{\top}$, and $\frac{\delta}{\delta\rho}$ denotes the functional derivative. From \eqref{FunctionalDerivative}, \eqref{defvectorfieldv} and \eqref{firstequality} in Appendix A, it is clear that the vector field $\bm{v}$ defined in \eqref{defvectorfieldv} is not equal to the negative of $\nabla\dfrac{\delta\Phi}{\delta\rho}$. Thus, even though the functional \eqref{LyapButNotProx} decreases along the transient solution of \eqref{NewPDE}, we cannot interpret it as the Wasserstein gradient flow of the functional \eqref{LyapButNotProx}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -347,11 +348,14 @@ $$\bm{\ell}_{\bm{\xi}} := \frac{1}{2}\nabla_{\bm{\xi}}\log\tilde{\rho}, \quad \b
 and rewrite \eqref{NewPDE} as
 $$\dfrac{\partial\tilde{\rho}}{\partial t} = - \nabla\cdot\left(\tilde{\rho}\bm{v}\right)$$
 where $\nabla$ is the $2n\times 1$ Euclidean gradient w.r.t. the vector $(\bm{\xi},\bm{\eta})^{\top}$, and the vector field
-$$\bm{v} := \begin{pmatrix}
+\begin{align}
+\bm{v} := \begin{pmatrix}
  \bm{\eta}\\
  -\nabla_{\bm{\xi}}U(\bm{\xi}) - \bm{M}^{-1}\bm{\Gamma}\bm{\eta} - \bm{\ell}_{\bm{\eta}}	
- \end{pmatrix}
-.$$
+ \end{pmatrix}.
+\label{defvectorfieldv}	
+\end{align}
+
 
 Now consider the time derivative of the functional \eqref{LyapButNotProx} along \eqref{NewPDE}. Following \cite[Proposition 1]{krichene2020global}, 
 \begin{align}
@@ -374,7 +378,7 @@ Recalling the explicit form of $F(\bm{\eta})$ from \eqref{defF}, and using \eqre
 \end{pmatrix}, \begin{pmatrix}
  \bm{\eta}\\
  -\nabla_{\bm{\xi}}U(\bm{\xi}) - \bm{M}^{-1}\bm{\Gamma}\bm{\eta} - \bm{\ell}_{\bm{\eta}}	
- \end{pmatrix}\bigg\rangle\tilde{\rho}\:\differential\bm{\xi}\:\differential\bm{\eta}	\nonumber\\
+ \end{pmatrix}\bigg\rangle\tilde{\rho}\:\differential\bm{\xi}\:\differential\bm{\eta}	\label{firstequality}\\
 &= \!\displaystyle\int_{\mathbb{T}^{n}\times\mathbb{R}^{n}}\!\bigg\{-\|\bm{M}^{-1}\bm{\Gamma}\bm{\eta}\|_{2}^{2} - \|\bm{\ell}_{\bm{\eta}}\|_{2}^{2} - 2\langle \bm{M}^{-1}\bm{\Gamma}\bm{\eta},\bm{\ell}_{\bm{\eta}}\rangle + \langle \bm{\ell}_{\bm{\xi}},\bm{\eta}\rangle - \langle\bm{\ell}_{\bm{\eta}},\nabla_{\bm{\xi}}U(\bm{\xi})\rangle\bigg\}\tilde{\rho}\:\differential\bm{\xi}\:\differential\bm{\eta} \label{lastbutoneequality}\\
 &= -\displaystyle\int_{\mathbb{T}^{n}\times\mathbb{R}^{n}}\|\bm{M}^{-1}\bm{\Gamma}\bm{\eta} + \bm{\ell}_{\bm{\eta}}\|_{2}^{2}\:\tilde{\rho}\:\differential\bm{\xi} \:\differential\bm{\eta}, \label{lastequality}
 \end{align}
