@@ -313,6 +313,19 @@ In other words, \eqref{TransformedPDEivp} is the macroscopic dynamics correspond
 Since \eqref{NewPDE} is a kinetic Fokker-Planck PDE with isotropic degenerate diffusion, our strategy is to perform a proximal recursion of the form \eqref{ProxRecursionInfiniteDim} for \eqref{TransformedPDEivp} in $(\bm{\xi},\bm{\eta})$ coordinates, and then to pushforward the resulting joint PDFs via $\bm{\Psi}^{-1}$ to the original state space. This is what we detail next.
 
 
+
+
+
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=.8\linewidth]{BlockDiagm.pdf}
+\caption{\small{Schematic of the proposed proximal algorithm for propagating the joint state PDF as probability weighted scattered point cloud $\{\bm{x}_{k}^{i},\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$. The states $\{\bm{x}_{k}^{i}\}_{i=1}^{N}$ are updated by the Euler-Maruyama scheme applied to (\ref{ItoSDEvectorlevel}); the corresponding probability weights $\{\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ are updated via discrete version of the proximal recursion (\ref{KineticProx}).}}
+\label{fig:BlockDiagm}
+\end{figure}
+
+
+
 \subsection{Proximal Update}\label{subsec:ProxUpdate}
 Looking at \eqref{NewPotentials} and \eqref{NewPDE}, it is natural to consider an energy functional of the form
 \begin{align}
@@ -352,12 +365,7 @@ was established in \cite{duong2014conservative}. To numerically perform the recu
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{figure}[htpb]
-\centering
-\includegraphics[width=.8\linewidth]{BlockDiagm.pdf}
-\caption{\small{Schematic of the proposed algorithmic setup for propagating the joint state PDF as probability weighted scattered point cloud $\{\bm{x}_{k}^{i},\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$. The location of the points $\{\bm{x}_{k}^{i}\}_{i=1}^{N}$ can be updated by Euler-Maruyama scheme applied to (\ref{ItoSDEvectorlevel}); the corresponding probability weights $\{\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ can be updated via discrete version of the proximal recursion (\ref{ProxRecursionInfiniteDim}).}}
-\label{fig:BlockDiagm}
-\end{figure}
+
 
 
 \section{Proximal Algorithm}\label{sec:ProxAlgo}
