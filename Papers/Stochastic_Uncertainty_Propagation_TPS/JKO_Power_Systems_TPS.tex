@@ -365,13 +365,13 @@ Following \cite{caluya2019TAC}, we solve \eqref{KineticProx} by recursively upda
 $$\bm{x}_{k}^{i}\equiv\left(\bm{\xi}_{k}^{i},\bm{\eta}_{k}^{i}\right)^{\!\top}, \quad i=1,\hdots,N, \quad k\in\mathbb{N}.$$
 Thus, $\tilde{\varrho}_{k}^{i}$ is the joint PDF value obtained from \eqref{KineticProx} at $\bm{x}_{k}^{i}$, the $i$th state sample at the $k$th time step. The schematic of the algorithm is shown in Fig. \ref{fig:BlockDiagm}. 
 
-Finally, we bring back the proximal updates to the $\left(\bm{\theta},\bm{\omega}\right)$ state space via the pushforward $\bm{\Psi}^{-1}$ as
+Finally, we transform the proximal updates back to the $\left(\bm{\theta},\bm{\omega}\right)$ state space via the pushforward $\bm{\Psi}^{-1}$ as
 \begin{align}
 \varrho_{k}\left(\bm{\theta},\bm{\omega}\right) &= \bm{\Psi}^{-1}_{\sharp} \tilde{\varrho}_{k}\left(\bm{\xi},\bm{\eta}\right) \nonumber\\
 &= \left(\prod_{i=1}^{n}m_{i}/\sigma_{i}\right)^{\!\!2}\tilde{\varrho}_{k}\left(\bm{M}\bm{\Sigma}^{-1}\bm{\theta},\bm{M}\bm{\Sigma}^{-1}\bm{\omega}\right).
 \label{BringBackOriginalStateSpace}	
 \end{align}
-
+The $\varrho_{k}\left(\bm{\theta},\bm{\omega}\right)$ from \eqref{BringBackOriginalStateSpace} approximates $\rho(t,\bm{\theta},\bm{\omega})$ (the transient solution of \eqref{KineticFPK}) in the sense \eqref{ConvergenceGuarantee}.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
