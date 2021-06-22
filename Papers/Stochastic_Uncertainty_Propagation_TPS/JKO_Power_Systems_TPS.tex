@@ -186,7 +186,7 @@ The corresponding macroscopic dynamics governing the flow of the joint state PDF
 &\qquad\qquad\qquad \left.\left. +\frac{1}{2} \bm{M}^{-1}\bm{\Sigma}\bm{\Sigma}^{\top}\bm{M}^{-1} \nabla_{\bm{\omega}} \log \rho \right) \right),
 \label{KineticFPK}	
 \end{align}
-subject to the initial condition \eqref{FPKInitCond} and the joint parameter PDF $\rho_{\text{param}}$. A direct numerical solution of this PDE initial value problem using conventional discretization (e.g., finite difference) or function approximation techniques will not be scalable in general, as explained in Sec. \ref{subsubsec:technicalchallenges}. In the next Section, we discuss how a measure-valued variational recursion proposed in our recent works \cite{caluya2019ACC,caluya2019TAC,halder2020hopfield,caluya2021TAC} can be employed to address this challenge.
+subject to the initial condition \eqref{FPKInitCond} and the joint parameter PDF $\rho_{\text{param}}$. A direct numerical solution of this PDE initial value problem using conventional discretization (e.g., finite difference) or function approximation techniques will not be scalable in general, as explained in Sec. \ref{subsubsec:technicalchallenges}. In the next Section, we discuss how a measure-valued variational recursion proposed in our recent works \cite{caluya2019ACC,caluya2019TAC,halder2020hopfield,caluya2021TAC,caluya2021reflected} can be employed to address this challenge.
 
 We mention here that (\ref{ItoSDEvectorlevel}) has been used in \cite{ju2018analytical,ju2018stochastic} for uncertainty propagation via stochastic averaging approximation where the univariate energy PDF was proposed as a ``proxy" for the entire joint PDF. Most relevant to our approach in the power systems literature is the work in \cite{wang2013fokker}, which indeed voiced the need for computing the transient joint PDFs but only dealt with the single-machine-infinite-bus case -- simplest instance of (\ref{ItoSDEvectorlevel}). The resulting bivariate Fokker-Planck PDE in \cite{wang2013fokker} was solved via finite element discretization, and revealed rich stochastic dynamics and nontrivial transient stability aspects even in this simple case. However, it is unreasonable to expect that a finite element discretization, or in fact any spatial discretization scheme to solve (\ref{KineticFPK}) for moderately large $n$ in {\red{minutes}} of computational time, thereby limiting our current ability for realistic power systems simulation with stochastic variability. This calls for fundamentally re-thinking what does it mean to solve the PDE (\ref{KineticFPK}) for dynamics (\ref{ItoSDEvectorlevel}).
 
@@ -605,6 +605,10 @@ A. Halder, K.F. Caluya, B. Travacca, and S.J. Moura, ``Hopfield Neural Network F
 
 \bibitem{caluya2021TAC}
 K.F. Caluya, and A. Halder, ``Wasserstein Proximal Algorithms for the Schr\"{o}dinger Bridge Problem: Density Control with Nonlinear Drift", \emph{IEEE Transactions on Automatic Control}, 2021.
+
+\bibitem{caluya2020reflected}
+K.F. Caluya, and A. Halder,``Reflected Schr$\backslash$" odinger Bridge: Density Control with Path Constraints", \emph{American Control Conference}, 2021.
+
 
 % === FPK for transient stability ====
 
