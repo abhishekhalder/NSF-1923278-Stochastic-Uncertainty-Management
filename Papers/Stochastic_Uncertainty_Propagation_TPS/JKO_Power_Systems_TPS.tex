@@ -376,7 +376,7 @@ Thus, $\tilde{\varrho}_{k}^{i}$ is the joint PDF value obtained from \eqref{Kine
 
 In the numerical simulations reported in Sec. \ref{sec:NumericalSimulations}, the states $\{\bm{x}_{k}^{i}\}_{i=1}^{N}$ are updated by the Euler-Maruyama scheme applied to (\ref{ItoSDEvectorlevel}). If one wishes so, the Euler-Maruyama scheme in Fig. \ref{fig:BlockDiagm} may be replaced by other SDE integrators, see e.g., \cite[Sec. III.B.2, Remark 1]{caluya2019TAC}. 
 
-To numerically perform the proximal updates $\{\tilde{\varrho}_{k-1}^{i}\}_{i=1}^{N}\mapsto\{\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ for $k\in\mathbb{N}$, we implement an instance of the Algorithm 1 in \cite{caluya2019TAC}. This involves a dualization along
+To numerically perform the proximal updates $\{\tilde{\varrho}_{k-1}^{i}\}_{i=1}^{N}\mapsto\{\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ for $k\in\mathbb{N}$, we implement an instance of the Algorithm 1 in \cite{caluya2019TAC}. The algorithm involves a dualization along
 with an entropic regularization of the variational update \eqref{KineticProx}, and then solving the same using a fixed point recursion that is provably contractive; see \cite[Sec. V.B]{caluya2019TAC}. This enables a nonparametric computation of $\tilde{\varrho}_{k}^{i} \equiv \tilde{\varrho}_{k}\left(\bm{\xi}_{k}^{i},\bm{\eta}_{k}^{i}\right)$ for $i=1,\hdots,N$.
 
 
