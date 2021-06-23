@@ -91,7 +91,7 @@ Our contributions are twofold. {\red{TBD}}
 Our technical approach juxtaposes with the existing literature discussed above, in that we approximate neither the dynamical nonlinearity nor the statistics. Instead of treating the exact nonlinearity as bane, we exploit the geometry induced by the power system's dynamical nonlinearity over the manifold of time-varying joint state PDFs, thereby enabling a new proximal algorithm to compute the transient joint PDFs.
 
 \subsubsection{Notation and organization}
-We use boldfaced small letters for vectors, and boldfaced capital letters for matrices. The set of natural numbers, real numbers and complex numbers are denoted as $\mathbb{N}$, $\mathbb{R}$, and $\mathbb{C}$, respectively. The symbol $\nabla_{\bm{x}}$ denotes the Euclidean gradient operator with respect to (w.r.t.) the vector $\bm{x}$. Thus, $\nabla_{\bm{x}}\cdot$ stands for the divergence, and $\Delta_{\bm{x}}$ stands for the Laplacian w.r.t. vector $\bm{x}$. We use $\langle\cdot,\cdot\rangle$ to denote the standard Euclidean inner product. The real and imaginary parts of a complex number $z$ are denoted via $\Re(z)$ and $\Im(z)$, respectively. The symbol $\propto$ denotes proportionality, $|\cdot|$ denotes the absolute value, $\|\cdot\|_{2}$ denotes the standard Euclidean 2-norm, $\otimes$ denotes the Kronecker product, $\det(\cdot)$ stands for the determinant, and the subscript $_{\sharp}$ denotes the pushforward of a PDF via a map. The $n\times n$ identity and zero matrices are denoted as $\bm{I}_{n}$ and $\bm{0}_{n\times n}$, respectively.
+We use boldfaced small letters for vectors, and boldfaced capital letters for matrices. The set of natural numbers, real numbers and complex numbers are denoted as $\mathbb{N}$, $\mathbb{R}$, and $\mathbb{C}$, respectively. The symbol $\nabla_{\bm{x}}$ denotes the Euclidean gradient operator with respect to (w.r.t.) the vector $\bm{x}$. Thus, $\nabla_{\bm{x}}\cdot$ stands for the divergence, and $\Delta_{\bm{x}}$ stands for the Laplacian w.r.t. vector $\bm{x}$. We use $\langle\cdot,\cdot\rangle$ to denote the standard Euclidean inner product. The real and imaginary parts of a complex number $z$ are denoted via $\Re(z)$ and $\Im(z)$, respectively. The uniform probability distribution over an interval $[a,b]$ is denoted as ${\rm{Unif}}\left([a,b]\right)$. The symbol $\propto$ denotes proportionality, $|\cdot|$ denotes the absolute value, $\|\cdot\|_{2}$ denotes the standard Euclidean 2-norm, $\otimes$ denotes the Kronecker product, $\det(\cdot)$ stands for the determinant, and the subscript $_{\sharp}$ denotes the pushforward of a PDF via a map. The $n\times n$ identity and zero matrices are denoted as $\bm{I}_{n}$ and $\bm{0}_{n\times n}$, respectively.
 
 The rest of this paper is structured as follows. {\red{TBD}}
 
@@ -415,6 +415,12 @@ damping coefficient & $\gamma_{i}\in{\rm{Unif}}\left([20,30]\right)/2\pi f_{0}$\
 & \\
 diffusion coefficient & $\sigma_{i}\in{\rm{Unif}}\left([1,5]\right)$\\
 & \\
+tangent of phase shift & $\tan\varphi_{ij}\in{\rm{Unif}}\left([0,0.25]\right)$\\
+& \\
+mechanical power input & $P_{i}^{\text{mech}}\in{\rm{Unif}}\left([0,10]\right)$\\
+& \\
+coupling coefficient & $k_{ij}\in{\rm{Unif}}\left([0.7,1.2]\right)$\\
+& \\
 \hline
 \end{tabular}
 \caption{Parameters used for the numerical simulation reported in Sec. \ref{subsec:NumSimSynthetic}.}
@@ -422,7 +428,8 @@ diffusion coefficient & $\sigma_{i}\in{\rm{Unif}}\left([1,5]\right)$\\
 \end{table}
 
 \subsection{Synthetic Test System}\label{subsec:NumSimSynthetic}
-We consider a power network with $n=20$ generators.
+We consider a power network with $n=20$ generators, and propagate the transient joint state PDFs supported over $\mathbb{T}^{20}\times\mathbb{R}^{20}$. We take the initial joint state PDF as
+\[\rho_{0}(t=0,\theta(0),\omega(0)) = {\rm{Unif}}\left([0,2\pi)^{n}\right) \times {\rm{Unif}}\left([-0.1,0.1]\right).\]
 
 
 
