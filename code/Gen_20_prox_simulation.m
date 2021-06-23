@@ -8,7 +8,7 @@ global num_Oscillator dim Gamma M Sigma K Pmech cc sigma m phi
 
 num_Oscillator = 20; dim  = 2*num_Oscillator; % dim = dimension of state space
 
-f0 = 50;
+f0 = 60;
 g_a = 20 ; g_b = 30; m_a = 2; m_b = 12 ; s_a = 1  ; s_b = 5;
 p_a = 0; p_b = 10 ;  k_a =.7 ; k_b = 1.2;
 
@@ -25,6 +25,7 @@ pmech = (p_b-p_a)*rand(num_Oscillator,1) + p_b;
 Gamma = diag(gamma);  M = diag(m); Sigma = diag(sigma); Pmech = diag(pmech);
 
 K = (k_b-k_a)*rand(num_Oscillator)+ k_a;
+K = K - diag(diag(K)); % zero the diagonal entries
 
 theta0_a = 0 ; theta0_b = 2*pi; omega0_a = -.1 ; omega0_b = .1;
 
@@ -58,9 +59,7 @@ invpsi =kron(eye(num_Oscillator),Sigma/M);
 
 
 for ii=1:num_Oscillator
-
-xi_0(:,ii) = wrapTo2PiMSigma(m(ii)/sigma(ii)*theta_0(:,ii),m(ii),sigma(ii));
-
+    xi_0(:,ii) = wrapTo2PiMSigma(m(ii)/sigma(ii)*theta_0(:,ii),m(ii),sigma(ii));
 end
 
 eta_0 = (psi_lower_diag*omega_0')';
@@ -97,12 +96,10 @@ mean_prox_omega(1,:) = sum(omega_upd(:,:,1).*rho_theta_omega_upd(:,1))/sum(rho_t
 mean_prox_theta(1,:) = weighted_angle_mean(theta_upd(:,:,1),rho_theta_omega_upd(:,1));
 
 tic;
-for j=1:numSteps
-   
+for j=1:numSteps 
     
    [drift_j,GradU] = PowerDrift(xi_eta_upd(:,1:num_Oscillator,j),xi_eta_upd(:,num_Oscillator+1:dim,j),nSample);
-  
-   
+    
     % SDE update for state
     xi_eta_upd(:,:,j+1) = PowerEulerMaruyama(h,xi_eta_upd(:,:,j),drift_j,nSample,num_Oscillator);
     
