@@ -400,11 +400,29 @@ for all $i=1,\hdots,N$. The $\varrho_{k}\left(\bm{\theta},\bm{\omega}\right)$ fr
 
 
 
-
-
+\begin{table}[t]
+\centering
+\begin{tabular}{| l | l |} 
+\hline
+Description & Values\\
+\hline\hline
+&\\
+frequency & $f_{0} = 60$ Hz\\
+&\\
+inertia & $m_{i}\in{\rm{Unif}}\left([2,12]\right)/2\pi f_{0}$\\
+& \\
+damping coefficient & $\gamma_{i}\in{\rm{Unif}}\left([20,30]\right)/2\pi f_{0}$\\
+& \\
+diffusion coefficient & $\sigma_{i}\in{\rm{Unif}}\left([1,5]\right)$\\
+& \\
+\hline
+\end{tabular}
+\caption{Parameters used for the numerical simulation reported in Sec. \ref{subsec:NumSimSynthetic}.}
+\label{table:ParamUncertaintiesSynthetic}
+\end{table}
 
 \subsection{Synthetic Test System}\label{subsec:NumSimSynthetic}
-
+We consider a power network with $n=20$ generators.
 
 
 
