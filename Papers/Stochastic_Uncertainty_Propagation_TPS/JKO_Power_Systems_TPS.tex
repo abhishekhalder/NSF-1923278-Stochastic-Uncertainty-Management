@@ -93,7 +93,7 @@ Our technical approach juxtaposes with the existing literature discussed above, 
 \subsubsection{Notation and organization}
 We use boldfaced small letters for vectors, and boldfaced capital letters for matrices. The set of natural numbers, real numbers and complex numbers are denoted as $\mathbb{N}$, $\mathbb{R}$, and $\mathbb{C}$, respectively. The symbol $\nabla_{\bm{x}}$ denotes the Euclidean gradient operator with respect to (w.r.t.) the vector $\bm{x}$. Thus, $\nabla_{\bm{x}}\cdot$ stands for the divergence, and $\Delta_{\bm{x}}$ stands for the Laplacian w.r.t. vector $\bm{x}$. We use $\langle\cdot,\cdot\rangle$ to denote the standard Euclidean inner product. The real and imaginary parts of a complex number $z$ are denoted via $\Re(z)$ and $\Im(z)$, respectively. The uniform probability distribution over an interval $[a,b]$ is denoted as ${\rm{Unif}}\left([a,b]\right)$. Likewise, the $n$ dimensional uniform probability distribution over $[a,b]^{n}$ is denoted as ${\rm{Unif}}\left([a,b]^{n}\right)$. The symbol $\propto$ denotes proportionality, $|\cdot|$ denotes the absolute value, $\|\cdot\|_{2}$ denotes the standard Euclidean 2-norm, $\otimes$ denotes the Kronecker product, $\det(\cdot)$ stands for the determinant, and the subscript $_{\sharp}$ denotes the pushforward of a PDF via a map. The $n\times n$ identity and zero matrices are denoted as $\bm{I}_{n}$ and $\bm{0}_{n\times n}$, respectively.
 
-The rest of this paper is structured as follows. {\red{TBD}}
+The rest of this paper is structured as follows. Section \ref{sec:models} details the power system dynamics models at the microscopic or trajectory level, as well as at the macroscopic or ensemble level.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -428,9 +428,9 @@ coupling coefficient & $k_{ij}\in{\rm{Unif}}\left([0.7,1.2]\right)$\\
 \end{table}
 
 \subsection{Synthetic Test System}\label{subsec:NumSimSynthetic}
-We consider a power network with $n=20$ generators, and propagate the transient joint state PDFs supported over $\mathbb{T}^{20}\times\mathbb{R}^{20}$. We take the initial joint state PDF as
+We consider a power network with $n=20$ generators, and propagate the transient joint state PDFs supported over $\mathbb{T}^{20}\times\mathbb{R}^{20}$. We take the initial joint state PDF at $t=0$ as
 \begin{align*}
-\rho_{0}(t=0,\theta(0),\omega(0)) = &\;{\rm{Unif}}\left([0,2\pi)^{n}\;\text{rad}\right)\\
+\rho_{0}\equiv\rho(t=0,\theta(0),\omega(0)) = &\;{\rm{Unif}}\left([0,2\pi)^{n}\;\text{rad}\right)\\
 	&\qquad\times {\rm{Unif}}\left([-0.1,0.1]\;\text{rad/s}\right),
 \end{align*}
 and the stochastic parameters as in Table \ref{table:ParamUncertaintiesSynthetic}.
