@@ -91,7 +91,7 @@ Our contributions are twofold. {\red{TBD}}
 Our technical approach juxtaposes with the existing literature discussed above, in that we approximate neither the dynamical nonlinearity nor the statistics. Instead of treating the exact nonlinearity as bane, we exploit the geometry induced by the power system's dynamical nonlinearity over the manifold of time-varying joint state PDFs, thereby enabling a new proximal algorithm to compute the transient joint PDFs.
 
 \subsubsection{Notation and organization}
-We use boldfaced small letters for vectors, and boldfaced capital letters for matrices. The set of natural numbers, real numbers and complex numbers are denoted as $\mathbb{N}$, $\mathbb{R}$, and $\mathbb{C}$, respectively. The symbol $\nabla_{\bm{x}}$ denotes the Euclidean gradient operator with respect to (w.r.t.) the vector $\bm{x}$. Thus, $\nabla_{\bm{x}}\cdot$ stands for the divergence, and $\Delta_{\bm{x}}$ stands for the Laplacian w.r.t. vector $\bm{x}$. We use $\langle\cdot,\cdot\rangle$ to denote the standard Euclidean inner product. The real and imaginary parts of a complex number $z$ are denoted via $\Re(z)$ and $\Im(z)$, respectively. The uniform probability distribution over an interval $[a,b]$ is denoted as ${\rm{Unif}}\left([a,b]\right)$. Likewise, the $n$ dimensional uniform probability distribution over $[a,b]^{n}$ is denoted as ${\rm{Unif}}\left([a,b]^{n}\right)$. The symbol $\propto$ denotes proportionality, $|\cdot|$ denotes the absolute value, $\|\cdot\|_{2}$ denotes the standard Euclidean 2-norm, $\otimes$ denotes the Kronecker product, $\det(\cdot)$ stands for the determinant, and the subscript $_{\sharp}$ denotes the pushforward of a PDF via a map. The $n\times n$ identity and zero matrices are denoted as $\bm{I}_{n}$ and $\bm{0}_{n\times n}$, respectively.
+We use boldfaced small letters for vectors, and boldfaced capital letters for matrices. The set of natural numbers, real numbers and complex numbers are denoted as $\mathbb{N}$, $\mathbb{R}$, and $\mathbb{C}$, respectively. The symbol $\nabla_{\bm{x}}$ denotes the Euclidean gradient operator with respect to (w.r.t.) the vector $\bm{x}$. Thus, $\nabla_{\bm{x}}\cdot$ stands for the divergence, and $\Delta_{\bm{x}}$ stands for the Laplacian w.r.t. vector $\bm{x}$. We use $\langle\cdot,\cdot\rangle$ to denote the standard Euclidean inner product. The real and imaginary parts of a complex number $z$ are denoted via $\Re(z)$ and $\Im(z)$, respectively. The uniform probability distribution over an interval $[a,b]$ is denoted as ${\rm{Unif}}\left([a,b]\right)$. Likewise, the $n$ dimensional uniform probability distribution over $[a,b]^{n}$ is denoted as ${\rm{Unif}}\left([a,b]^{n}\right)$. The symbol $\propto$ denotes proportionality, $|\cdot|$ denotes the absolute value, $\|\cdot\|_{2}$ denotes the standard Euclidean 2-norm, $\otimes$ denotes the Kronecker product, $\odot$ and $\oslash$ respectively denote the elementwise (Hadamard) product and division, $\det(\cdot)$ stands for the determinant, and the subscript $_{\sharp}$ denotes the pushforward of a PDF via a map. The $n\times n$ identity and zero matrices are denoted as $\bm{I}_{n}$ and $\bm{0}_{n\times n}$, respectively.
 
 The rest of this paper is structured as follows. Section \ref{sec:models} details the power system dynamics models at the microscopic or trajectory level, as well as at the macroscopic or ensemble level.
 
@@ -381,7 +381,36 @@ with an entropic regularization of the variational update \eqref{KineticProx}, a
 
 
 
-
+\begin{algorithm}[t]
+\caption{Proposed proximal algorithm for $\bm{\varrho}_{k-1}\mapsto\bm{\varrho}_{k}$}
+\label{KineticProxAlgorithm}
+\begin{algorithmic}[1]
+\Procedure{ProxRecursion}{$\bm{\varrho}_{k-1}, h, \varepsilon, N, \delta, L$}
+\For{$i=1$ to $N$}
+\State $\bm{\zeta}_{k-1}(i) \gets \exp\left(-\left(\bm{\eta}_{k-1}^{i}\right)^{\top}\bm{\eta}_{k-1}^{i}-1\right)$
+\For{$j=1$ to $N$}
+\State $\bm{C}_{k}(i,j) \gets \parallel\bm{\eta}_{k-1}^{j} - \bm{\eta}_{k}^{i}+ h\nabla U(\bm{\xi}_{k}^{i})\parallel_{2}^{2}$
+\State \qquad\quad $+12\bigg\|\dfrac{\bm{\xi}_{k-1}^{j}-\bm{\xi}_{k}^{i}}{h} - \dfrac{\bm{\eta}_{k-1}^{j} + \bm{\eta}_{k}^{i}}{2}\bigg\|_{2}^{2}$
+\EndFor
+\EndFor
+\State $\bm{\Gamma}_{k} \gets \exp\left(-\bm{C}_{k}/2\varepsilon\right)$ \Comment{elementwise exponential}
+\State $\bm{z}_{0} \gets {\rm{rand}}_{N\times 1}$ \Comment{random vector of size $N\times 1$}
+\State $\bm{z} \gets \left[\bm{z}_{0}, \bm{0}_{N\times(L-1)}\right]$ \Comment{initialize}
+\State $\bm{y} \gets \left[\bm{\varrho}_{k-1}\oslash\left(\bm{\Gamma}_{k}\bm{z}_{0}\right), \bm{0}_{N\times(L-1)}\right]$ \Comment{initialize}
+\State $\ell = 1$
+\While{$\ell\leq L$}
+\State $\bm{z}(:,\ell+1) \gets \left(\bm{\zeta}_{k-1}\oslash\left(\bm{\Gamma}_{k}^{\top}\bm{y}(:,\ell)\right)\right)^{\frac{1}{1+2\varepsilon/h}}$
+\State $\bm{y}(:,\ell+1) \gets \bm{\varrho}_{k-1} \oslash \left(\bm{\Gamma}_{k}\bm{z}(:,\ell+1)\right)$
+\If{$\|\bm{y}(:,\ell+1)-\bm{y}(:,\ell)\|_{2}<\delta$ \& $\|\bm{z}(:,\ell+1)-\bm{z}(:,\ell)\|_{2}<\delta$} \Comment{error within tolerance}
+\State break
+\Else
+\State $\ell \gets \ell + 1$
+\EndIf
+\EndWhile\\
+\Return $\varrho_{k} \gets \bm{z}(:,\ell) \odot \left(\bm{\Gamma}_{k}^{\top}\bm{y}(:,\ell)\right)$ \Comment{proximal update}
+\EndProcedure	
+\end{algorithmic}
+\end{algorithm}
 
 
 
@@ -393,7 +422,9 @@ Finally, we transform the proximal updates back to the $\left(\bm{\theta},\bm{\o
 &= \left(\prod_{j=1}^{n}m_{j}/\sigma_{j}\right)^{\!\!2}\tilde{\varrho}_{k}\left(\bm{M}\bm{\Sigma}^{-1}\bm{\theta}_{k}^{i},\bm{M}\bm{\Sigma}^{-1}\bm{\omega}_{k}^{i}\right),
 \label{BringBackOriginalStateSpace}	
 \end{align}
-for all $i=1,\hdots,N$. The $\varrho_{k}\left(\bm{\theta},\bm{\omega}\right)$ from \eqref{BringBackOriginalStateSpace} approximates $\rho(t,\bm{\theta},\bm{\omega})$ (the transient solution of \eqref{KineticFPK}) in the sense \eqref{ConvergenceGuarantee}. For completeness, the overall proximal algorithm is {\red{given}}.
+for all $i=1,\hdots,N$. The $\varrho_{k}\left(\bm{\theta},\bm{\omega}\right)$ from \eqref{BringBackOriginalStateSpace} approximates $\rho(t,\bm{\theta},\bm{\omega})$ (the transient solution of \eqref{KineticFPK}) in the sense \eqref{ConvergenceGuarantee}. 
+
+For completeness, the overall proximal algorithm is {\red{given}}. Its convergence guarantees can be found in \cite[Sec. III.C]{caluya2019TAC}.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
