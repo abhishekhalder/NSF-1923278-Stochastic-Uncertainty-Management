@@ -495,13 +495,13 @@ and following \cite[Sec. 5]{dorfler2012synchronization}, randomly generate the p
 \centering
 \vspace*{-0.1in}
 \includegraphics[width=0.9\linewidth]{RelativeErrorMeanMCVersusProxSynthetic.png}
-\caption{\small{The relative error between the empirical mean (i.e., Monte Carlo estimate) $\bm{\mu}_{\text{MC}}\in\mathbb{T}^{20}\times\mathbb{R}^{20}$, and the mean $\bm{\mu}_{\text{Prox}}\in\mathbb{T}^{20}\times\mathbb{R}^{20}$ obtained using the proximal updates of the joint state PDFs, for the simulation set up in Sec. \ref{subsec:NumSimSynthetic}.}}
+\caption{\small{The relative error between the empirical mean (i.e., Monte Carlo estimate) $\bm{\mu}_{k}^{\text{MC}}\in\mathbb{T}^{20}\times\mathbb{R}^{20}$, and the mean $\bm{\mu}_{k}^{\text{Prox}}\in\mathbb{T}^{20}\times\mathbb{R}^{20}$ obtained using the proximal updates of the joint state PDFs, for the simulation set up in Sec. \ref{subsec:NumSimSynthetic}.}}
 \label{fig:RelErrSynthetic}
 \end{figure}
 
-With $N=1000$ random samples from the initial joint PDF \eqref{rho0synthetic}, and with the aforesaid randomly generated parameters, we employed the Euler-Maruyama scheme together with the Algorithm \ref{algo:KineticProx} for propagating $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. We used $h=10^{-3}$, $\varepsilon = 0.05$, $\delta = 10^{-3}$, $L = 300$.
+With $N=1000$ random samples from the initial joint PDF \eqref{rho0synthetic}, and with the aforesaid randomly generated parameters, we employed the Euler-Maruyama scheme together with Algorithm \ref{algo:KineticProx} for propagating $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. We used $h=10^{-3}$, $\varepsilon = 0.05$, $\delta = 10^{-3}$, $L = 300$.
 
-Fig. \ref{fig:CompTimeSynthetic} highlights that  
+Fig. \ref{fig:CompTimeSynthetic} highlights that for computing high dimensional transient joint state PDFs as in here, the proposed variational framework enjoys remarkably fast computational time. To depict the numerical accuracy, Fig. \ref{fig:RelErrSynthetic} plots the (time-varying) relative error between the empirical (i.e., Monte Carlo estimate) mean vector $\bm{\mu}_{k}^{\text{MC}}\in\mathbb{T}^{20}\times\mathbb{R}^{20}$, and the ``proximal mean" vector $\bm{\mu}_{k}^{\text{Prox}}\in\mathbb{T}^{20}\times\mathbb{R}^{20}$. The latter was computed using the proximal updates $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$.
 
 
 

@@ -102,7 +102,7 @@ ax.grid(True,which="both",ls="-", color='0.75')
 ax.tick_params(axis='both', labelsize=18)
 
 
-ax.set_ylabel(r"Realtive error $\frac{\|\boldsymbol{\mu}_{\rm{MC}}-\boldsymbol{\mu}_{\rm{Prox}}\|_{2}}{\|\boldsymbol{\mu}_{\rm{MC}}\|_{2}}$")
+ax.set_ylabel(r"Realtive error $\frac{\|\boldsymbol{\mu}_{k}^{\rm{MC}}-\boldsymbol{\mu}_{k}^{\rm{Prox}}\|_{2}}{\|\boldsymbol{\mu}_{k}^{\rm{MC}}\|_{2}}$")
 ax.set_xlabel(r"Physical time $t=kh$ [s]")
 # # axx.yaxis.set_label_coords(-0.125,-0.05)
 
