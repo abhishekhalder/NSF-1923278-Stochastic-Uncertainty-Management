@@ -404,7 +404,7 @@ for all $i=1,\hdots,N$. The $\varrho_{k}\left(\bm{\theta},\bm{\omega}\right)$ fr
 \centering
 \begin{tabular}{| l | l |} 
 \hline
-Description & Values\\
+Parameter description & Values\\
 \hline\hline
 &\\
 frequency & $f_{0} = 60$ Hz\\
@@ -419,7 +419,10 @@ tangent of phase shift & $\tan\varphi_{ij}\in{\rm{Unif}}\left([0,0.25]\right)$\\
 & \\
 effective power input & $P_{i}\in{\rm{Unif}}\left([0,10]\right)$\\
 & \\
-coupling coefficient & $k_{ij}\in{\rm{Unif}}\left([0.7,1.2]\right)$\\
+coupling coefficient & $k_{ij}\begin{cases}
+=0 & \text{for}\; i=j,\\
+\in{\rm{Unif}}\left([0.7,1.2]\right) & \text{for}\; i\neq j.	
+\end{cases}$\\
 & \\
 \hline
 \end{tabular}
@@ -433,7 +436,9 @@ We consider a power network with $n=20$ generators, and propagate the transient 
 \rho_{0}\equiv\rho(t=0,\theta(0),\omega(0)) = &\;{\rm{Unif}}\left(\left([0,2\pi)\;\text{rad}\right)^{n}\right)\\
 	&\qquad\times {\rm{Unif}}\left([-0.1,0.1]\;\text{rad/s}\right),
 \end{align*}
-and the stochastic parameters as in Table \ref{table:ParamUncertaintiesSynthetic}.
+and following \cite[Sec. 5]{dorfler2012synchronization}, randomly generate the parameters as in Table \ref{table:ParamUncertaintiesSynthetic}. These parameter 
+
+For $N=1000$ random samples 
 
 
 

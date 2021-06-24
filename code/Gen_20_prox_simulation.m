@@ -1,14 +1,12 @@
 close all; clear; clc;
 %% Parameters
-
 beta = 2; % inverse temperature
-
 % golbal parameters 
 global num_Oscillator dim Gamma M Sigma K Pmech cc sigma m phi
 
 num_Oscillator = 20; dim  = 2*num_Oscillator; % dim = dimension of state space
 
-f0 = 60;
+f0 = 50; % Hz
 g_a = 20 ; g_b = 30; m_a = 2; m_b = 12 ; s_a = 1  ; s_b = 5;
 p_a = 0; p_b = 10 ;  k_a =.7 ; k_b = 1.2;
 
@@ -36,7 +34,6 @@ h = 1e-3;                         % time step
 numSteps= 1000;                    % number of steps k, in discretization t=kh
 cc = 1e7;
 %% propagate joint PDF
-
 % samples from initial joint PDF 
 theta_0 = (theta0_b-theta0_a)*rand(nSample,num_Oscillator) + theta0_a;
 
@@ -56,7 +53,6 @@ psi_lower_diag = psi_upper_diag;
 psi = kron(eye(num_Oscillator),M/Sigma);
 
 invpsi =kron(eye(num_Oscillator),Sigma/M);
-
 
 for ii=1:num_Oscillator
     xi_0(:,ii) = wrapTo2PiMSigma(m(ii)/sigma(ii)*theta_0(:,ii),m(ii),sigma(ii));
@@ -115,8 +111,6 @@ for j=1:numSteps
    mean_prox_omega(j+1,:) = sum(omega_upd(:,:,j+1).*rho_theta_omega_upd(:,j+1))/sum(rho_theta_omega_upd(:,j+1));  
     
    mean_prox_theta(j+1,:) = weighted_angle_mean(theta_upd(:,:,j+1),rho_theta_omega_upd(:,j+1));
-   
-
 end
 
 toc
@@ -130,10 +124,7 @@ mean_mc_theta = squeeze(mean_mc_theta);
 mean_mc = [mean_mc_theta;mean_mc_omega];
 mean_prox = [mean_prox_theta';mean_prox_omega'];
 
-norm_diff_mean_mc_vs_prox = sqrt(sum((mean_mc - mean_prox).^2,1))/sqrt(sum(mean_mc.^2,1));
-
-
-
+norm_diff_mean_mc_vs_prox = sqrt(sum((mean_mc - mean_prox).^2,1))./sqrt(sum(mean_mc.^2,1));
 
 %% plots
 set(groot,'defaultAxesTickLabelInterpreter','latex');  
@@ -141,53 +132,44 @@ set(groot,'defaulttextinterpreter','latex');
 set(groot,'defaultLegendInterpreter','latex');
 
 figure(1)
-set(gca,'FontSize',20)
 semilogy(comptime, 'LineWidth', 2)
-xlabel('Physical time $t=kh$','FontSize',20)
-ylabel('Computational time','FontSize',20)
+set(gca,'FontSize',30)
+xlabel('Physical time $t=kh$','FontSize',30)
+ylabel('Computational time','FontSize',30)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 fs  = 15;
 for i=1:dim
-    
-  
-   
     if i<=num_Oscillator
-        figure(2);
+      figure(2);
       subplot(1,num_Oscillator,i)
-    plot(mean_mc(i,1:end),'Linewidth',2)
+      plot(mean_mc(i,1:end),'Linewidth',2)
     
-    hold on
-    plot(mean_prox(i,1:end),'--k','Linewidth',2)
-   
-    xlabel('$t$','fontsize',fs,'interpreter','latex')
-    ylabel(sprintf('$\\theta_{%d}$', i),'fontsize',fs, 'Interpreter','latex','rotation',0);
-    axis tight
+      hold on
+      plot(mean_prox(i,1:end),'--k','Linewidth',2)
+
+      xlabel('$t$','fontsize',fs,'interpreter','latex')
+      ylabel(sprintf('$\\theta_{%d}$', i),'fontsize',fs, 'Interpreter','latex','rotation',0);
+      axis tight
     
     else 
      figure(3);
      subplot(1,num_Oscillator,i-num_Oscillator)   
-    plot(mean_mc(i,1:end),'Linewidth',2)
+     plot(mean_mc(i,1:end),'Linewidth',2)
     
-    hold on
+     hold on
     
-    plot(mean_prox(i,1:end),'--k','Linewidth',2)
-    xlabel('$t$','fontsize',fs,'interpreter','latex')
-    ylabel(sprintf('$\\omega_{%d}$', i-num_Oscillator),'fontsize',fs, 'Interpreter','latex','rotation',0);
-    axis tight
-    end
-    
-  
+     plot(mean_prox(i,1:end),'--k','Linewidth',2)
+     xlabel('$t$','fontsize',fs,'interpreter','latex')
+     ylabel(sprintf('$\\omega_{%d}$', i-num_Oscillator),'fontsize',fs, 'Interpreter','latex','rotation',0);
+     axis tight
+    end 
 end
-
- legend('Mean MC','Mean Proximal')
+legend('Mean MC','Mean Proximal')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 figure(4)
-set(gca,'FontSize',20)
 semilogy(norm_diff_mean_mc_vs_prox(5:end),'-k','Linewidth',2)
-xlabel('Physical time $t=kh$','FontSize',20)
-ylabel('Realtive error $\frac{\|\mu_{\rm{MC}}-\mu_{\rm{Prox}}\|_{2}}{\|\mu_{\rm{MC}}\|_{2}}$','FontSize',20,'interpreter','latex')
-
-
+set(gca,'FontSize',30)
+xlabel('Physical time $t=kh$','FontSize',30)
+ylabel('Realtive error $\frac{\|\mu_{\rm{MC}}-\mu_{\rm{Prox}}\|_{2}}{\|\mu_{\rm{MC}}\|_{2}}$','FontSize',30,'interpreter','latex')
