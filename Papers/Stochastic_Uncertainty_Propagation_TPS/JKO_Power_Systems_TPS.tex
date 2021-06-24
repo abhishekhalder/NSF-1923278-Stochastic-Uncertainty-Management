@@ -407,7 +407,7 @@ with an entropic regularization of the variational update \eqref{KineticProx}, a
 \State $\ell \gets \ell + 1$
 \EndIf
 \EndWhile\\
-\Return $\varrho_{k} \gets \bm{z}(:,\ell) \odot \left(\bm{\Gamma}_{k}^{\top}\bm{y}(:,\ell)\right)$ \Comment{proximal update}
+\Return $\bm{\varrho}_{k} \gets \bm{z}(:,\ell) \odot \left(\bm{\Gamma}_{k}^{\top}\bm{y}(:,\ell)\right)$ \Comment{proximal update}
 \EndProcedure	
 \end{algorithmic}
 \end{algorithm}
