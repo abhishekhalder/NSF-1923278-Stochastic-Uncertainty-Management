@@ -181,3 +181,14 @@ semilogy(t_vec(4:end), norm_diff_mean_mc_vs_prox(5:end),'-k','Linewidth',2)
 set(gca,'FontSize',30)
 xlabel('Physical time $t=kh$ [s]','FontSize',30)
 ylabel('Realtive error $\frac{\|\mu_{\rm{MC}}-\mu_{\rm{Prox}}\|_{2}}{\|\mu_{\rm{MC}}\|_{2}}$','FontSize',30,'interpreter','latex')
+
+
+%% save simulation data
+textfilename = 'TimeSynthetic.txt';
+dlmwrite(textfilename, t_vec,'delimiter','\t','precision','%.64f');
+
+textfilename = 'ComptimeSythetic.txt';
+dlmwrite(textfilename, comptime,'delimiter','\t','precision','%.64f');
+
+textfilename = 'RelErrMeanVectorMCvsProxSythetic.txt';
+dlmwrite(textfilename, norm_diff_mean_mc_vs_prox,'delimiter','\t','precision','%.64f');
