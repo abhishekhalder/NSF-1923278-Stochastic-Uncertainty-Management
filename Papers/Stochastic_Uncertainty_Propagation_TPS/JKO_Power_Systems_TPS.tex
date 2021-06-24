@@ -320,7 +320,7 @@ Since \eqref{NewPDE} is a kinetic Fokker-Planck PDE with isotropic degenerate di
 \begin{figure}[t]
 \centering
 \includegraphics[width=.8\linewidth]{BlockDiagm.pdf}
-\caption{\small{Schematic of the proposed proximal algorithm for propagating the joint state PDF as probability weighted scattered point cloud $\{\bm{x}_{k}^{i},\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$. The states $\{\bm{x}_{k}^{i}\}_{i=1}^{N}$ are updated by the Euler-Maruyama scheme applied to (\ref{ItoSDEvectorlevel}); the corresponding probability weights $\{\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ are updated via discrete version of the proximal recursion (\ref{KineticProx}) as detailed in Sec. \ref{sec:ProxAlgo}.}}
+\caption{\small{Schematic of the proposed proximal algorithm for propagating the joint state PDF as probability weighted scattered point cloud $\{\tilde{\bm{x}}_{k}^{i},\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$. The states $\{\tilde{\bm{x}}_{k}^{i}\}_{i=1}^{N}$ are updated by the Euler-Maruyama scheme applied to (\ref{ItoSDEvectorlevel}); the corresponding probability weights $\{\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ are updated via discrete version of the proximal recursion (\ref{KineticProx}) as detailed in Sec. \ref{sec:ProxAlgo}.}}
 \label{fig:BlockDiagm}
 \end{figure}
 
@@ -371,7 +371,7 @@ was established in \cite{duong2014conservative}. To numerically perform the recu
 \section{Proximal Algorithm}\label{sec:ProxAlgo}
 Following \cite{caluya2019TAC}, we solve \eqref{KineticProx} by recursively updating the probability-weighted scattered point clouds $\{\tilde{\bm{x}}_{k}^{i},\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ where 
 $$\tilde{\bm{x}}_{k}^{i}:=\left(\bm{\xi}_{k}^{i},\bm{\eta}_{k}^{i}\right)^{\!\top}, \quad i=1,\hdots,N, \quad k\in\mathbb{N}.$$
-Thus, $\tilde{\varrho}_{k}^{i}$ is the joint PDF value obtained from \eqref{KineticProx} at $\tilde{\bm{x}}_{k}^{i}$, the $i$th state sample at the $k$th time step. The schematic of the algorithm is shown in Fig. \ref{fig:BlockDiagm}. 
+Thus, $\tilde{\varrho}_{k}^{i}$ is the joint PDF value obtained from \eqref{KineticProx} at $\tilde{\bm{x}}_{k}^{i}$, the $i$th (transformed) state sample at the $k$th time step. The schematic of the algorithm is shown in Fig. \ref{fig:BlockDiagm}. 
 
 
 In the numerical simulations reported in Sec. \ref{sec:NumericalSimulations}, the states $\{\tilde{\bm{x}}_{k}^{i}\}_{i=1}^{N}$ are updated by the Euler-Maruyama scheme applied to (\ref{ItoSDEvectorlevel}). If one wishes so, the Euler-Maruyama scheme in Fig. \ref{fig:BlockDiagm} may be replaced by other SDE integrators, see e.g., \cite[Sec. III.B.2, Remark 1]{caluya2019TAC}. 
