@@ -194,7 +194,7 @@ We mention here that (\ref{ItoSDEvectorlevel}) has been used in \cite{ju2018anal
 
 \section{Measure-valued Proximal Recursion}\label{sec:prox}
 \subsection{Generalized Gradient Descent}\label{subsec:GenGradDescent}
-Let $\mathcal{P}_{2}\left(\mathbb{T}^{n} \times \mathbb{R}^{n}\right)$ denote the manifold of all joint PDFs supported over the state space $\mathbb{T}^{n} \times \mathbb{R}^{n}$, with finite second raw moments. Symbolically,
+Let $\mathcal{P}_{2}\left(\mathbb{T}^{n} \times \mathbb{R}^{n}\right)$ denote the manifold of joint PDFs supported over the state space $\mathbb{T}^{n} \times \mathbb{R}^{n}$, with finite second raw moments. Symbolically,
 \begin{align}
 \mathcal{P}_{2}\left(\mathbb{T}^{n} \times \mathbb{R}^{n}\right) := &\bigg\{\rho : \mathbb{T}^{n} \times \mathbb{R}^{n} \mapsto \mathbb{R}_{\geq 0} \mid \int \rho = 1,\nonumber\\
 &\hspace*{-0.8in}\int\bm{x}^{\top}\bm{x}\:\rho(\bm{x})\:\differential\bm{x} <\infty\; \text{for all}\;\bm{x}\equiv(\bm{\theta},\bm{\omega})^{\top}\in\mathbb{T}^{n} \times \mathbb{R}^{n} \bigg\}.
@@ -393,7 +393,7 @@ Finally, we transform the proximal updates back to the $\left(\bm{\theta},\bm{\o
 &= \left(\prod_{j=1}^{n}m_{j}/\sigma_{j}\right)^{\!\!2}\tilde{\varrho}_{k}\left(\bm{M}\bm{\Sigma}^{-1}\bm{\theta}_{k}^{i},\bm{M}\bm{\Sigma}^{-1}\bm{\omega}_{k}^{i}\right),
 \label{BringBackOriginalStateSpace}	
 \end{align}
-for all $i=1,\hdots,N$. The $\varrho_{k}\left(\bm{\theta},\bm{\omega}\right)$ from \eqref{BringBackOriginalStateSpace} approximates $\rho(t,\bm{\theta},\bm{\omega})$ (the transient solution of \eqref{KineticFPK}) in the sense \eqref{ConvergenceGuarantee}. For completeness, the overall algorithm is {\red{given}}.
+for all $i=1,\hdots,N$. The $\varrho_{k}\left(\bm{\theta},\bm{\omega}\right)$ from \eqref{BringBackOriginalStateSpace} approximates $\rho(t,\bm{\theta},\bm{\omega})$ (the transient solution of \eqref{KineticFPK}) in the sense \eqref{ConvergenceGuarantee}. For completeness, the overall proximal algorithm is {\red{given}}.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
