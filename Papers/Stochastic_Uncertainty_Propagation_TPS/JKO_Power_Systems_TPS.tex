@@ -424,9 +424,9 @@ Finally, we transform the proximal updates back to the $\left(\bm{\theta},\bm{\o
 \end{align}
 for all $i=1,\hdots,N$. The $\varrho_{k}\left(\bm{\theta},\bm{\omega}\right)$ from \eqref{BringBackOriginalStateSpace} approximates $\rho(t,\bm{\theta},\bm{\omega})$ (the transient solution of \eqref{KineticFPK}) in the sense \eqref{ConvergenceGuarantee}. 
 
-For completeness, the proximal algorithm for updating $\{\tilde{\varrho}_{k-1}^{i}\}_{i=1}^{N}\mapsto\{\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ is outlined in Algorithm \ref{algo:KineticProx}. As shown in Fig. \ref{fig:BlockDiagm}, at a conceptual level, this algorithm takes the pre and post update state samples 
+For completeness, the proximal algorithm for updating $\{\tilde{\varrho}_{k-1}^{i}\}_{i=1}^{N}\mapsto\{\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ is outlined in Algorithm \ref{algo:KineticProx}. As shown in Fig. \ref{fig:BlockDiagm}, this algorithm, at a conceptual level, takes the pre and post update state samples 
 \[\{\tilde{\bm{x}}_{k-1}^{i}\}_{i=1}^{N}\equiv\{\left(\bm{\xi}_{k-1}^{i},\bm{\eta}_{k-1}^{i}\right)\}_{i=1}^{N}, \; \{\tilde{\bm{x}}_{k}^{i}\}_{i=1}^{N}\equiv\{\left(\bm{\xi}_{k}^{i},\bm{\eta}_{k}^{i}\right)\}_{i=1}^{N},\]
-and $\{\tilde{\varrho}_{k-1}^{i}\}_{i=1}^{N}$ as inputs. The Algorithm \ref{algo:KineticProx} needs additional inputs $h,\varepsilon,N,\delta,L$, which are parameters internal to the algorithm. Specifically, $h$ is the time-step size   
+and $\{\tilde{\varrho}_{k-1}^{i}\}_{i=1}^{N}$ as inputs. The Algorithm \ref{algo:KineticProx} also needs input parameters $h,\varepsilon,N,\delta,L$. Specifically, $h$ is the time-step size, $\varepsilon$ is    
 
 
 Its convergence guarantees can be found in \cite[Sec. III.C]{caluya2019TAC}.
@@ -481,6 +481,22 @@ We consider a power network with $n=20$ generators, and propagate the transient 
 \label{rho0synthetic}	
 \end{align}
 and following \cite[Sec. 5]{dorfler2012synchronization}, randomly generate the parameters as in Table \ref{table:ParamUncertaintiesSynthetic}. These parameter ranges are consistent with the same found in \cite{sauerpai1998,andersonBook1977,kundurBook1994}.
+
+
+
+\begin{figure}
+\centering
+\includegraphics[width=0.9\linewidth]{CompTimeSyntheticPowerSystem.png}
+\caption{\small{The computational time for propagating the transient joint PDFs over $\mathbb{T}^{20}\times\mathbb{R}^{20}$ for the simulation set up in Sec. \ref{subsec:NumSimSynthetic}.}}
+\label{fig:CompTimeSynthetic}
+\end{figure}
+
+
+
+
+
+
+
 
 For $N=1000$ random samples from the initial joint PDF \eqref{rho0synthetic}, we use Algorithm 
 

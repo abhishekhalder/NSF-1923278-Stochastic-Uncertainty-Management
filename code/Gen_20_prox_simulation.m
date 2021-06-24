@@ -35,6 +35,7 @@ epsilon = 0.5;                      % regularizing coefficient
 h = 1e-3;                         % time step
 numSteps= 1000;                    % number of steps k, in discretization t=kh
 cc = 1e7;
+t_vec = h*(1:1:numSteps);
 %% propagate joint PDF
 % samples from initial joint PDF 
 theta_0 = (theta0_b-theta0_a)*rand(nSample,num_Oscillator) + theta0_a;
@@ -134,10 +135,15 @@ set(groot,'defaulttextinterpreter','latex');
 set(groot,'defaultLegendInterpreter','latex');
 
 figure(1)
-semilogy(comptime, 'LineWidth', 2)
+semilogy(t_vec, comptime, 'LineWidth', 2)
 set(gca,'FontSize',30)
-xlabel('Physical time $t=kh$','FontSize',30)
-ylabel('Computational time','FontSize',30)
+xlabel('Physical time $t=kh$ [s]','FontSize',30)
+ylabel('Computational time [s]','FontSize',30)
+ylim([1e-3 1.2e-2])
+YTick = [2e-3 8e-3 2e-2];
+YTickLabels = cellstr(num2str(round(log10(YTick(:))), '10^%d'));
+grid on
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -171,7 +177,7 @@ end
 legend('Mean MC','Mean Proximal')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 figure(4)
-semilogy(norm_diff_mean_mc_vs_prox(5:end),'-k','Linewidth',2)
+semilogy(t_vec(4:end), norm_diff_mean_mc_vs_prox(5:end),'-k','Linewidth',2)
 set(gca,'FontSize',30)
-xlabel('Physical time $t=kh$','FontSize',30)
+xlabel('Physical time $t=kh$ [s]','FontSize',30)
 ylabel('Realtive error $\frac{\|\mu_{\rm{MC}}-\mu_{\rm{Prox}}\|_{2}}{\|\mu_{\rm{MC}}\|_{2}}$','FontSize',30,'interpreter','latex')
