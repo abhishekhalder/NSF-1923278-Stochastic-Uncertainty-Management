@@ -370,11 +370,11 @@ was established in \cite{duong2014conservative}. To numerically perform the recu
 
 \section{Proximal Algorithm}\label{sec:ProxAlgo}
 Following \cite{caluya2019TAC}, we solve \eqref{KineticProx} by recursively updating the probability-weighted scattered point clouds $\{\bm{x}_{k}^{i},\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ where 
-$$\bm{x}_{k}^{i}\equiv\left(\bm{\xi}_{k}^{i},\bm{\eta}_{k}^{i}\right)^{\!\top}, \quad i=1,\hdots,N, \quad k\in\mathbb{N}.$$
+$$\tilde{\bm{x}}_{k}^{i}:=\left(\bm{\xi}_{k}^{i},\bm{\eta}_{k}^{i}\right)^{\!\top}, \quad i=1,\hdots,N, \quad k\in\mathbb{N}.$$
 Thus, $\tilde{\varrho}_{k}^{i}$ is the joint PDF value obtained from \eqref{KineticProx} at $\bm{x}_{k}^{i}$, the $i$th state sample at the $k$th time step. The schematic of the algorithm is shown in Fig. \ref{fig:BlockDiagm}. 
 
 
-In the numerical simulations reported in Sec. \ref{sec:NumericalSimulations}, the states $\{\bm{x}_{k}^{i}\}_{i=1}^{N}$ are updated by the Euler-Maruyama scheme applied to (\ref{ItoSDEvectorlevel}). If one wishes so, the Euler-Maruyama scheme in Fig. \ref{fig:BlockDiagm} may be replaced by other SDE integrators, see e.g., \cite[Sec. III.B.2, Remark 1]{caluya2019TAC}. 
+In the numerical simulations reported in Sec. \ref{sec:NumericalSimulations}, the states $\{\tilde{\bm{x}}_{k}^{i}\}_{i=1}^{N}$ are updated by the Euler-Maruyama scheme applied to (\ref{ItoSDEvectorlevel}). If one wishes so, the Euler-Maruyama scheme in Fig. \ref{fig:BlockDiagm} may be replaced by other SDE integrators, see e.g., \cite[Sec. III.B.2, Remark 1]{caluya2019TAC}. 
 
 To numerically perform the proximal updates $\{\tilde{\varrho}_{k-1}^{i}\}_{i=1}^{N}\mapsto\{\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ for $k\in\mathbb{N}$, we implement an instance of the Algorithm 1 in \cite{caluya2019TAC}. The algorithm involves a dualization along
 with an entropic regularization of the variational update \eqref{KineticProx}, and then solving the same using a fixed point recursion that is provably contractive; see \cite[Sec. V.B]{caluya2019TAC}. This enables a nonparametric computation of $\tilde{\varrho}_{k}^{i} \equiv \tilde{\varrho}_{k}\left(\bm{\xi}_{k}^{i},\bm{\eta}_{k}^{i}\right)$ for $i=1,\hdots,N$.
@@ -382,10 +382,10 @@ with an entropic regularization of the variational update \eqref{KineticProx}, a
 
 
 \begin{algorithm}[t]
-\caption{Proposed proximal algorithm for $\bm{\varrho}_{k-1}\mapsto\bm{\varrho}_{k}$}
-\label{KineticProxAlgorithm}
+\caption{Proposed proximal algorithm for $\tilde{\bm{\varrho}}_{k-1}\mapsto\tilde{\bm{\varrho}}_{k}$}
+\label{algo:KineticProx}
 \begin{algorithmic}[1]
-\Procedure{ProxRecursion}{$\bm{\varrho}_{k-1}, h, \varepsilon, N, \delta, L$}
+\Procedure{ProxRecursion}{$\bm{\varrho}_{k-1}, \tilde{\bm{x}}_{k-1}, \tilde{\bm{x}}_{k}, h, \varepsilon, N, \delta, L$}
 \For{$i=1$ to $N$}
 \State $\bm{\zeta}_{k-1}(i) \gets \exp\left(-\left(\bm{\eta}_{k-1}^{i}\right)^{\top}\bm{\eta}_{k-1}^{i}-1\right)$
 \For{$j=1$ to $N$}
@@ -396,18 +396,18 @@ with an entropic regularization of the variational update \eqref{KineticProx}, a
 \State $\bm{\Gamma}_{k} \gets \exp\left(-\bm{C}_{k}/2\varepsilon\right)$ \Comment{elementwise exponential}
 \State $\bm{z}_{0} \gets {\rm{rand}}_{N\times 1}$ \Comment{random vector of size $N\times 1$}
 \State $\bm{z} \gets \left[\bm{z}_{0}, \bm{0}_{N\times(L-1)}\right]$ \Comment{initialize}
-\State $\bm{y} \gets \left[\bm{\varrho}_{k-1}\oslash\left(\bm{\Gamma}_{k}\bm{z}_{0}\right), \bm{0}_{N\times(L-1)}\right]$ \Comment{initialize}
+\State $\bm{y} \gets \left[\tilde{\bm{\varrho}}_{k-1}\oslash\left(\bm{\Gamma}_{k}\bm{z}_{0}\right), \bm{0}_{N\times(L-1)}\right]$ \Comment{initialize}
 \State $\ell = 1$
 \While{$\ell\leq L$}
 \State $\bm{z}(:,\ell+1) \gets \left(\bm{\zeta}_{k-1}\oslash\left(\bm{\Gamma}_{k}^{\top}\bm{y}(:,\ell)\right)\right)^{\frac{1}{1+2\varepsilon/h}}$
-\State $\bm{y}(:,\ell+1) \gets \bm{\varrho}_{k-1} \oslash \left(\bm{\Gamma}_{k}\bm{z}(:,\ell+1)\right)$
+\State $\bm{y}(:,\ell+1) \gets \tilde{\bm{\varrho}}_{k-1} \oslash \left(\bm{\Gamma}_{k}\bm{z}(:,\ell+1)\right)$
 \If{$\|\bm{y}(:,\ell+1)-\bm{y}(:,\ell)\|_{2}<\delta$ \& $\|\bm{z}(:,\ell+1)-\bm{z}(:,\ell)\|_{2}<\delta$} \Comment{error within tolerance}
 \State break
 \Else
 \State $\ell \gets \ell + 1$
 \EndIf
 \EndWhile\\
-\Return $\bm{\varrho}_{k} \gets \bm{z}(:,\ell) \odot \left(\bm{\Gamma}_{k}^{\top}\bm{y}(:,\ell)\right)$ \Comment{proximal update}
+\Return $\tilde{\bm{\varrho}}_{k} \gets \bm{z}(:,\ell) \odot \left(\bm{\Gamma}_{k}^{\top}\bm{y}(:,\ell)\right)$ \Comment{proximal update}
 \EndProcedure	
 \end{algorithmic}
 \end{algorithm}
@@ -424,7 +424,7 @@ Finally, we transform the proximal updates back to the $\left(\bm{\theta},\bm{\o
 \end{align}
 for all $i=1,\hdots,N$. The $\varrho_{k}\left(\bm{\theta},\bm{\omega}\right)$ from \eqref{BringBackOriginalStateSpace} approximates $\rho(t,\bm{\theta},\bm{\omega})$ (the transient solution of \eqref{KineticFPK}) in the sense \eqref{ConvergenceGuarantee}. 
 
-For completeness, the overall proximal algorithm is {\red{given}}. Its convergence guarantees can be found in \cite[Sec. III.C]{caluya2019TAC}.
+For completeness, the proximal algorithm for updating $\{\tilde{\varrho}_{k-1}^{i}\}_{i=1}^{N}\mapsto\{\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ is outlined in Algorithm \ref{algo:KineticProx}. Its convergence guarantees can be found in \cite[Sec. III.C]{caluya2019TAC}.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
