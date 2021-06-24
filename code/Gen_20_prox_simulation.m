@@ -16,7 +16,9 @@ tp_b = 0.25;
 gamma = ((g_a-g_b)*rand(num_Oscillator,1) + g_a)/(2*pi*f0);
 m = ((m_b-m_a)*rand(num_Oscillator,1) + m_a)/(2*pi*f0);
 sigma = (s_b-s_a)*rand(num_Oscillator,1) + s_a;
+
 phi = atan((tp_b-tp_a)*rand(num_Oscillator) + tp_a);
+phi = phi - diag(diag(phi)); % zero the diagonal entries
 
 pmech = (p_b-p_a)*rand(num_Oscillator,1) + p_b;
 
