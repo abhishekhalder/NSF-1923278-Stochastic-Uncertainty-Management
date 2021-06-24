@@ -424,7 +424,12 @@ Finally, we transform the proximal updates back to the $\left(\bm{\theta},\bm{\o
 \end{align}
 for all $i=1,\hdots,N$. The $\varrho_{k}\left(\bm{\theta},\bm{\omega}\right)$ from \eqref{BringBackOriginalStateSpace} approximates $\rho(t,\bm{\theta},\bm{\omega})$ (the transient solution of \eqref{KineticFPK}) in the sense \eqref{ConvergenceGuarantee}. 
 
-For completeness, the proximal algorithm for updating $\{\tilde{\varrho}_{k-1}^{i}\}_{i=1}^{N}\mapsto\{\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ is outlined in Algorithm \ref{algo:KineticProx}. Its convergence guarantees can be found in \cite[Sec. III.C]{caluya2019TAC}.
+For completeness, the proximal algorithm for updating $\{\tilde{\varrho}_{k-1}^{i}\}_{i=1}^{N}\mapsto\{\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ is outlined in Algorithm \ref{algo:KineticProx}. As shown in Fig. \ref{fig:BlockDiagm}, this algorithm takes the pre and post update state samples 
+\[\{\tilde{\bm{x}}_{k-1}^{i}\}_{i=1}^{N}\equiv\{\left(\bm{\xi}_{k-1}^{i},\bm{\eta}_{k-1}^{i}\right)\}_{i=1}^{N}, \; \{\tilde{\bm{x}}_{k}^{i}\}_{i=1}^{N}\equiv\{\left(\bm{\xi}_{k}^{i},\bm{\eta}_{k}^{i}\right)\}_{i=1}^{N},\]
+and $\{\tilde{\varrho}_{k-1}^{i}\}_{i=1}^{N}$ as inputs. The Algorithm \ref{algo:KineticProx} has additional 
+
+
+Its convergence guarantees can be found in \cite[Sec. III.C]{caluya2019TAC}.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
