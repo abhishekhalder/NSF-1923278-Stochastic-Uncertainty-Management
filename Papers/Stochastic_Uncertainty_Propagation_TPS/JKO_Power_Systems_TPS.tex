@@ -416,7 +416,7 @@ with an entropic regularization of the variational update \eqref{KineticProx}, a
 
 
 
-Finally, we transform the proximal updates back to the $\left(\bm{\theta},\bm{\omega}\right)^{\top}$ state space via the pushforward $\bm{\Psi}^{-1}$ as
+Finally, we transform the proximal updates back to the $\bm{x}\equiv\left(\bm{\theta},\bm{\omega}\right)^{\top}$ state space via the pushforward $\bm{\Psi}^{-1}$ as
 \begin{align}
 \varrho_{k}\left(\bm{\theta}_{k}^{i},\bm{\omega}_{k}^{i}\right) &= \bm{\Psi}^{-1}_{\sharp} \tilde{\varrho}_{k}\left(\bm{\xi}_{k}^{i},\bm{\eta}_{k}^{i}\right) \nonumber\\
 &= \left(\prod_{j=1}^{n}m_{j}/\sigma_{j}\right)^{\!\!2}\tilde{\varrho}_{k}\left(\bm{M}\bm{\Sigma}^{-1}\bm{\theta}_{k}^{i},\bm{M}\bm{\Sigma}^{-1}\bm{\omega}_{k}^{i}\right),
@@ -486,18 +486,20 @@ and following \cite[Sec. 5]{dorfler2012synchronization}, randomly generate the p
 
 \begin{figure}[htpb]
 \centering
+\vspace*{-0.1in}
 \includegraphics[width=0.9\linewidth]{ComputationalTimeSynthetic.png}
 \caption{\small{The computational time for propagating the transient joint state PDFs over $\mathbb{T}^{20}\times\mathbb{R}^{20}$ for the simulation set up in Sec. \ref{subsec:NumSimSynthetic}.}}
 \label{fig:CompTimeSynthetic}
 \end{figure}
 \begin{figure}[htpb]
 \centering
+\vspace*{-0.1in}
 \includegraphics[width=0.9\linewidth]{RelativeErrorMeanMCVersusProxSynthetic.png}
 \caption{\small{The relative error between the empirical mean (i.e., Monte Carlo estimate) $\bm{\mu}_{\text{MC}}\in\mathbb{T}^{20}\times\mathbb{R}^{20}$, and the mean $\bm{\mu}_{\text{Prox}}\in\mathbb{T}^{20}\times\mathbb{R}^{20}$ obtained using the proximal updates of the joint state PDFs, for the simulation set up in Sec. \ref{subsec:NumSimSynthetic}.}}
 \label{fig:CompTimeSynthetic}
 \end{figure}
 
-With $N=1000$ random samples from the initial joint PDF \eqref{rho0synthetic}, we use Algorithm \ref{algo:KineticProx} to 
+With $N=1000$ random samples from the initial joint PDF \eqref{rho0synthetic}, we use the Euler-Maruyama scheme together with the Algorithm \ref{algo:KineticProx} for propagating $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. We used  
 
 
 
