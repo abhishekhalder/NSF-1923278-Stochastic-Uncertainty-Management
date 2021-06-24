@@ -496,10 +496,12 @@ and following \cite[Sec. 5]{dorfler2012synchronization}, randomly generate the p
 \vspace*{-0.1in}
 \includegraphics[width=0.9\linewidth]{RelativeErrorMeanMCVersusProxSynthetic.png}
 \caption{\small{The relative error between the empirical mean (i.e., Monte Carlo estimate) $\bm{\mu}_{\text{MC}}\in\mathbb{T}^{20}\times\mathbb{R}^{20}$, and the mean $\bm{\mu}_{\text{Prox}}\in\mathbb{T}^{20}\times\mathbb{R}^{20}$ obtained using the proximal updates of the joint state PDFs, for the simulation set up in Sec. \ref{subsec:NumSimSynthetic}.}}
-\label{fig:CompTimeSynthetic}
+\label{fig:RelErrSynthetic}
 \end{figure}
 
-With $N=1000$ random samples from the initial joint PDF \eqref{rho0synthetic}, we use the Euler-Maruyama scheme together with the Algorithm \ref{algo:KineticProx} for propagating $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. We used  
+With $N=1000$ random samples from the initial joint PDF \eqref{rho0synthetic}, and with the aforesaid randomly generated parameters, we employed the Euler-Maruyama scheme together with the Algorithm \ref{algo:KineticProx} for propagating $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. We used $h=10^{-3}$, $\varepsilon = 0.05$, $\delta = 10^{-3}$, $L = 300$.
+
+Fig. \ref{fig:CompTimeSynthetic} highlights that  
 
 
 
