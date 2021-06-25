@@ -93,7 +93,7 @@ Our technical approach juxtaposes with the existing literature discussed above, 
 \subsubsection{Notation and organization}
 We use boldfaced small letters for vectors, and boldfaced capital letters for matrices. The set of natural numbers, real numbers and complex numbers are denoted as $\mathbb{N}$, $\mathbb{R}$, and $\mathbb{C}$, respectively. The symbol $\nabla_{\bm{x}}$ denotes the Euclidean gradient operator with respect to (w.r.t.) the vector $\bm{x}$. Thus, $\nabla_{\bm{x}}\cdot$ stands for the divergence, and $\Delta_{\bm{x}}$ stands for the Laplacian w.r.t. vector $\bm{x}$. We use $\langle\cdot,\cdot\rangle$ to denote the standard Euclidean inner product. The real and imaginary parts of a complex number $z$ are denoted via $\Re(z)$ and $\Im(z)$, respectively. The uniform probability distribution over an interval $[a,b]$ is denoted as ${\rm{Unif}}\left([a,b]\right)$. Likewise, the $n$ dimensional uniform probability distribution over $[a,b]^{n}$ is denoted as ${\rm{Unif}}\left([a,b]^{n}\right)$. The symbol $\propto$ denotes proportionality, $|\cdot|$ denotes the absolute value, $\|\cdot\|_{2}$ denotes the standard Euclidean 2-norm, $\otimes$ denotes the Kronecker product, $\odot$ and $\oslash$ respectively denote the elementwise (Hadamard) product and division, $\det(\cdot)$ stands for the determinant, and the subscript $_{\sharp}$ denotes the pushforward of a PDF via a map. The $n\times n$ identity and zero matrices are denoted as $\bm{I}_{n}$ and $\bm{0}_{n\times n}$, respectively.
 
-The rest of this paper is structured as follows. Section \ref{sec:models} details the power system dynamics models at the microscopic or trajectory level, as well as at the macroscopic or ensemble level.
+The rest of this paper is structured as follows. Section \ref{sec:models} details the power system dynamics models at the microscopic or trajectory level (Sec. \ref{subsec:samplepathdynamics}) as well as at the macroscopic or statistical ensemble level (Sec. \ref{subsec:macroscopic}). The proposed idea of realizing the flow of the joint state PDFs subject to the macroscopic power system dynamics via infinite dimensional proximal recursions, is explained in Section \ref{sec:prox}. Section \ref{sec:ProxAlgo} elucidates the corresponding proximal algorithm that enables the computation of the transient joint state PDFs via weighted point cloud evolution. Numerical simulations are reported in Section \ref{sec:NumericalSimulations}. Section \ref{sec:conclusion} concludes the paper.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -426,7 +426,7 @@ for all $i=1,\hdots,N$. The $\varrho_{k}\left(\bm{\theta},\bm{\omega}\right)$ fr
 
 For completeness, the algorithm \textproc{Prox} for updating $\{\tilde{\varrho}_{k-1}^{i}\}_{i=1}^{N}\mapsto\{\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ is outlined in Algorithm \ref{algo:KineticProx}. As shown in Fig. \ref{fig:BlockDiagm}, this algorithm, at a conceptual level, takes the pre and post update state samples 
 \[\{\tilde{\bm{x}}_{k-1}^{i}\}_{i=1}^{N}\equiv\{\left(\bm{\xi}_{k-1}^{i},\bm{\eta}_{k-1}^{i}\right)\}_{i=1}^{N}, \; \{\tilde{\bm{x}}_{k}^{i}\}_{i=1}^{N}\equiv\{\left(\bm{\xi}_{k}^{i},\bm{\eta}_{k}^{i}\right)\}_{i=1}^{N},\]
-and $\{\tilde{\varrho}_{k-1}^{i}\}_{i=1}^{N}$ as inputs, and outputs the proximal updates $\{\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$. For each $k\in\mathbb{N}$, the updated probability weighted point cloud $\{\tilde{\bm{x}}_{k}^{i},\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ are then brought back to the original state space via $\bm{\Psi}^{-1}$ as $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$, as explained earlier.
+and $\{\tilde{\varrho}_{k-1}^{i}\}_{i=1}^{N}$ as inputs, and outputs the proximal updates $\{\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$. For each $k\in\mathbb{N}$, the updated probability weighted point clouds $\{\tilde{\bm{x}}_{k}^{i},\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ are then brought back to the original state space via $\bm{\Psi}^{-1}$ as $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$, as explained earlier.
 
 
 The Algorithm \ref{algo:KineticProx} also needs input parameters $h,\varepsilon,N,\delta,L$. Specifically, $h$ is the time-step size, $\varepsilon$ is an entropic regularization weight internal to the \textproc{Prox} algorithm, and $N$ is the number of samples. The parameters $\delta$ and $L$ codify the numerical tolerance and maximum number of iterations, respectively, for the while loop in Algorithm \ref{algo:KineticProx}. Its convergence guarantees can be found in \cite[Sec. III.C]{caluya2019TAC}.
@@ -509,7 +509,7 @@ Fig. \ref{fig:CompTimeSynthetic} highlights that for computing high dimensional 
 
 
 \section{Conclusion}\label{sec:conclusion}
-The conclusion goes here.
+{\red{The conclusion goes here.}}
 
 
 \appendices
