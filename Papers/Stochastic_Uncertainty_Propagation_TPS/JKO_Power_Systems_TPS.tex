@@ -33,19 +33,21 @@
 
 \title{\LARGE \bf Stochastic Uncertainty Propagation in Power System Dynamics using Measure-valued Proximal Recursions}
 
-\author{Abhishek~Halder,~\IEEEmembership{Member,~IEEE,} Authors}
+\author{Abhishek~Halder,~\IEEEmembership{Member,~IEEE,} 
 %\author{Abhishek~Halder,~\IEEEmembership{Member,~IEEE,}
-%Xinbo~Geng,~\IEEEmembership{Member,~IEEE,}
-%        Kenneth~F. Caluya,
-%        and~Pegah~Ojaghi% <-this % stops a space
-%\thanks{A. Halder and K.F. Caluya are with the Department of Applied Mathematics, University of California, Santa Cruz, CA 95064, USA, {\texttt{\{ahalder,kcaluya\}@ucsc.edu}}.}% <-this % stops a space
-%\thanks{X. Halder is with the Department of Applied Mathematics, University of California, Santa Cruz, CA 95064, USA, {\texttt{\{ahalder\}@ucsc.edu}}. This research was partially supported by the NSF award 1923278.}}% <-this % stops a space
+Xinbo~Geng,~\IEEEmembership{Member,~IEEE,}
+        Kenneth~F. Caluya,
+        and~Pegah~Ojaghi% <-this % stops a space
+\thanks{A. Halder and K.F. Caluya are with the Department of Applied Mathematics, University of California, Santa Cruz, CA 95064, USA, {\texttt{\{ahalder,kcaluya\}@ucsc.edu}}.}% <-this % stops a space
+\thanks{X. Geng is with {\red{Edit next}} the Department of Applied Mathematics, University of California, Santa Cruz, CA 95064, USA, {\texttt{ahalder@ucsc.edu}}.} %
+\thanks{P. Ojaghi is with the Department of Computer Science and Engineering, University of California, Santa Cruz, CA 95064, USA, {\texttt{pojaghi@ucsc.edu}}.}%
+\thanks{This research was partially supported by the NSF award 1923278.}}% <-this % stops a space
 %\thanks{Manuscript received April 19, 2005; revised August 26, 2015.}}% The paper headers
 %\markboth{Journal of \LaTeX\ Class Files,~Vol.~14, No.~8, August~2015}%
 
 \maketitle
 \begin{abstract}
-We present a proximal algorithm that performs a variational recursion on the space of joint probability measures to propagate the stochastic uncertainties in power system dynamics over high dimensional state space. The proposed algorithm takes advantage of the exact nonlinearity structures in the trajectory-level dynamics of the networked power systems, and is nonparametric. Lifting the dynamics to the space of probability measures allows us to design a scalable algorithm that obviates gridding the underlying high dimensional state space or function approximation. The proximal recursion implements a generalized gradient flow, and evolves probability weighted scattered point clouds. We provide the theoretical details, convergence guarantees, and numerical examples on realistic test systems.
+We present a proximal algorithm that performs a variational recursion on the space of joint probability measures to propagate the stochastic uncertainties in power system dynamics over high dimensional state space. The proposed algorithm takes advantage of the exact nonlinearity structures in the trajectory-level dynamics of the networked power systems, and is nonparametric. Lifting the dynamics to the space of probability measures allows us to design a scalable algorithm that obviates gridding the underlying high dimensional state space which is computationally prohibitive. The proximal recursion implements a generalized infinite dimensional gradient flow, and evolves probability weighted scattered point clouds. We clarify the theoretical nuances and algorithmic details specific for the power system nonlinearities, and provide illustrative numerical examples.
 \end{abstract}
 \begin{IEEEkeywords}
 Uncertainty propagation, power system dynamics, optimal transport, proximal operator.
@@ -164,7 +166,7 @@ $\bm{w}\in\mathbb{R}^{n}$ is the standard vector Wiener process, $\mathbb{T}^{n}
 V(\bm{\theta}) := \displaystyle\sum_{i=1}^{n} P_{i}\theta_{i} + \!\displaystyle\sum_{(i,j)\in\mathcal{E}}\!k_{ij}\left(1 - \cos(\theta_{i}-\theta_{j}-\varphi_{ij})\right),
 \label{potential}	
 \end{align}
-wherein $\mathcal{E}$ is the set of edges for the underlying graph modeling the power system network. The potential (\ref{potential}) has a natural energy function interpretation and can also be motivated by a mechanical mass-spring-damper analogy \cite{dorfler2013synchronization,ishizaki2018}. The function $V$ is continuously differentiable, bounded below, and goes to $+\infty$ as $\|\bm{\theta}\|_{2}\rightarrow +\infty$.
+wherein $\mathcal{E}$ is the set of edges for the underlying graph modeling the power system network. The potential (\ref{potential}) has a natural energy function interpretation and can also be motivated by a mechanical mass-spring-damper analogy \cite{dorfler2013synchronization,ishizaki2018}. %The function $V$ is continuously differentiable, bounded below, and goes to $+\infty$ as $\|\bm{\theta}\|_{2}\rightarrow +\infty$.
 %In the development below, an important role will be played by the ``Hamiltonian-like" function
 %\begin{align}
 %H(\bm{x})\equiv H(\bm{\theta},\bm{\omega}) := \frac{1}{2}\bm{\omega}^{\top}{\rm{diag}}\left(\bm{\gamma}\oslash\bm{m}\right)\bm{\omega} \: + \: V(\bm{\theta}).
@@ -501,7 +503,9 @@ and following \cite[Sec. 5]{dorfler2012synchronization}, randomly generate the p
 
 With $N=1000$ random samples from the initial joint PDF \eqref{rho0synthetic}, and with the aforesaid randomly generated parameters, we employed the Euler-Maruyama scheme together with Algorithm \ref{algo:KineticProx} for propagating $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. We used $h=10^{-3}$, $\varepsilon = 0.05$, $\delta = 10^{-3}$, $L = 300$.
 
-Fig. \ref{fig:CompTimeSynthetic} highlights that for computing high dimensional transient joint state PDFs as in here, the proposed variational framework enjoys remarkably fast computational time. To depict the numerical accuracy, Fig. \ref{fig:RelErrSynthetic} plots the (time-varying) relative error between the empirical (i.e., Monte Carlo estimate) mean vector $\bm{\mu}_{k}^{\text{MC}}\in\mathbb{T}^{20}\times\mathbb{R}^{20}$, and the ``proximal mean" vector $\bm{\mu}_{k}^{\text{Prox}}\in\mathbb{T}^{20}\times\mathbb{R}^{20}$. The latter was computed using the proximal updates $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$.
+Fig. \ref{fig:CompTimeSynthetic} highlights that for computing high dimensional transient joint state PDFs as in here, the proposed variational framework enjoys remarkably fast computational time. Notice that constructing a histogram as an estimator of the joint state PDF by making a grid over the 40 dimensional state space, is computationally prohibitive. 
+
+To depict the numerical accuracy, Fig. \ref{fig:RelErrSynthetic} plots the (time-varying) relative error between the empirical (i.e., Monte Carlo estimate) mean vector $\bm{\mu}_{k}^{\text{MC}}\in\mathbb{T}^{20}\times\mathbb{R}^{20}$, and the ``proximal mean" vector $\bm{\mu}_{k}^{\text{Prox}}\in\mathbb{T}^{20}\times\mathbb{R}^{20}$. The latter was computed using the proximal updates $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$.
 
 
 
@@ -772,12 +776,7 @@ P.~Kundur, \emph{Power System Stability and Control}, McGraw-Hill, New York, 199
 	
 \end{thebibliography}
 
-
-%\begin{IEEEbiography}{Michael Shell}
-%Biography text here.
-%\end{IEEEbiography}
-
-% insert where needed to balance the two columns on the last page with
+% insert where needed to balance the two columns on the last page with
 % biographies
 %\newpage
 
@@ -794,6 +793,27 @@ Bachelors and Masters from Indian Institute of Technology Kharagpur in
 Engineering. His research interests are in stochastic systems, control, learning and optimization with application focus on large scale cyber-physical
 systems.
 \end{IEEEbiography}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{IEEEbiography}{Xinbo Geng}
+Biography text here.
+\end{IEEEbiography}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{IEEEbiography}[{\includegraphics[height=1.25in]{kenneth.jpg}}]{Kenneth F. Caluya}
+is a Ph.D. student in the Department of Applied Mathematics at University of California, Santa Cruz. He obtained his B.S. degree in Mathematics at University of California, Riverside, in 2017. His research interests lie at the intersection of probability, convex optimization, partial differential equations, and dynamical systems.
+\end{IEEEbiography}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{IEEEbiography}[{\includegraphics[height=1.25in]{parmita.png}}]{Pegah Ojaghi}
+is a Ph.D. student in the Department of Computer Science and Engineering at University of California, Santa Cruz. She obtained M.S. in Computer Engineering from the University of California, Santa Cruz in 2020, and M.S. in Control Engineering from the Imam Khomeini International University, Qazvin, Iran in 2015. She obtained B.S. in Control Engineering from the Hamedan University of Technology, Hamedan, Iran in 2012.
+\end{IEEEbiography}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 % You can push biographies down or up by placing
 % a \vfill before or after them. The appropriate
