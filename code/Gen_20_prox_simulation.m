@@ -115,9 +115,9 @@ for j=1:numSteps
     
    mean_prox_theta(j+1,:) = weighted_angle_mean(theta_upd(:,:,j+1),rho_theta_omega_upd(:,j+1));
 end
-
 toc
 
+%% MC and proximal mean vectors
 mean_mc_omega  = mean(squeeze(omega_upd));
 
 mean_mc_theta = weighted_angle_mean(theta_upd,ones(nSample,1)/nSample);
@@ -128,6 +128,16 @@ mean_mc = [mean_mc_theta;mean_mc_omega];
 mean_prox = [mean_prox_theta';mean_prox_omega'];
 
 norm_diff_mean_mc_vs_prox = sqrt(sum((mean_mc - mean_prox).^2,1))./sqrt(sum(mean_mc.^2,1));
+
+%% Wasserstein distance between MC and proximal joint PDFs
+
+W_gam_squared = zeros(numSteps,1); % pre-allocate
+gam = 0.05; % entropic regularization weight
+for j=1:numSteps
+    disp(['Now doing time-step ' num2str(j)])
+    %W_squared(j) = Wasserstein(theta_omega_upd(:,:,j+1),theta_omega_upd(:,:,j+1),rho_theta_omega_upd(:,j+1),ones(nSample,1)/nSample);
+    W_gam_squared(j) = EntropyRegularizedWasserstein(theta_omega_upd(:,:,j+1),theta_omega_upd(:,:,j+1),rho_theta_omega_upd(:,j+1),ones(nSample,1)/nSample,gam);
+end
 
 %% plots
 set(groot,'defaultAxesTickLabelInterpreter','latex');  
@@ -143,7 +153,6 @@ ylim([1e-3 1.2e-2])
 YTick = [2e-3 8e-3 2e-2];
 YTickLabels = cellstr(num2str(round(log10(YTick(:))), '10^%d'));
 grid on
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
