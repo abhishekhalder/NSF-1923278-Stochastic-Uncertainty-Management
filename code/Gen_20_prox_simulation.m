@@ -6,7 +6,7 @@ global num_Oscillator dim Gamma M Sigma K Pmech cc sigma m phi
 
 num_Oscillator = 20; dim  = 2*num_Oscillator; % dim = dimension of state space
 
-f0 = 50; % Hz
+f0 = 60; % Hz
 g_a = 20 ; g_b = 30; m_a = 2; m_b = 12 ; s_a = 1  ; s_b = 5;
 p_a = 0; p_b = 10 ;  k_a =.7 ; k_b = 1.2;
 
