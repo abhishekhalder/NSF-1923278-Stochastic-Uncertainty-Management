@@ -30,7 +30,7 @@ K = K - diag(diag(K)); % zero the diagonal entries
 theta0_a = 0 ; theta0_b = 2*pi; omega0_a = -.1 ; omega0_b = .1;
 
 % parameters for proximal recursion
-nSample = 1000;                      % number of samples                                                           
+nSample = 200;                      % number of samples                                                           
 epsilon = 0.5;                      % regularizing coefficient                                      
 h = 1e-3;                         % time step
 numSteps= 1000;                    % number of steps k, in discretization t=kh
@@ -131,12 +131,12 @@ norm_diff_mean_mc_vs_prox = sqrt(sum((mean_mc - mean_prox).^2,1))./sqrt(sum(mean
 
 %% Wasserstein distance between MC and proximal joint PDFs
 
-W_gam_squared = zeros(numSteps,1); % pre-allocate
-gam = 0.05; % entropic regularization weight
-for j=1:numSteps
+%W_squared = zeros(numSteps,1); % pre-allocate
+gam = 0.5; % entropic regularization weight
+for j=1:10:40
     disp(['Now doing time-step ' num2str(j)])
-    %W_squared(j) = Wasserstein(theta_omega_upd(:,:,j+1),theta_omega_upd(:,:,j+1),rho_theta_omega_upd(:,j+1),ones(nSample,1)/nSample);
-    W_gam_squared(j) = EntropyRegularizedWasserstein(theta_omega_upd(:,:,j+1),theta_omega_upd(:,:,j+1),rho_theta_omega_upd(:,j+1),ones(nSample,1)/nSample,gam);
+    W_squared(j) = Wasserstein(theta_omega_upd(:,:,j+1),theta_omega_upd(:,:,j+1),rho_theta_omega_upd(:,j+1),ones(nSample,1)/nSample);
+    % W_gam_squared(j) = EntropyRegularizedWasserstein(theta_omega_upd(:,:,j+1),theta_omega_upd(:,:,j+1),rho_theta_omega_upd(:,j+1),ones(nSample,1)/nSample,gam);
 end
 
 %% plots
@@ -190,7 +190,12 @@ semilogy(t_vec(4:end), norm_diff_mean_mc_vs_prox(5:end),'-k','Linewidth',2)
 set(gca,'FontSize',30)
 xlabel('Physical time $t=kh$ [s]','FontSize',30)
 ylabel('Realtive error $\frac{\|\mu_{\rm{MC}}-\mu_{\rm{Prox}}\|_{2}}{\|\mu_{\rm{MC}}\|_{2}}$','FontSize',30,'interpreter','latex')
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+figure(5)
+semilogy(t_vec, sqrt(W_gam_squared),'-k','Linewidth',2)
+set(gca,'FontSize',30)
+xlabel('Physical time $t=kh$ [s]','FontSize',30)
+ylabel('2-Wasserstein distance $\frac{\|\mu_{\rm{MC}}-\mu_{\rm{Prox}}\|_{2}}{\|\mu_{\rm{MC}}\|_{2}}$','FontSize',30,'interpreter','latex')
 
 %% save simulation data
 textfilename = 'TimeSynthetic.txt';
