@@ -125,11 +125,22 @@ With the $i$-th generator, we associate its inertia $m_{i}>0$ and damping coeffi
  \end{cases}
 \end{align}
 \end{subequations}
-where $P_{i}^{\text{mech}}$ is the mechanical power input, and $E_{i}$ is the internal voltage (magnitude) for generator $i$.
+where $P_{i}^{\text{mech}}$ is the mechanical power input, and $E_{i}$ is the internal voltage magnitude for generator $i$.
 
 % The coupling coefficients $k_{ij}$, roughly speaking, denote the maximum power transferred between generators $i$ and $j$ with $k_{ii}=0$ for $i\in\{1,\hdots,n\}$. In general, $k_{ij}$ is a function of the internal voltages at the $i$-th and $j$-th generator, and the magnitude of the $(i,j)$-th entry of the network reduced admittance matrix. We suppose that the elements $k_{ij}$ comprise a coupling matrix $\bm{K}$ of appropriate dimension. 
 
-One can view (\ref{ItoSDEcomponentlevel}) as the noisy version of the second order nonuniform Kuramoto oscillator model \cite{dorfler2012synchronization,rodrigues2016kuramoto}, also known as the structure preserving power network model \cite{odun2012structure}, given by
+\begin{remark}
+We clarify here that the network-reduced model \eqref{ItoSDEcomponentlevel} is obtained from the so-called structure preserving power network model \cite{odun2012structure} with $n$ generators, after applying the Kron reduction, and therefore, has all-to-all connection topology. If the unreduced network has $n$ generators and $m$ buses, then the unreduced admittance matrix $\bm{Y}_{\rm{unreduced}} \in \mathbb{C}^{(n+m)\times(n+m)}$ satisfies
+\begin{align}
+\bm{Y}_{\rm{unreduced}} = .
+\label{unreducedY}	
+\end{align}
+The network reduced admittance matrix $\bm{Y}\in\mathbb{C}^{n\times n}$ is the Schur complement
+\[\bm{Y} = \bm{Y}_{\rm{unreduced}}.\]	
+\end{remark}
+
+
+One can view (\ref{ItoSDEcomponentlevel}) as the noisy version of the second order nonuniform Kuramoto oscillator model \cite{dorfler2012synchronization,rodrigues2016kuramoto}, given by
 \begin{align}
 m_{i}\ddot{\theta}_{i} + \gamma_{i}\dot{\theta}_{i} &= P_{i} - \displaystyle\sum_{j=1}^{n} k_{ij}\sin\left(\theta_{i} - \theta_{j} - \varphi_{ij}\right) \nonumber\\
 &\qquad\qquad+ \sigma_{i} \times \text{stochastic forcing},
@@ -163,10 +174,11 @@ where
 %$\odot$ denotes element-wise product, $\oslash$ denotes element-wise division, the , the rotor inertia vector $\bm{m} = (m_{1},\hdots,m_{n})^{\top}\in\mathbb{R}^{n}_{>0}$, the rotor damping coefficient vector $\bm{\gamma} = (\gamma_{1}, \hdots, \gamma_{n})^{\top}\in\mathbb{R}^{n}_{>0}$, the diffusion coefficient vector $\bm{\sigma} = (\sigma_{1}, \hdots, \sigma_{n})^{\top}\in\mathbb{R}^{n}_{>0}$, and 
 $\bm{w}\in\mathbb{R}^{n}$ is the standard vector Wiener process, $\mathbb{T}^{n}$ denotes the $n$-torus $[0,2\pi)^{n}$, and the potential function $V : \mathbb{T}^{n} \mapsto \mathbb{R}$ is given by
 \begin{align}
-V(\bm{\theta}) := \displaystyle\sum_{i=1}^{n} P_{i}\theta_{i} + \!\displaystyle\sum_{(i,j)\in\mathcal{E}}\!k_{ij}\left(1 - \cos(\theta_{i}-\theta_{j}-\varphi_{ij})\right),
+V(\bm{\theta}) := \displaystyle\sum_{i=1}^{n} P_{i}\theta_{i} + \!\displaystyle\sum_{i,j=1}^{n}\!k_{ij}\left(1 - \cos(\theta_{i}-\theta_{j}-\varphi_{ij})\right).
 \label{potential}	
 \end{align}
-wherein $\mathcal{E}$ is the set of edges for the underlying graph modeling the power system network topology. The potential (\ref{potential}) has a natural energy function interpretation and can also be motivated by a mechanical mass-spring-damper analogy \cite{dorfler2013synchronization,ishizaki2018}. %The function $V$ is continuously differentiable, bounded below, and goes to $+\infty$ as $\|\bm{\theta}\|_{2}\rightarrow +\infty$.
+%wherein $\mathcal{E}$ is the set of edges for the underlying graph modeling the power system network topology. 
+The potential (\ref{potential}) has a natural energy function interpretation and can also be motivated by a mechanical mass-spring-damper analogy \cite{dorfler2013synchronization,ishizaki2018}. %The function $V$ is continuously differentiable, bounded below, and goes to $+\infty$ as $\|\bm{\theta}\|_{2}\rightarrow +\infty$.
 %In the development below, an important role will be played by the ``Hamiltonian-like" function
 %\begin{align}
 %H(\bm{x})\equiv H(\bm{\theta},\bm{\omega}) := \frac{1}{2}\bm{\omega}^{\top}{\rm{diag}}\left(\bm{\gamma}\oslash\bm{m}\right)\bm{\omega} \: + \: V(\bm{\theta}).
