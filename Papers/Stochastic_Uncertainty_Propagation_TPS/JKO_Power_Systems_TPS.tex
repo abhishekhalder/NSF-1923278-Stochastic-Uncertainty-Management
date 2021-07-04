@@ -33,7 +33,7 @@
 
 \title{\LARGE \bf Stochastic Uncertainty Propagation in Power System Dynamics using Measure-valued Proximal Recursions}
 
-\author{Abhishek~Halder,~\IEEEmembership{Member,~IEEE,} 
+\author{Abhishek~Halder,~\IEEEmembership{Senior Member,~IEEE,} 
 %\author{Abhishek~Halder,~\IEEEmembership{Member,~IEEE,}
 Xinbo~Geng,~\IEEEmembership{Member,~IEEE,}
         Kenneth~F. Caluya,
@@ -93,7 +93,7 @@ Our contributions are twofold. {\red{TBD}}
 Our technical approach juxtaposes with the existing literature discussed above, in that we approximate neither the dynamical nonlinearity nor the statistics. Instead of treating the exact nonlinearity as bane, we exploit the geometry induced by the power system's dynamical nonlinearity over the manifold of time-varying joint state PDFs, thereby enabling a new proximal algorithm to compute the transient joint PDFs.
 
 \subsubsection{Notation and organization}
-We use boldfaced small letters for vectors, and boldfaced capital letters for matrices. The set of natural numbers, real numbers and complex numbers are denoted as $\mathbb{N}$, $\mathbb{R}$, and $\mathbb{C}$, respectively. The symbol $\nabla_{\bm{x}}$ denotes the Euclidean gradient operator with respect to (w.r.t.) the vector $\bm{x}$. Thus, $\nabla_{\bm{x}}\cdot$ stands for the divergence, and $\Delta_{\bm{x}}$ stands for the Laplacian w.r.t. vector $\bm{x}$. We use $\langle\cdot,\cdot\rangle$ to denote the standard Euclidean inner product. The real and imaginary parts of a complex number $z$ are denoted via $\Re(z)$ and $\Im(z)$, respectively. The uniform probability distribution over an interval $[a,b]$ is denoted as ${\rm{Unif}}\left([a,b]\right)$. Likewise, the $n$ dimensional uniform probability distribution over $[a,b]^{n}$ is denoted as ${\rm{Unif}}\left([a,b]^{n}\right)$. The symbol $\propto$ denotes proportionality, $|\cdot|$ denotes the absolute value, $\|\cdot\|_{2}$ denotes the standard Euclidean 2-norm, $\otimes$ denotes the Kronecker product, $\odot$ and $\oslash$ respectively denote the elementwise (Hadamard) product and division, $\det(\cdot)$ stands for the determinant, and the subscript $_{\sharp}$ denotes the pushforward of a PDF via a map. The $n\times n$ identity and zero matrices are denoted as $\bm{I}_{n}$ and $\bm{0}_{n\times n}$, respectively.
+We use boldfaced small letters for vectors, and boldfaced capital letters for matrices. The set of natural numbers, real numbers and complex numbers are denoted as $\mathbb{N}$, $\mathbb{R}$, and $\mathbb{C}$, respectively. The symbol $\nabla_{\bm{x}}$ denotes the Euclidean gradient operator with respect to (w.r.t.) the vector $\bm{x}$. Thus, $\nabla_{\bm{x}}\cdot$ stands for the divergence, and $\Delta_{\bm{x}}$ stands for the Laplacian w.r.t. vector $\bm{x}$. We use $\langle\cdot,\cdot\rangle$ to denote the standard Euclidean inner product. The real and imaginary parts of a complex number $z$ are denoted via $\Re(z)$ and $\Im(z)$, respectively. We use the superscript $*$ to denote the complex conjugate. The uniform probability distribution over an interval $[a,b]$ is denoted as ${\rm{Unif}}\left([a,b]\right)$. Likewise, the $n$ dimensional uniform probability distribution over $[a,b]^{n}$ is denoted as ${\rm{Unif}}\left([a,b]^{n}\right)$. The symbol $\propto$ denotes proportionality, $|\cdot|$ denotes the absolute magnitude, $\|\cdot\|_{2}$ denotes the standard Euclidean 2-norm, $\otimes$ denotes the Kronecker product, $\odot$ and $\oslash$ respectively denote the elementwise (Hadamard) product and division, $\det(\cdot)$ stands for the determinant, and the subscript $_{\sharp}$ denotes the pushforward of a PDF via a map. The $n\times n$ identity and zero matrices are denoted as $\bm{I}_{n}$ and $\bm{0}_{n\times n}$, respectively.
 
 The rest of this paper is structured as follows. Section \ref{sec:models} details the power system dynamics models at the microscopic or trajectory level (Sec. \ref{subsec:samplepathdynamics}) as well as at the macroscopic or statistical ensemble level (Sec. \ref{subsec:macroscopic}). The proposed idea of realizing the flow of the joint state PDFs subject to the macroscopic power system dynamics via infinite dimensional proximal recursions, is explained in Section \ref{sec:prox}. Section \ref{sec:ProxAlgo} elucidates the corresponding proximal algorithm that enables the computation of the transient joint state PDFs via weighted point cloud evolution. Numerical simulations are reported in Section \ref{sec:NumericalSimulations}. Section \ref{sec:conclusion} concludes the paper.
 
@@ -102,7 +102,20 @@ The rest of this paper is structured as follows. Section \ref{sec:models} detail
 \section{Models}\label{sec:models}
 
 \subsection{Sample Path Dynamics}\label{subsec:samplepathdynamics}
-We consider the coupled stochastic differential equations (SDEs) associated with the networked-reduced power systems model \cite[Ch. 7]{sauerpai1998}. Specifically, for a power network with $n$ generators, the stochastic dynamics for the $i$-th generator is given by the It\^{o} SDEs
+
+%\subsubsection{Deterministic dynamics and network reduced model}
+%Before considering stochastic uncertainties in the dynamics, let us briefly recall the network reduced power systems model \cite[Ch. 7]{sauerpai1998} in the deterministic case. Suppose we denote the collection of generator buses in a networked power system as $\mathcal{G}$, and the collection of non-generator buses as $\mathcal{N}$. Assuming that the non-generator buses are modeled as constant current loads, with currents $I_i$, $i \in \mathcal{N}$, the power flow equations become
+%\begin{subequations}
+%\begin{eqnarray}
+%m_i \ddot{\theta} + \gamma_i \dot{\theta_i} = P_{mech,i} - P_{load,i} - \sum_{j} |V_i| |V_j| |Y_{ij}| \sin(\theta_i - \theta_j + \phi_{ij}) &~ i \in \mathcal{G}~\text{buses with generators} \\
+%0 = - \text{Real}(V_i I_i^\dagger) - \sum_{j} |V_i| |V_j| |Y_{ij}| \sin(\theta_i - \theta_j + \phi_{ij}) &~ i \in \mathcal{L}~\text{buses without generators} \\
+%\end{eqnarray}
+%\end{subequations}
+%Note: $P_{mech,i} \in \mathbb{R}$, $P_{load,i} \in \mathbb{R}$ and $I_i \in \mathbb{C}$ are all give parameters; load current is a complex number. 
+%
+%
+%\subsubsection{Stochastic dynamics}
+In this work, we consider the coupled stochastic differential equations (SDEs) associated with the networked-reduced power systems model \cite[Ch. 7]{sauerpai1998}. Specifically, for a power network with $n$ generators, the stochastic dynamics for the $i$-th generator is given by the It\^{o} SDEs
 \begin{subequations}
 \begin{align}
 &{\mathrm{d}}\theta_{i} = \omega_{i}\:{\mathrm{d}}t,\label{RotAngleGen}\\
@@ -111,26 +124,30 @@ We consider the coupled stochastic differential equations (SDEs) associated with
 \end{align}
 \label{ItoSDEcomponentlevel}
 \end{subequations}
-where the state variables are the rotor angles $\theta_{i}\in[0,2\pi)$ and the rotor angular velocities $\omega_{i}\in\mathbb{R}$, for $i\in\{1,\hdots,n\}$. The stochastic forcing is modeled through the standard Wiener process $w_{i}(t)$, and the diffusion coefficient $\sigma_{i}>0$ denotes the intensity of stochastic forcing at the $i$-th generator. 
+where the state variables are the rotor angles $\theta_{i}\in[0,2\pi)$ and the rotor angular velocities $\omega_{i}\in\mathbb{R}$, for $i\in\{1,\hdots,n\}$. The stochastic forcing is modeled through the standard Wiener process $w_{i}(t)$, and the diffusion coefficient $\sigma_{i}>0$ denotes the intensity of stochastic forcing at the $i$-th generator.
+ 
+\begin{remark}
+We emphasize here that the network reduced model \eqref{ItoSDEcomponentlevel} is obtained from the so-called structure preserving power network model \cite{odun2012structure} after applying the Kron reduction \cite{dorfler2012kron}, and therefore, has all-to-all connection topology.	
+\end{remark}
 
 With the $i$-th generator, we associate its inertia $m_{i}>0$ and damping coefficient $\gamma_{i}>0$. The other parameters: the \emph{effective power input} $P_{i}$, the \emph{phase shift} $\varphi_{ij}\in[0,\frac{\pi}{2})$, and the \emph{coupling coefficients} $k_{ij}\geq 0$, depend on the network reduced admittance matrix $\bm{Y}\equiv[Y_{ij}]_{i,j=1}^{n}\in\mathbb{C}^{n\times n}$. Specifically,
 \begin{subequations}
 \begin{align}
- P_{i} &= P_{i}^{\text{mech}} - E_{i}^{2} \Re\left(Y_{ii}\right), \\
+ P_{i} &= P_{i}^{\text{mech}} - P_{i}^{\text{load}} - |V_{i}|^{2} \Re\left(Y_{ii}\right) + \Re\left(V_i \cdot I_{i}^{*}\right),\\
  \varphi_{ij} &= \begin{cases} -\arctan\left(\dfrac{\Re\left(Y_{ij}\right)}{\Im\left(Y_{ij}\right)}\right), & \text{if}\;i\neq j,\\
  0, & \text{otherwise},
  \end{cases}\\
- k_{ij} &= \begin{cases} E_{i}E_{j} \vert Y_{ij}\vert, & \text{if}\;i\neq j,\\
+ k_{ij} &= \begin{cases} |V_{i}| |V_{j}| \vert Y_{ij}\vert, & \text{if}\;i\neq j,\\
  0, & \text{otherwise},
  \end{cases}
 \end{align}
 \end{subequations}
-where $P_{i}^{\text{mech}}$ is the mechanical power input, and $E_{i}$ is the internal voltage magnitude for generator $i$.
+where $P_{i}^{\text{mech}}$ is the mechanical power input, and $|V_{i}|$ is the voltage magnitude for generator $i$. {\red{{\textbf{Xinbo:}} One sentence saying any approximation made in (2) by using $V_{i}$ instead of the internal voltage $E_{i}$}}
 
 % The coupling coefficients $k_{ij}$, roughly speaking, denote the maximum power transferred between generators $i$ and $j$ with $k_{ii}=0$ for $i\in\{1,\hdots,n\}$. In general, $k_{ij}$ is a function of the internal voltages at the $i$-th and $j$-th generator, and the magnitude of the $(i,j)$-th entry of the network reduced admittance matrix. We suppose that the elements $k_{ij}$ comprise a coupling matrix $\bm{K}$ of appropriate dimension. 
 
 \begin{remark}
-We clarify here that the network-reduced model \eqref{ItoSDEcomponentlevel} is obtained from the so-called structure preserving power network model \cite{odun2012structure} with $n$ generators, after applying the Kron reduction, and therefore, has all-to-all connection topology. If the unreduced network has $n$ generators and $m$ buses, then the unreduced admittance matrix $\bm{Y}_{\rm{unreduced}} \in \mathbb{C}^{(n+m)\times(n+m)}$ satisfies
+If the unreduced network has $n$ generators and $m$ buses, then the unreduced admittance matrix $\bm{Y}_{\rm{unreduced}} \in \mathbb{C}^{(n+m)\times(n+m)}$ satisfies
 \begin{align}
 \bm{Y}_{\rm{unreduced}} = .
 \label{unreducedY}	
@@ -200,7 +217,7 @@ The corresponding macroscopic dynamics governing the flow of the joint state PDF
 &\qquad\qquad\qquad \left.\left. +\frac{1}{2} \bm{M}^{-1}\bm{\Sigma}\bm{\Sigma}^{\top}\bm{M}^{-1} \nabla_{\bm{\omega}} \log \rho \right) \right),
 \label{KineticFPK}	
 \end{align}
-subject to the initial condition \eqref{FPKInitCond} and the joint parameter PDF $\rho_{\text{param}}$. A direct numerical solution of this PDE initial value problem using conventional discretization (e.g., finite difference) or function approximation techniques will not be scalable in general, as explained in Sec. \ref{subsubsec:technicalchallenges}. In the next Section, we discuss how a measure-valued variational recursion proposed in our recent works \cite{caluya2019ACC,caluya2019TAC,halder2020hopfield,caluya2021TAC,caluya2020reflected} can be employed to address this challenge.
+subject to the initial condition \eqref{FPKInitCond} and the joint parameter PDF $\rho_{\text{param}}$. Of course, this subsumes special cases when either the initial condition or the parameter vector is deterministic. A direct numerical solution of this PDE initial value problem using conventional discretization (e.g., finite difference) or function approximation techniques will not be scalable in general, as explained in Sec. \ref{subsubsec:technicalchallenges}. In the next Section, we discuss how a measure-valued variational recursion proposed in our recent works \cite{caluya2019ACC,caluya2019TAC,halder2020hopfield,caluya2021TAC,caluya2020reflected} can be employed to address this challenge.
 
 We mention here that (\ref{ItoSDEvectorlevel}) has been used in \cite{ju2018analytical,ju2018stochastic} for uncertainty propagation via stochastic averaging approximation where the univariate energy PDF was proposed as a ``proxy" for the entire joint PDF. Most relevant to our approach in the power systems literature is the work in \cite{wang2013fokker}, which indeed voiced the need for computing the transient joint PDFs but only dealt with the single-machine-infinite-bus case -- simplest ($n=1$) instance of (\ref{ItoSDEvectorlevel}). The resulting bivariate Fokker-Planck PDE in \cite{wang2013fokker} was solved via finite element discretization, and revealed rich stochastic dynamics and nontrivial transient stability aspects even in this simple case. However, it is unreasonable to expect that a finite element discretization, or in fact any spatial discretization scheme to solve (\ref{KineticFPK}) for moderately large $n$ in {\red{minutes}} of computational time, thereby limiting our current ability for realistic power systems simulation with stochastic variability. This calls for fundamentally re-thinking what does it mean to solve the PDE (\ref{KineticFPK}) for dynamics (\ref{ItoSDEvectorlevel}).
 
@@ -798,6 +815,12 @@ P.M.~Anderson, and A.A.~Fouad, \emph{Power System Control and Stability}, Iowa S
 \bibitem{kundurBook1994}
 P.~Kundur, \emph{Power System Stability and Control}, McGraw-Hill, New York, 1994.
 
+% === Kron reduction
+
+\bibitem{dorfler2012kron}
+F.~Dorfler, and F.~Bullo, ``Kron reduction of graphs with applications to electrical networks", \emph{IEEE Transactions on Circuits and Systems I: Regular Papers}, Vol. 60, No. 1, pp. 150--163, 2012.
+
+
 	
 \end{thebibliography}
 
@@ -807,7 +830,7 @@ P.~Kundur, \emph{Power System Stability and Control}, McGraw-Hill, New York, 199
 
 \begin{IEEEbiography}[{\includegraphics[height=1.25in]{Abhishek-Halder.jpg}}]{Abhishek
 Halder}
-(S'10--M'14) is an Assistant Professor in the Department of Applied Mathematics,
+(S'10-M'14-SM'21) is an Assistant Professor in the Department of Applied Mathematics,
 and is an affiliated faculty in the Department of Electrical and Computer Engineering at
 University of California, Santa Cruz. Before that he held postdoctoral
 positions in the Department of Mechanical and Aerospace Engineering at
@@ -821,7 +844,7 @@ systems.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{XinboGeng.jpg}}]{Xinbo Geng} (S'13--M'20)
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{XinboGeng.jpg}}]{Xinbo Geng} (S'13-M'20)
 received his B.E. degree in Electrical Engineering from Tsinghua University, Beijing, China, in 2013. He received the M.S. and Ph.D. degrees from Department of Electrical and Computer Engineering, Texas A\&M University, College Station, TX, in 2015 and 2019, respectively.
 He is a postdoctoral researcher jointly affiliated with Cornell University and Texas A\&M University since 2020.
 He was a power system design and studies intern at National Renewable Energy Lab in 2016, a data analyst intern at ISO New England in 2017, a visiting student at UC Berkeley and MIT in 2018, and a visiting student at University of Wisconsin Madison in 2019.
