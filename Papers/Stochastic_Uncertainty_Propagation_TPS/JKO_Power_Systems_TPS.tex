@@ -253,7 +253,7 @@ The corresponding macroscopic dynamics governing the flow of the joint state PDF
 &\qquad\qquad\qquad \left.\left. +\frac{1}{2} \bm{M}^{-1}\bm{\Sigma}\bm{\Sigma}^{\top}\bm{M}^{-1} \nabla_{\bm{\omega}} \log \rho \right) \right),
 \label{KineticFPK}	
 \end{align}
-subject to the initial condition \eqref{FPKInitCond} and the joint parameter PDF $\rho_{\text{param}}$. Of course, this subsumes special cases when either the initial condition or the parameter vector is deterministic. A direct numerical solution of this PDE initial value problem using conventional discretization (e.g., finite difference) or function approximation techniques will not be scalable in general, as explained in Sec. \ref{subsubsec:technicalchallenges}. In the next Section, we discuss how a measure-valued variational recursion proposed in our recent works \cite{caluya2019ACC,caluya2019TAC,halder2020hopfield,caluya2021TAC,caluya2020reflected} can be employed to address this challenge.
+subject to the initial condition \eqref{FPKInitCond} and the joint parameter PDF $\rho_{\text{param}}$. Of course, this subsumes special cases such as when either the initial condition or the parameter vector is deterministic. A direct numerical solution of this PDE initial value problem using conventional discretization (e.g., finite difference) or function approximation techniques will not be scalable in general, as explained in Sec. \ref{subsubsec:technicalchallenges}. In the next Section, we discuss how a measure-valued variational recursion proposed in our recent works \cite{caluya2019ACC,caluya2019TAC,halder2020hopfield,caluya2021TAC,caluya2020reflected} can be employed to address this challenge.
 
 We mention here that (\ref{ItoSDEvectorlevel}) has been used in \cite{ju2018analytical,ju2018stochastic} for uncertainty propagation via stochastic averaging approximation where the univariate energy PDF was proposed as a ``proxy" for the entire joint PDF. Most relevant to our approach in the power systems literature is the work in \cite{wang2013fokker}, which indeed voiced the need for computing the transient joint PDFs but only dealt with the single-machine-infinite-bus case -- simplest ($n=1$) instance of (\ref{ItoSDEvectorlevel}). The resulting bivariate Fokker-Planck PDE in \cite{wang2013fokker} was solved via finite element discretization, and revealed rich stochastic dynamics and nontrivial transient stability aspects even in this simple case. However, it is unreasonable to expect that a finite element discretization, or in fact any spatial discretization scheme to solve (\ref{KineticFPK}) for moderately large $n$ in {\red{minutes}} of computational time, thereby limiting our current ability for realistic power systems simulation with stochastic variability. This calls for fundamentally re-thinking what does it mean to solve the PDE (\ref{KineticFPK}) for dynamics (\ref{ItoSDEvectorlevel}).
 
@@ -515,7 +515,7 @@ The Algorithm \ref{algo:KineticProx} also needs input parameters $h,\varepsilon,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Numerical Simulations}\label{sec:NumericalSimulations}
-To illustrate the proposed computational framework, we next provide two numerical simulation case studies. In Sec. \ref{subsec:NumSimIEEEBus}, we consider the prediction of stochastic states for the IEEE 14 bus system--our main objective being to highlight the .  
+To illustrate the proposed computational framework, we next provide two numerical simulation case studies. In Sec. \ref{subsec:NumSimIEEEBus}, we consider the prediction of stochastic states for the IEEE 14 bus system--{\red{our main objective being to highlight the interpretability and utility of the proposed method in power systems engineering}}. In Sec. \ref{subsec:NumSimSynthetic}, we propagate the joint PDFs over the {\red{100 dimensional state space}} of a synthetic power network with randomly generated parameters--our intent there is to highlight the scalability of the proposed method.   
 
 \subsection{IEEE 14 Bus System}\label{subsec:NumSimIEEEBus}
 
@@ -550,12 +550,12 @@ coupling coefficient & $k_{ij}\begin{cases}
 & \\
 \hline
 \end{tabular}
-\caption{Parameters used for the numerical simulation in Sec. \ref{subsec:NumSimSynthetic}. The indices $i,j\in\{1,\hdots,n\}$ where the number of generators $n=20$ in Sec. \ref{subsec:NumSimSynthetic}.}
+\caption{Parameters used for the numerical simulation in Sec. \ref{subsec:NumSimSynthetic}. The indices $i,j\in\{1,\hdots,n\}$ where the number of generators $n=50$ in Sec. \ref{subsec:NumSimSynthetic}.}
 \label{table:ParamUncertaintiesSynthetic}
 \end{table}
 
 \subsection{Synthetic Test System}\label{subsec:NumSimSynthetic}
-We next consider a power network with $n=20$ generators, and propagate the transient joint state PDFs supported over the 40 dimensional state space $\mathbb{T}^{20}\times\mathbb{R}^{20}$. We take the initial joint state PDF at $t=0$ as
+We next consider a power network with $n=50$ generators, and propagate the transient joint state PDFs supported over the 100 dimensional state space $\mathbb{T}^{50}\times\mathbb{R}^{50}$. We take the initial joint state PDF at $t=0$ as
 \begin{align}
 \rho_{0}\equiv\rho(t=0,\theta(0),\omega(0)) = &\;{\rm{Unif}}\left(\left([0,2\pi)\;\text{rad}\right)^{n}\right)\nonumber\\
 	&\qquad\times {\rm{Unif}}\left([-0.1,0.1]\;\text{rad/s}\right),
@@ -567,24 +567,24 @@ and following \cite[Sec. 5]{dorfler2012synchronization}, randomly generate the p
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.95\linewidth]{ComputationalTimeSynthetic.png}
-\caption{\small{The computational time for propagating the transient joint state PDFs over $\mathbb{T}^{20}\times\mathbb{R}^{20}$ for the simulation set up in Sec. \ref{subsec:NumSimSynthetic}.}}
+\includegraphics[width=0.95\linewidth]{ComputationalTimeSynthetic50Gen.png}
+\caption{\small{The computational time for propagating the transient joint state PDFs over $\mathbb{T}^{50}\times\mathbb{R}^{50}$ for the simulation set up in Sec. \ref{subsec:NumSimSynthetic}.}}
 \vspace*{-0.1in}
 \label{fig:CompTimeSynthetic}
 \end{figure}
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.95\linewidth]{RelativeErrorMeanMCVersusProxSynthetic.png}
-\caption{\small{The relative error between the empirical mean (i.e., Monte Carlo estimate) $\bm{\mu}_{k}^{\text{MC}}\in\mathbb{T}^{20}\times\mathbb{R}^{20}$, and the mean $\bm{\mu}_{k}^{\text{Prox}}\in\mathbb{T}^{20}\times\mathbb{R}^{20}$ obtained using the proximal updates of the joint state PDFs, for the simulation set up in Sec. \ref{subsec:NumSimSynthetic}.}}
+\includegraphics[width=0.95\linewidth]{RelativeErrorMeanMCVersusProxSynthetic50Gen.png}
+\caption{\small{The relative error between the empirical mean (i.e., Monte Carlo estimate) $\bm{\mu}_{k}^{\text{MC}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$, and the mean $\bm{\mu}_{k}^{\text{Prox}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$ obtained using the proximal updates of the joint state PDFs, for the simulation set up in Sec. \ref{subsec:NumSimSynthetic}.}}
 \vspace*{-0.1in}
 \label{fig:RelErrSynthetic}
 \end{figure}
 
-With $N=1000$ random samples from the initial joint PDF \eqref{rho0synthetic}, and with the aforesaid randomly generated parameters, we employed the Euler-Maruyama scheme together with Algorithm \ref{algo:KineticProx} for propagating $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. We used $h=10^{-3}$, $\varepsilon = 0.05$, $\delta = 10^{-3}$, $L = 300$.
+With $N=2000$ random samples from the initial joint PDF \eqref{rho0synthetic}, and with the aforesaid randomly generated parameters, we employed the Euler-Maruyama scheme together with Algorithm \ref{algo:KineticProx} for propagating $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. We used $h=10^{-3}$, $\varepsilon = 0.05$, $\delta = 10^{-3}$, $L = 300$.
 
 Fig. \ref{fig:CompTimeSynthetic} highlights that for computing high dimensional transient joint state PDFs as in here, the proposed variational framework enjoys remarkably fast computational time. Notice that constructing histograms or other conventional density estimators for the joint state PDF by making a grid over the 40 dimensional state space, is computationally prohibitive. 
 
-To depict the numerical accuracy, Fig. \ref{fig:RelErrSynthetic} plots the (time-varying) relative error between the empirical (i.e., Monte Carlo estimate) mean vector $\bm{\mu}_{k}^{\text{MC}}\in\mathbb{T}^{20}\times\mathbb{R}^{20}$, and the ``proximal mean" vector $\bm{\mu}_{k}^{\text{Prox}}\in\mathbb{T}^{20}\times\mathbb{R}^{20}$. The latter was computed using the proximal updates $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$.
+To depict the numerical accuracy, Fig. \ref{fig:RelErrSynthetic} plots the (time-varying) relative error between the empirical (i.e., Monte Carlo estimate) mean vector $\bm{\mu}_{k}^{\text{MC}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$, and the ``proximal mean" vector $\bm{\mu}_{k}^{\text{Prox}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$. The latter was computed using the proximal updates $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. Fig. \ref{fig:RelErrSynthetic} shows that the time varying statistics from these two computation match very well at all times.
 
 
 

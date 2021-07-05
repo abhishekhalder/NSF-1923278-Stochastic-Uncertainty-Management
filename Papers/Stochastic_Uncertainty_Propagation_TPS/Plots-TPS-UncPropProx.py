@@ -55,15 +55,15 @@ fig = plt.figure(1, figsize=fig_size)  # figsize accepts only inches.
 # =============================================================================
 # Computational time plot 
 # =============================================================================
-Time_Synthetic = np.loadtxt("TimeSynthetic.txt")
-CompTime_Synthetic = np.loadtxt("ComptimeSythetic.txt")
+Time_Synthetic = np.loadtxt("TimeSynthetic50Gen.txt")
+CompTime_Synthetic = np.loadtxt("ComptimeSythetic50Gen.txt")
 
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
 
 ax.semilogy(Time_Synthetic, CompTime_Synthetic,'-', color='b', lw=1.5)
 
-ax.set_ylim(1*10**-3, 1.2*10**-2)
+ax.set_ylim(5*10**-3, 5*10**-2)
 
 ax.tick_params(direction='in',which='both')
  # axx.xaxis.tick_top()
@@ -80,12 +80,12 @@ ax.set_xlabel(r"Physical time $t=kh$ [s]")
 # axx.legend(markerscale=1.5, numpoints=1,  ncol=1, bbox_to_anchor=(1.005, 1), frameon=False, prop={'size': 10.5})
 fig.set_size_inches(10.2, 6.2)
 
-plt.savefig('ComputationalTimeSynthetic.png', dpi=400)
+plt.savefig('ComputationalTimeSynthetic50Gen.png', dpi=400)
 
 # =============================================================================
 # Relative error in mean vector: MC versus Prox plot
 # =============================================================================
-RelErrMeanVectorMCvsProx_Synthetic = np.loadtxt("RelErrMeanVectorMCvsProxSythetic.txt")
+RelErrMeanVectorMCvsProx_Synthetic = np.loadtxt("RelErrMeanVectorMCvsProxSythetic50Gen.txt")
 
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
@@ -109,7 +109,7 @@ ax.set_xlabel(r"Physical time $t=kh$ [s]")
 # axx.legend(markerscale=1.5, numpoints=1,  ncol=1, bbox_to_anchor=(1.005, 1), frameon=False, prop={'size': 10.5})
 fig.set_size_inches(10.2, 6.2)
 
-plt.savefig('RelativeErrorMeanMCVersusProxSynthetic.png', dpi=400)
+plt.savefig('RelativeErrorMeanMCVersusProxSynthetic50Gen.png', dpi=400)
 
 
 
