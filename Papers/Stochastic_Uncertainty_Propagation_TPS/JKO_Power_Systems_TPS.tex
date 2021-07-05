@@ -93,7 +93,8 @@ Our contributions are twofold. {\red{TBD}}
 Our technical approach juxtaposes with the existing literature discussed above, in that we approximate neither the dynamical nonlinearity nor the statistics. Instead of treating the exact nonlinearity as bane, we exploit the geometry induced by the power system's dynamical nonlinearity over the manifold of time-varying joint state PDFs, thereby enabling a new proximal algorithm to compute the transient joint PDFs.
 
 \subsubsection{Notation and organization}
-We use boldfaced small letters for vectors, and boldfaced capital letters for matrices. The set of natural numbers, real numbers and complex numbers are denoted as $\mathbb{N}$, $\mathbb{R}$, and $\mathbb{C}$, respectively. The symbol $\nabla_{\bm{x}}$ denotes the Euclidean gradient operator with respect to (w.r.t.) the vector $\bm{x}$. Thus, $\nabla_{\bm{x}}\cdot$ stands for the divergence, and $\Delta_{\bm{x}}$ stands for the Laplacian w.r.t. vector $\bm{x}$. We use $\langle\cdot,\cdot\rangle$ to denote the standard Euclidean inner product. The real and imaginary parts of a complex number $z$ are denoted via $\Re(z)$ and $\Im(z)$, respectively. We use the superscript $*$ to denote the complex conjugate. The uniform probability distribution over an interval $[a,b]$ is denoted as ${\rm{Unif}}\left([a,b]\right)$. Likewise, the $n$ dimensional uniform probability distribution over $[a,b]^{n}$ is denoted as ${\rm{Unif}}\left([a,b]^{n}\right)$. The symbol $\propto$ denotes proportionality, $|\cdot|$ denotes the absolute magnitude, $\|\cdot\|_{2}$ denotes the standard Euclidean 2-norm, $\otimes$ denotes the Kronecker product, $\odot$ and $\oslash$ respectively denote the elementwise (Hadamard) product and division, $\det(\cdot)$ stands for the determinant, and the subscript $_{\sharp}$ denotes the pushforward of a PDF via a map. The $n\times n$ identity and zero matrices are denoted as $\bm{I}_{n}$ and $\bm{0}_{n\times n}$, respectively.
+%We use boldfaced small letters for vectors, and boldfaced capital letters for matrices. 
+The set of natural numbers, real numbers and complex numbers are denoted as $\mathbb{N}$, $\mathbb{R}$, and $\mathbb{C}$, respectively. The symbol $\nabla_{\bm{x}}$ denotes the Euclidean gradient operator with respect to (w.r.t.) the vector $\bm{x}$. Thus, $\nabla_{\bm{x}}\cdot$ stands for the divergence, and $\Delta_{\bm{x}}$ stands for the Laplacian w.r.t. vector $\bm{x}$. We use $\langle\cdot,\cdot\rangle$ to denote the standard Euclidean inner product. The real and imaginary parts of a complex number $z$ are denoted via $\Re(z)$ and $\Im(z)$, respectively. We use the superscript $*$ to denote the complex conjugate. The uniform probability distribution over an interval $[a,b]$ is denoted as ${\rm{Unif}}\left([a,b]\right)$. Likewise, the $n$ dimensional uniform probability distribution over $[a,b]^{n}$ is denoted as ${\rm{Unif}}\left([a,b]^{n}\right)$. The symbol $\propto$ denotes proportionality, $|\cdot|$ denotes the absolute magnitude, $\|\cdot\|_{2}$ denotes the standard Euclidean 2-norm, $\otimes$ denotes the Kronecker product, $\odot$ and $\oslash$ respectively denote the elementwise (Hadamard) product and division, $\det(\cdot)$ stands for the determinant, and the subscript $_{\sharp}$ denotes the pushforward of a PDF via a map. The $n\times n$ identity and zero matrices are denoted as $\bm{I}_{n}$ and $\bm{0}_{n\times n}$, respectively.
 
 The rest of this paper is structured as follows. Section \ref{sec:models} details the power system dynamics models at the microscopic or trajectory level (Sec. \ref{subsec:samplepathdynamics}) as well as at the macroscopic or statistical ensemble level (Sec. \ref{subsec:macroscopic}). The proposed idea of realizing the flow of the joint state PDFs subject to the macroscopic power system dynamics via infinite dimensional proximal recursions, is explained in Section \ref{sec:prox}. Section \ref{sec:ProxAlgo} elucidates the corresponding proximal algorithm that enables the computation of the transient joint state PDFs via weighted point cloud evolution. Numerical simulations are reported in Section \ref{sec:NumericalSimulations}. Section \ref{sec:conclusion} concludes the paper.
 
@@ -124,7 +125,7 @@ In this work, we consider the coupled stochastic differential equations (SDEs) a
 \end{align}
 \label{ItoSDEcomponentlevel}
 \end{subequations}
-where the state variables are the rotor angles $\theta_{i}\in[0,2\pi)$ and the rotor angular velocities $\omega_{i}\in\mathbb{R}$, for $i\in\{1,\hdots,n\}$. The stochastic forcing is modeled through the standard Wiener process $w_{i}(t)$, and the diffusion coefficient $\sigma_{i}>0$ denotes the intensity of stochastic forcing at the $i$-th generator.
+where the state variables are the rotor angles $\theta_{i}\in[0,2\pi)$ and the rotor angular velocities $\omega_{i}\in\mathbb{R}$, for $i\in\{1,\hdots,n\}$. The stochastic forcing is modeled through the standard Wiener process $w_{i}(t)$, and the diffusion coefficient $\sigma_{i}>0$ denotes the intensity of stochastic forcing at the $i$th generator.
  
 \begin{remark}
 We emphasize here that the network-reduced model \eqref{ItoSDEcomponentlevel} is obtained from the so-called structure preserving power network model \cite{odun2012structure} after applying the Kron reduction \cite{dorfler2012kron}, and therefore, has all-to-all connection topology.	
@@ -133,29 +134,64 @@ We emphasize here that the network-reduced model \eqref{ItoSDEcomponentlevel} is
 With the $i$th generator, we associate its inertia $m_{i}>0$ and damping coefficient $\gamma_{i}>0$. The other parameters: the \emph{effective power input} $P_{i}$, the \emph{phase shift} $\varphi_{ij}\in[0,\frac{\pi}{2})$, and the \emph{coupling coefficients} $k_{ij}\geq 0$, depend on the network reduced admittance matrix $\bm{Y}\equiv[Y_{ij}]_{i,j=1}^{n}\in\mathbb{C}^{n\times n}$. Specifically,
 \begin{subequations}
 \begin{align}
- P_{i} &= P_{i}^{\text{mech}} - P_{i}^{\text{load}} - |V_{i}|^{2} \Re\left(Y_{ii}\right) + \Re\left(V_i \cdot I_{i}^{*}\right),\\
+ P_{i} &= P_{i}^{\text{mech}} - P_{i}^{\text{load}} - |E_{i}|^{2} \Re\left(Y_{ii}\right) + \Re\left(E_i \cdot I_{i}^{*}\right),\label{defPi}\\
  \varphi_{ij} &= \begin{cases} -\arctan\left(\dfrac{\Re\left(Y_{ij}\right)}{\Im\left(Y_{ij}\right)}\right), & \text{if}\;i\neq j,\\
  0, & \text{otherwise},
  \end{cases}\\
- k_{ij} &= \begin{cases} |V_{i}| |V_{j}| \vert Y_{ij}\vert, & \text{if}\;i\neq j,\\
+ k_{ij} &= \begin{cases} |E_{i}| |E_{j}| \vert Y_{ij}\vert, & \text{if}\;i\neq j,\\
  0, & \text{otherwise},
  \end{cases}
 \end{align}
+\label{DefParam}
 \end{subequations}
-where $P_{i}^{\text{mech}}$ is the mechanical power input, $P_{i}^{\text{load}}$ is {\red{the real load (ignoring reactive load)}}, and $|V_{i}|$ is the voltage magnitude for generator $i$. {\red{{\textbf{Xinbo:}} One sentence saying any approximation made in (2) by using $V_{i}$ instead of the internal voltage $E_{i}$}}
+where $P_{i}^{\text{mech}}$ is the mechanical power input, $P_{i}^{\text{load}}$ is the real load, $E_{i}$ is the internal voltage, and $I_{i}\in\mathbb{C}$ is the current for generator $i$.
 
 % The coupling coefficients $k_{ij}$, roughly speaking, denote the maximum power transferred between generators $i$ and $j$ with $k_{ii}=0$ for $i\in\{1,\hdots,n\}$. In general, $k_{ij}$ is a function of the internal voltages at the $i$-th and $j$-th generator, and the magnitude of the $(i,j)$-th entry of the network reduced admittance matrix. We suppose that the elements $k_{ij}$ comprise a coupling matrix $\bm{K}$ of appropriate dimension. 
 
-\begin{remark}
-If the unreduced network has $n$ generators and $m$ buses, then the unreduced admittance matrix $\bm{Y}_{\rm{unreduced}} \in \mathbb{C}^{(n+m)\times(n+m)}$ satisfies
-\begin{align}
-\bm{Y}_{\rm{unreduced}} = .
-\label{unreducedY}	
-\end{align}
-The network reduced admittance matrix $\bm{Y}\in\mathbb{C}^{n\times n}$ is the Schur complement
-\[\bm{Y} = \bm{Y}_{\rm{unreduced}}.\]	
-\end{remark}
 
+%Suppose we denote the collection of generator buses in an \emph{unreduced} power system as $\mathcal{G}$, and the collection of non-generator buses as $\mathcal{N}$. 
+Suppose that the \emph{unreduced} power network has $n$ generators and $m$ buses. Then the unreduced admittance matrix $\bm{Y}_{\rm{unreduced}}\in \mathbb{C}^{(n+m)\times(n+m)}$ can be partitioned as
+\begin{align}
+\bm{Y}_{\rm{unreduced}} = \begin{bmatrix} 
+\begin{array}{c|c}
+\bm{Y}_{\rm{bnd}} & \bm{Y}_{\rm{bnd{\text{-}}int}} \\
+\hline\vspace*{-0.12in}\\
+\bm{Y}_{\rm{bnd{\text{-}}int}}^{\top} & \bm{Y}_{\rm{int}}
+\end{array}	
+ \end{bmatrix},
+\label{PartionedAdmittanceMatrix}	
+\end{align} 
+where $\bm{Y}_{\rm{bnd}}\in\mathbb{C}^{n\times n}$, $\bm{Y}_{\rm{int}}\in\mathbb{C}^{m\times m}$, $\bm{Y}_{\rm{bnd{\text{-}}int}}\in\mathbb{C}^{n\times m}$. The matrix \eqref{PartionedAdmittanceMatrix} relates the unreduced current vector $I_{\rm{unreduced}}\in\mathbb{C}^{n+m}$ with the unreduced voltage vector $E_{\rm{unreduced}}\in\mathbb{C}^{n+m}$ via the Kirchhoff equations
+\begin{align}
+I_{\rm{unreduced}} = \bm{Y}_{\rm{unreduced}} E_{\rm{unreduced}},
+\label{DefUnreducedY}	
+\end{align}
+or equivalently, via its partitioned version associated with the interior and the boundary nodes:
+\begin{align}
+\begin{array}{c}
+\begin{bmatrix}
+I_{\rm{bnd}}\\
+I_{\rm{int}} 	
+\end{bmatrix}	
+\end{array} = \bm{Y}_{\rm{unreduced}} \begin{array}{c}
+\begin{bmatrix}
+E_{\rm{bnd}}\\
+E_{\rm{int}} 	
+\end{bmatrix}	
+\end{array}.
+\label{PartitionedKirchoffEquation}	
+\end{align}
+%The reduced admittance matrix
+%\begin{eqnarray}
+%\bm{Y} &=& Y_{\mathcal{G}\mathcal{G}} - Y_{\mathcal{G}\mathcal{L}} Y_{\mathcal{L}\mathcal{L}}^{-1} Y_{\mathcal{L}\mathcal{G}} \\
+%I_{red} &=& Y_{\mathcal{G}\mathcal{L}}Y_{\mathcal{L}\mathcal{L}}^{-1} I
+%\end{eqnarray}
+
+The network reduced admittance matrix $\bm{Y}\in\mathbb{C}^{n\times n}$ in \eqref{DefParam} is the Schur complement of \eqref{PartionedAdmittanceMatrix} w.r.t. the block $\bm{Y}_{\rm{int}}$, i.e.,
+\[\bm{Y} = \bm{Y}_{\rm{unreduced}} / \bm{Y}_{\rm{int}} := \bm{Y}_{\rm{bnd}} - \bm{Y}_{\rm{bnd{\text{-}}int}} \bm{Y}_{\rm{int}}^{-1}\bm{Y}_{\rm{bnd{\text{-}}int}}^{\top}.\]
+
+The network reduced current vector $I\in\mathbb{C}^{n}$ in \eqref{defPi} is obtained as
+\[I  = \bm{Y}E_{\rm{bnd}} - I_{\rm{bnd}}.\]
 
 One can view (\ref{ItoSDEcomponentlevel}) as the noisy version of the second order nonuniform Kuramoto oscillator model \cite{dorfler2012synchronization,rodrigues2016kuramoto}, given by
 \begin{align}
@@ -235,7 +271,7 @@ We propose to solve the initial value problem for the PDE \eqref{KineticFPK} by 
 \[{\rm{dist}}:\mathcal{P}_{2}\left(\mathbb{T}^{n} \times \mathbb{R}^{n}\right)\times\mathcal{P}_{2}\left(\mathbb{T}^{n} \times \mathbb{R}^{n}\right)\mapsto\mathbb{R}_{\geq 0}.\]
 We now explain this idea in detail.
 
-\begin{figure}[htpb]
+\begin{figure}[tb]
 \centering
 \includegraphics[width=0.9\linewidth]{ProxSchmatic.pdf}
 \caption{\small{A schematic of approximating the flow of the joint PDF trajectory $\rho(t,\bm{x})$ via the sequence $\{\varrho_{k}\}_{k\in\mathbb{N}}$ generated by a variational recursion over $\mathcal{P}_{2}\left(\mathbb{T}^{n}\times\mathbb{R}^{n}\right)$. The curve $\rho(t,\bm{x})$ solves a kinetic Fokker-Planck PDE initial value problem. While the joint PDFs are supported over the finite dimensional base manifold $\mathbb{T}^{n}\times\mathbb{R}^{n}$, the proximal updates $\{\varrho_{k}\}_{k\in\mathbb{N}}$ (shown as circled markers with no face-color) evolve over the infinite dimensional manifold $\mathcal{P}_{2}\left(\mathbb{T}^{n}\times\mathbb{R}^{n}\right)$.}}
