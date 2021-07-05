@@ -178,9 +178,10 @@ I_{\rm{int}}
 E_{\rm{bnd}}\\
 E_{\rm{int}} 	
 \end{bmatrix}	
-\end{array}.
+\end{array},
 \label{PartitionedKirchoffEquation}	
 \end{align}
+where $I_{\rm{bnd}},E_{\rm{bnd}}\in\mathbb{C}^{n}$ and $I_{\rm{int}},E_{\rm{int}}\in\mathbb{C}^{m}$.
 %The reduced admittance matrix
 %\begin{eqnarray}
 %\bm{Y} &=& Y_{\mathcal{G}\mathcal{G}} - Y_{\mathcal{G}\mathcal{L}} Y_{\mathcal{L}\mathcal{L}}^{-1} Y_{\mathcal{L}\mathcal{G}} \\
@@ -515,6 +516,7 @@ The Algorithm \ref{algo:KineticProx} also needs input parameters $h,\varepsilon,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Numerical Simulations}\label{sec:NumericalSimulations}
+To illustrate the proposed computational framework, we next provide two numerical simulation case studies. In Sec. \ref{subsec:NumSimIEEEBus}, we consider the prediction of stochastic states for the IEEE 14 bus system--our main objective being to highlight the .  
 
 \subsection{IEEE 14 Bus System}\label{subsec:NumSimIEEEBus}
 
