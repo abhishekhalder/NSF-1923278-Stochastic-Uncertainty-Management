@@ -1,10 +1,10 @@
 function [driftk,GradU] = PowerDrift(xi,eta,nSample)
 
-global num_Oscillator phi Gamma M Sigma Pmech K sigma  m
+global num_Oscillator phi Gamma M Sigma P K sigma  m
  
 GradF_eta = ((Gamma/M)*eta')';
 
-GradU_2 = -repmat((diag(Pmech/Sigma))',nSample,1);
+GradU_2 = -repmat((diag(P/Sigma))',nSample,1);
 % 
 % for l=1:nSample
 % 

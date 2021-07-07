@@ -1,31 +1,54 @@
 close all; clear all; clc;
 %% Parameters
-
 beta = 2; % inverse temperature
-
 % golbal parameters 
-global num_Oscillator dim Gamma M Sigma K Pmech cc sigma m phi
+global num_Oscillator dim Gamma M Sigma K P cc sigma m phi
 
 num_Oscillator = 5; dim  = 2*num_Oscillator; % dim = dimension of state space
 
-E = [1.06 1.045 1.01 1.07 1.09];
+f0 = 60; % nominal frequency (Hz)
 
-Y = Y_admittance_matrix;
-phi = phase_shift_matrix(Y);
-K = coupling_matrix(Y,E);
+% parameters for the IEEE 14 bus system
+Y_reduced_imag = readmatrix('Y_reduced_imag_part.csv');
+Y_reduced_real = readmatrix('Y_reduced_real_part.csv');
+% reduced admittance matrix
+Y_reduced = complex(Y_reduced_real,Y_reduced_imag);
 
-f0 = 60;
-g_a = 20 ; g_b = 30; m_a = 2; m_b = 12 ; s_a = 1  ; s_b = 5;
-p_a = 0; p_b = 10 ;  k_a =.7 ; k_b = 1.2;
+gen_param = readmatrix('gen_parameters.csv');
+gen_bus_idx = gen_param(:,1);
 
-gamma = ((g_a-g_b)*rand(num_Oscillator,1) + g_a)/(2*pi*f0);
-m = ((m_b-m_a)*rand(num_Oscillator,1) + m_a)/(2*pi*f0);
+bus_init = readmatrix('bus-init.csv');
+% generator bus voltage
+E_mag = bus_init(gen_bus_idx,2);
+E_phase = bus_init(gen_bus_idx,3);
+E = E_mag.*exp(1i*E_phase);
+% reduced current vector
+I_reduced_polar = readmatrix('I_red.csv');
+I_reduced_mag = I_reduced_polar(:,1);
+I_reduced_phase = I_reduced_polar(:,2);
+I_reduced = I_reduced_mag.*exp(1i*I_reduced_phase);
+
+P_mech = gen_param(:,2);
+P_load = readmatrix('P_load_at_genbuses.csv');
+P_load = P_load(:,2);
+% effective power input
+P = P_mech - P_load - ((E_mag.^2).*diag(Y_reduced_real)) + real(E.*(conj(I_reduced)));
+% phase shift
+phi = -atan(Y_reduced_real./Y_reduced_imag);
+phi = phi - diag(diag(phi)); % zero the diagonal entries
+% coupling
+K = (diag(E_mag))*(abs(Y_reduced))*(diag(E_mag));
+K = K - diag(diag(K)); % zero the diagonal entries
+
+% generator inertia 
+m = gen_param(:,5)/(2*pi*f0);
+% generator daming
+gamma = gen_param(:,6)/(2*pi*f0);
+% generator noise coeff
+s_a = 1  ; s_b = 5;
 sigma = (s_b-s_a)*rand(num_Oscillator,1) + s_a;
-pmech = (p_b-p_a)*rand(num_Oscillator,1) + p_b;
 
-Gamma = diag(gamma);  M = diag(m); Sigma = diag(sigma); Pmech = diag(pmech)-E.^2.*real(diag(Y));
-
-%K = (k_b-k_a)*rand(num_Oscillator)+ k_a;
+Gamma = diag(gamma);  M = diag(m); Sigma = diag(sigma); P = diag(P);
 
 theta0_a = 0 ; theta0_b = 2*pi; omega0_a = -.1 ; omega0_b = .1;
 
@@ -33,123 +56,134 @@ theta0_a = 0 ; theta0_b = 2*pi; omega0_a = -.1 ; omega0_b = .1;
 nSample = 1000;                      % number of samples                                                           
 epsilon = 0.5;                      % regularizing coefficient                                      
 h = 1e-3;                         % time step
-numSteps= 1e3;                    % number of steps k, in discretization t=kh
+numSteps = 1e3;                    % number of steps k, in discretization t=kh
 cc = 1e7;
-% %% popagate joint PDF
-% 
-% % samples from initial joint PDF 
-% theta_0 = (theta0_b-theta0_a)*rand(nSample,num_Oscillator) + theta0_a;
-% 
-% rho_theta_0 = ones(nSample,1)*(1/(theta0_b-theta0_a))^num_Oscillator;
-% 
-% omega_0 =(omega0_b-omega0_a)*rand(nSample,num_Oscillator) + omega0_a;
-% 
-% % joint PDF values at the initial samples
-% rho_omega_0 = ones(nSample,1)*(1/(omega0_b-omega0_a))^num_Oscillator;
-% 
-% rho_theta_omega_0 = rho_omega_0.*rho_theta_0;
-% 
-% psi_upper_diag = M/Sigma;
-% 
-% psi_lower_diag = psi_upper_diag;
-% 
-% psi = kron(eye(num_Oscillator),M/Sigma);
-% 
-% invpsi =kron(eye(num_Oscillator),Sigma/M);
-% 
-% sumcov_prox = zeros(dim,dim);
-%     
-% sumcov_mc = zeros(dim,dim);
-% 
-% for ii=1:num_Oscillator
-% 
-% xi_0(:,ii) = wrapTo2PiMSigma(m(ii)/sigma(ii)*theta_0(:,ii),m(ii),sigma(ii));
-% 
-% end
-% 
-% eta_0 = (psi_lower_diag*omega_0')';
-% 
-% xi_eta_0 = [xi_0,eta_0];
-% 
-% rho_xi_eta_0 = rho_theta_omega_0/(prod(m./sigma));
-% 
-% % stores all the updated (states from the governing SDE
-% xi_eta_upd = zeros(nSample,dim,numSteps+1);
-% 
-% theta_upd = zeros(nSample,num_Oscillator,numSteps+1);
-% 
-% omega_upd = zeros(nSample,num_Oscillator,numSteps+1);
-% 
-% theta_omega_upd = zeros(nSample,dim,numSteps+1);
-% 
-% % sets initial state
-% xi_eta_upd(:,:,1) = xi_eta_0; 
-% theta_upd(:,:,1) = theta_0;
-% omega_upd(:,:,1) = omega_0;
-% 
-% 
-% % stores all the updated joint PDF values
-% rho_xi_eta_upd = zeros(nSample,numSteps+1);
-% % sets initial PDF values
-% rho_xi_eta_upd(:,1) = rho_xi_eta_0/sum(rho_xi_eta_0);
-% mean_prox(1,:) = sum(xi_eta_upd(:,:,1).*rho_xi_eta_upd(:,1))';
-% 
-% tic;
-% for j=1:numSteps
-%    
-%     
-%    [drift_j,GradU] = PowerDrift(xi_eta_upd(:,1:num_Oscillator,j),xi_eta_upd(:,num_Oscillator+1:dim,j),nSample);
-%   
-%    
-%     % SDE update for state
-%     xi_eta_upd(:,:,j+1) = PowerEulerMaruyama(h,xi_eta_upd(:,:,j),drift_j,nSample,num_Oscillator);
-%     
-%     theta_upd(:,:,j+1) = wrapTo2Pi((psi_upper_diag\xi_eta_upd(:,1:num_Oscillator,j+1)')');
-%     
-%     omega_upd(:,:,j+1) = (psi_lower_diag\xi_eta_upd(:,num_Oscillator+1:dim,j+1)')';
-%         
-%   %proximal update for joint PDF
-%    [rho_xi_eta_upd(:,j+1),comptime(j),niter(j)] = FixedPointIteration(beta,epsilon,h,rho_xi_eta_upd(:,j),xi_eta_upd(:,:,j),xi_eta_upd(:,:,j+1),PowerFraction(beta,xi_eta_upd(:,num_Oscillator+1:dim,j)),GradU,dim);  
-%     
-%    rho_theta_omega_upd(:,j+1) = rho_xi_eta_upd(:,j+1)*(prod(m./sigma));
-% 
-%    mean_prox_omega(j+1,:) = sum(omega_upd(:,:,j+1).*rho_theta_omega_upd(:,j+1))/sum(rho_theta_omega_upd(:,j+1));  
-%     
-%    mean_prox_theta(j+1,:) = weighted_angle_mean(theta_upd(:,:,j+1),rho_theta_omega_upd(:,j+1));
-%    
-% 
-% end
-% 
-% toc
-% 
-% mean_mc_omega  = mean(squeeze(omega_upd));
-% 
-% mean_mc_theta = weighted_angle_mean(theta_upd,ones(nSample,1)/nSample);
-% mean_mc_omega = squeeze(mean_mc_omega);
-% mean_mc_theta = squeeze(mean_mc_theta);
-% 
-% mean_mc = [mean_mc_theta;mean_mc_omega];
-% mean_prox = [mean_prox_theta';mean_prox_omega'];
-% 
-% 
-% 
-% 
-% %% plots
-% set(0,'defaulttextinterpreter','latex')
-% figure(1)
-% semilogy(comptime, 'LineWidth', 2)
-% xlabel('Physical time $t=kh$','FontSize',20)
-% ylabel('Computational time','FontSize',20)
-% 
+t_vec = h*(1:1:numSteps);
+%% popagate joint PDF
+ 
+% samples from initial joint PDF
+theta_0 = (theta0_b-theta0_a)*rand(nSample,num_Oscillator) + theta0_a;
+
+% initial mean for the angles obtained from steady state power flow
+mu_theta_0 = wrapTo2Pi(E_phase);
+% initial concentration parameter for Von Mises
+kappa = [5; 6; 7; 4; 5];
+% create initial theta PDF as product of von Mises PDF
+for j=1:num_Oscillator
+    
+    rho_theta_0(:,j) = exp(kappa(j)*cos(2*theta_0(:,j) - mu_theta_0(j)));
+
+end
+rho_theta_0 = prod(rho_theta_0,2);
+
+normalization_rho_theta_0 = ((2*pi)^num_Oscillator)*prod(besseli(0,kappa));
+
+rho_theta_0 = rho_theta_0/normalization_rho_theta_0;
+
+omega_0 =(omega0_b-omega0_a)*rand(nSample,num_Oscillator) + omega0_a;
+
+% joint PDF values at the initial samples
+rho_omega_0 = ones(nSample,1)*(1/(omega0_b-omega0_a))^num_Oscillator;
+ 
+rho_theta_omega_0 = rho_omega_0.*rho_theta_0;
+ 
+psi_upper_diag = M/Sigma;
+ 
+psi_lower_diag = psi_upper_diag;
+ 
+psi = kron(eye(num_Oscillator),M/Sigma);
+ 
+invpsi =kron(eye(num_Oscillator),Sigma/M);
+ 
+sumcov_prox = zeros(dim,dim); sumcov_mc = zeros(dim,dim);
+
+for ii=1:num_Oscillator
+    xi_0(:,ii) = wrapTo2PiMSigma(m(ii)/sigma(ii)*theta_0(:,ii),m(ii),sigma(ii)); 
+end
+eta_0 = (psi_lower_diag*omega_0')';
+ 
+xi_eta_0 = [xi_0,eta_0];
+ 
+rho_xi_eta_0 = rho_theta_omega_0/(prod(m./sigma));
+ 
+% stores all the updated (states from the governing SDE
+xi_eta_upd = zeros(nSample,dim,numSteps+1);
+ 
+theta_upd = zeros(nSample,num_Oscillator,numSteps+1);
+omega_upd = zeros(nSample,num_Oscillator,numSteps+1);
+theta_omega_upd = zeros(nSample,dim,numSteps+1);
+ 
+% sets initial state
+xi_eta_upd(:,:,1) = xi_eta_0; 
+theta_upd(:,:,1) = theta_0;
+omega_upd(:,:,1) = omega_0;
+
+% stores all the updated joint PDF values
+rho_xi_eta_upd = zeros(nSample,numSteps+1);
+% sets initial PDF values
+rho_xi_eta_upd(:,1) = rho_xi_eta_0/sum(rho_xi_eta_0);
+mean_prox(1,:) = sum(xi_eta_upd(:,:,1).*rho_xi_eta_upd(:,1))';
+ 
+tic;
+for j=1:numSteps
+    
+    [drift_j,GradU] = PowerDrift(xi_eta_upd(:,1:num_Oscillator,j),xi_eta_upd(:,num_Oscillator+1:dim,j),nSample);
+   
+     % SDE update for state
+     xi_eta_upd(:,:,j+1) = PowerEulerMaruyama(h,xi_eta_upd(:,:,j),drift_j,nSample,num_Oscillator);
+     
+     theta_upd(:,:,j+1) = wrapTo2Pi((psi_upper_diag\xi_eta_upd(:,1:num_Oscillator,j+1)')');
+     
+     omega_upd(:,:,j+1) = (psi_lower_diag\xi_eta_upd(:,num_Oscillator+1:dim,j+1)')';
+        
+    %proximal update for joint PDF
+    [rho_xi_eta_upd(:,j+1),comptime(j),niter(j)] = FixedPointIteration(beta,epsilon,h,rho_xi_eta_upd(:,j),xi_eta_upd(:,:,j),xi_eta_upd(:,:,j+1),PowerFraction(beta,xi_eta_upd(:,num_Oscillator+1:dim,j)),GradU,dim);  
+    
+   rho_theta_omega_upd(:,j+1) = rho_xi_eta_upd(:,j+1)*(prod(m./sigma));
+
+   mean_prox_omega(j+1,:) = sum(omega_upd(:,:,j+1).*rho_theta_omega_upd(:,j+1))/sum(rho_theta_omega_upd(:,j+1));  
+    
+   mean_prox_theta(j+1,:) = weighted_angle_mean(theta_upd(:,:,j+1),rho_theta_omega_upd(:,j+1));
+end
+toc
+rho_theta_omega_upd(:,1) = rho_theta_omega_0;
+%% MC and proximal mean vectors
+mean_mc_omega  = mean(squeeze(omega_upd));
+
+mean_mc_theta = weighted_angle_mean(theta_upd,ones(nSample,1)/nSample);
+mean_mc_omega = squeeze(mean_mc_omega);
+mean_mc_theta = squeeze(mean_mc_theta);
+
+mean_mc = [mean_mc_theta;mean_mc_omega];
+mean_prox = [mean_prox_theta';mean_prox_omega'];
+
+norm_diff_mean_mc_vs_prox = sqrt(sum((mean_mc - mean_prox).^2,1))./sqrt(sum(mean_mc.^2,1));
+
+%% plots
+set(groot,'defaultAxesTickLabelInterpreter','latex');  
+set(groot,'defaulttextinterpreter','latex');
+set(groot,'defaultLegendInterpreter','latex');
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+figure(1)
+semilogy(t_vec, comptime, 'LineWidth', 2)
+set(gca,'FontSize',30)
+xlabel('Physical time $t=kh$ [s]','FontSize',30)
+ylabel('Computational time [s]','FontSize',30)
+% ylim([1e-3 1.2e-2])
+% YTick = [2e-3 8e-3 2e-2];
+% YTickLabels = cellstr(num2str(round(log10(YTick(:))), '10^%d'));
+grid on
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+figure(2)
+semilogy(t_vec(4:end), norm_diff_mean_mc_vs_prox(5:end),'-k','Linewidth',2)
+set(gca,'FontSize',30)
+xlabel('Physical time $t=kh$ [s]','FontSize',30)
+ylabel('Realtive error $\frac{\|\mu_{\rm{MC}}-\mu_{\rm{Prox}}\|_{2}}{\|\mu_{\rm{MC}}\|_{2}}$','FontSize',30,'interpreter','latex')
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
 % fs  = 15;
 % for i=1:dim
-%     
-%   
-%    
 %     if i<=num_Oscillator
-%         figure(2);
+%       figure(2);
 %       subplot(1,num_Oscillator,i)
 %     plot(mean_mc(i,2:end),'Linewidth',1)
 %     
@@ -171,15 +205,59 @@ cc = 1e7;
 %     xlabel('$t$','fontsize',fs,'interpreter','latex')
 %     ylabel(sprintf('$\\omega_{%d}$', i-num_Oscillator),'fontsize',fs, 'Interpreter','latex','rotation',0);
 %     axis tight
-%     end
-%     
-%   
+%     end  
 % end
-% 
-%  legend('Mean MC','Mean Proximal')
+% legend('Mean MC','Mean Proximal')
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Compute and save marginal PDFs
+nBins = 10;
 
+t_now_vec = 0.2:0.2:1; % snapshots of interest for marginals
+t_now_idx_vec = floor(t_now_vec/h);
+t_now_idx_vec(1)=1;
 
+thetalabels = {'$\theta_1$','$\theta_2$','$\theta_3$','$\theta_4$','$\theta_5$'};
+omegalabels = {'$\omega_1$','$\omega_2$','$\omega_3$','$\omega_4$','$\omega_5$'};
 
+figure(3)
+for j=1:num_Oscillator
+    for tt=1:length(t_now_idx_vec)
+        
+        [theta_save{tt,j},omega_save{tt,j},marg2D_theta_omega_save{tt,j}] = getMarginal2D(theta_upd(:,j,tt),omega_upd(:,j,tt),rho_theta_omega_upd(:,tt),nBins);
+        
+        maxMargValMatrix(tt,j) = max(max(marg2D_theta_omega_save{tt,j}.PF));
+        
+        subplot(num_Oscillator,length(t_now_idx_vec),tt+(j-1)*length(t_now_idx_vec))
+        contourf(theta_save{tt,j},omega_save{tt,j},marg2D_theta_omega_save{tt,j}.PF);
+        set(gca,'FontSize',30)
+        xlabel(thetalabels{j},'FontSize',30)
+        ylabel(omegalabels{j},'FontSize',30,'Rotation',0)
+        if j==1
+            title(['$t=$' num2str(t_now_vec(tt))],'interpreter','latex')
+        end
+        axis tight
+        hold on
+    end    
+end
+% plot common colorbar
+left1 = 0.13; cb_bottom = 0.05; cb_width = 0.80; cb_height = 0.02;
+  
+cbax = axes('visible', 'off');
+caxis(cbax, [0, max(max(maxMargValMatrix))]);
+h = colorbar('peer', cbax, 'southoutside', ...
+  'position', [left1 cb_bottom cb_width cb_height],...
+  'FontSize',30,'TickLabelInterpreter','latex');
 
-
+% save 2D marginal data as .txt file
+for j=1:num_Oscillator
+    for tt=1:length(t_now_idx_vec)
+        textfilename_theta2D = ['IEEE14BusGenIdx' num2str(j) 'theta2Dt' num2str(t_now_vec(tt)) '.txt'];
+        dlmwrite(textfilename_theta2D, theta_save{tt,j},'delimiter','\t','precision','%f');
+    
+        textfilename_omega2D = ['IEEE14BusGenIdx' num2str(j) 'omega2Dt' num2str(t_now_vec(tt)) '.txt'];
+        dlmwrite(textfilename_omega2D, omega_save{tt,j},'delimiter','\t','precision','%f');
+    
+        textfilename_marg2D = ['IEEE14BusGenIdx' num2str(j) 'marg2Dt' num2str(t_now_vec(tt)) '.txt'];
+        dlmwrite(textfilename_marg2D, marg2D_theta_omega_save{tt,j}.PF,'delimiter','\t','precision','%f');
+    end    
+end
