@@ -362,7 +362,7 @@ Applying It\^{o}'s lemma \cite[Ch. 4.2]{oksendal2013stochastic} to the map \eqre
 where the potentials
 {\small{\begin{subequations}
 \begin{align}
-U(\bm{\xi}) &:= \!\displaystyle\sum_{i=1}^{n}\!\frac{1}{\sigma_{i}}P_{i}\xi_{i} + \!\!\!\! \displaystyle\sum_{(i,j)\in\mathcal{E}}\!\!\dfrac{m_{i}}{\sigma_{i}^{2}}k_{ij}\!\left(\!1 \!- \!\cos\!\left(\!\dfrac{\sigma_{i}}{m_{i}}\xi_{i} + \dfrac{\sigma_{j}}{m_{j}}\xi_{j} - \varphi_{ij}\!\!\right)\!\right), \label{defU}\\
+U(\bm{\xi}) &:= \!\displaystyle\sum_{i=1}^{n}\!\frac{1}{\sigma_{i}}P_{i}\xi_{i} + \!\!\displaystyle\sum_{i,j=1}^{n}\!\!\dfrac{m_{i}}{\sigma_{i}^{2}}k_{ij}\!\left(\!1 \!- \!\cos\!\left(\!\dfrac{\sigma_{i}}{m_{i}}\xi_{i} + \dfrac{\sigma_{j}}{m_{j}}\xi_{j} - \varphi_{ij}\!\!\right)\!\right), \label{defU}\\
 F(\bm{\eta}) &:= \dfrac{1}{2}\langle\bm{\eta},\bm{M}^{-1}\bm{\Gamma}\bm{\eta}\rangle. \label{defF}	
 \end{align}
 \label{NewPotentials}	
@@ -564,7 +564,7 @@ The mean angles \eqref{MeanAngleInitialIEEE14} were obtained as steady state pow
 
 In \eqref{rho0IEEE14}, the $\bm{\omega}$ marginal $ \Omega_{0}\left(\bm{\omega}(0)\right)$ is a uniform PDF over $[-0.1,0.1]$ rad/s. Thus, the PDF $\rho_0$ in \eqref{rho0IEEE14} is supported over $\mathbb{T}^{5}\times [-0.1,0.1]$.
 
-With step size $h=10^{-3}$, we discretized time $t\in[0,1]$. Using the Euler-Maruyama scheme and the Algorithm \ref{algo:KineticProx}, we propagated $N=1000$ random samples from \eqref{rho0IEEE14}, and evaluated at \eqref{rho0IEEE14}, to update the scattered weighted point clouds $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ over $\mathbb{T}^{5}\times\mathbb{R}^{5}$ at times $t_{k}:=kh$, $k\in\mathbb{N}$. We used the algorithmic parameters $\varepsilon=0.05$, $\delta=10^{-3}$, $L=300$.
+With step size $h=10^{-3}$, we discretized time $t\in[0,1]$. Using the algorithm detailed in Sec. \ref{sec:ProxAlgo}, we propagated $N=1000$ random samples from \eqref{rho0IEEE14}, and evaluated at \eqref{rho0IEEE14}, to update the scattered weighted point clouds $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ over $\mathbb{T}^{5}\times\mathbb{R}^{5}$ at times $t_{k}:=kh$, $k\in\mathbb{N}$. In Algorithm \ref{algo:KineticProx}, we used the algorithmic parameters $\varepsilon=0.05$, $\delta=10^{-3}$, $L=300$.
 
 Fig. \ref{fig:IEEE14marginals} shows the time snapshots of the $(\theta_{i},\omega_{i})$ bivariate marginal PDFs for generator $i=1,\hdots, n=5$, computed using the weighted point clouds $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. Notice that in Fig. \ref{fig:IEEE14marginals}, the horizontal axes of the subfigures have periodic boundary conditions, i.e., $(\theta_{i},\omega_{i})\in\mathbb{T}\times\mathbb{R}$ (cylinder). Fig. \ref{fig:CompTimeIEEE14bus} shows the computational times needed to update $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ via the Euler-Maruyama and the Algorithm \ref{algo:KineticProx}.  
 
@@ -627,7 +627,7 @@ and following \cite[Sec. 5]{dorfler2012synchronization}, randomly generate the p
 \label{fig:RelErrSynthetic}
 \end{figure}
 
-With $N=2000$ random samples from the initial joint PDF \eqref{rho0synthetic}, and with the aforesaid randomly generated parameters, we employed the Euler-Maruyama scheme together with Algorithm \ref{algo:KineticProx} for propagating $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. As in Sec. \ref{subsec:NumSimIEEEBus}, we used $h=10^{-3}$, $\varepsilon = 0.05$, $\delta = 10^{-3}$, $L = 300$.
+With $N=2000$ random samples from the initial joint PDF \eqref{rho0synthetic}, and with the aforesaid randomly generated parameters, we employed the procedure detailed in Sec. \ref{sec:ProxAlgo} for propagating $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. As in Sec. \ref{subsec:NumSimIEEEBus}, we used $h=10^{-3}$, $\varepsilon = 0.05$, $\delta = 10^{-3}$, $L = 300$ in Algorithm \ref{algo:KineticProx}.
 
 Fig. \ref{fig:CompTimeSynthetic} highlights that for computing high dimensional transient joint state PDFs as in here, the proposed variational framework enjoys remarkably fast computational time. Notice that constructing histograms or other conventional density estimators for the joint state PDF by making a grid over the 100 dimensional state space, is computationally prohibitive. 
 
