@@ -65,6 +65,7 @@ Uncertainty propagation, power system dynamics, kinetic Fokker-Planck equation, 
 \includegraphics[width=\linewidth]{IEEE14BusWithUnc.pdf}
 \caption{\small{A schematic of the IEEE 14 bus test system with stochastic uncertainties. The Uncertainty sources may include stochastic forcing and parametric uncertainties at some generators, random variabilities at some loads, and parametric uncertainties along some transmission lines. For depiction purposes, we indicated the parametric uncertainties as PDFs, and stochastic forcing as intermittent signals.}}
 \label{fig:Motivating}
+\vspace*{-0.1in}
 \end{figure}
 
 \begin{figure}
@@ -72,6 +73,7 @@ Uncertainty propagation, power system dynamics, kinetic Fokker-Planck equation, 
 \includegraphics[width=0.9\linewidth]{UncPropBlockDiagm.pdf}
 \caption{\small{Block diagram for joint state PDF propagation.}}
 \label{fig:UncertaintyPropagation}
+\vspace*{-0.1in}
 \end{figure}
 
 Given a networked power system, one can envisage at least three types of uncertainties affecting the dynamics: initial condition uncertainties in the state variables (e.g., rotor phase angles and angular velocities), parametric uncertainties (e.g., inertia and damping coefficients of the generators, reactance associated with different transmission lines), and stochastic forcing (e.g., intermittencies in renewable power generation, load and ambient temperature fluctuations). Fig. \ref{fig:Motivating} depicts a representative scenario. In addition, one could consider uncertainties due to random change in transmission topology resulting from unexpected outage, and uncertainties due to unmodeled dynamics. Given a statistical description of these uncertainties, our approach is to directly solve the \emph{macroscopic flow} of the joint PDFs governing the probabilistic evolution of the state as summarized in Fig. \ref{fig:UncertaintyPropagation}.
@@ -402,6 +404,7 @@ Since \eqref{NewPDE} is a kinetic Fokker-Planck PDE with isotropic degenerate di
 \includegraphics[width=.8\linewidth]{BlockDiagm.pdf}
 \caption{\small{Schematic of the proposed proximal algorithm for propagating the joint state PDF as probability weighted scattered point cloud $\{\tilde{\bm{x}}_{k}^{i},\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$. The states $\{\tilde{\bm{x}}_{k}^{i}\}_{i=1}^{N}$ are updated by the Euler-Maruyama scheme applied to (\ref{ItoSDEvectorlevel}); the corresponding probability weights $\{\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ are updated via discrete version of the proximal recursion (\ref{KineticProx}) as detailed in Sec. \ref{sec:ProxAlgo}.}}
 \label{fig:BlockDiagm}
+\vspace*{-0.1in}
 \end{figure}
 
 
@@ -599,6 +602,7 @@ coupling coefficient & $k_{ij}\begin{cases}
 \end{tabular}
 \caption{Parameters used for the numerical simulation in Sec. \ref{subsec:NumSimSynthetic}. The indices $i,j\in\{1,\hdots,n\}$ where the number of generators $n=50$ in Sec. \ref{subsec:NumSimSynthetic}.}
 \label{table:ParamUncertaintiesSynthetic}
+\vspace*{-0.1in}
 \end{table}
 
 \subsection{Synthetic Test System}\label{subsec:NumSimSynthetic}
