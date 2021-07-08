@@ -557,7 +557,7 @@ whose $\bm{\theta}$ marginal $ \vartheta_{0}\left(\bm{\theta}(0)\right)$ is a pr
 \end{align}
 and concentration parameter $\kappa_{i}\geq 0$ set as 
 \[(\kappa_{1},\hdots,\kappa_5) = \left(5,6,7,4,5\right).\]
-In \eqref{rho0IEEE14}, $I_{0}(\cdot)$ denotes the modified Bessel function of the first kind with order zero, and can be evaluated via MATLAB command \texttt{besseli(0,$\cdot$)}. 
+In \eqref{rho0IEEE14}, $I_{0}(\cdot)$ denotes the modified Bessel function of the first kind with order zero, given by $I_{0}(\kappa) = \sum_{r=0}^{\infty} \frac{\left(\kappa^{2}/4\right)^{r}}{(r!)^{2}}$, and can be evaluated via MATLAB command \texttt{besseli(0,$\cdot$)}. 
 
 
 The mean angles \eqref{MeanAngleInitialIEEE14} were obtained as steady state power flow solutions {\red{for the generator phase angles with constant load?? Please complete/edit this sentence}} Larger $\kappa_{i}$ entails a higher concentration around the mean angle $\mu_{\theta_{i}}(0)$ (setting $\kappa_i=0$ implies that $\theta_{i}(0)$ follows uniform distribution over $[0,2\pi)$).
