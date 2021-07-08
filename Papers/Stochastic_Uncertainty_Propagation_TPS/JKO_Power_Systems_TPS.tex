@@ -517,6 +517,8 @@ The Algorithm \ref{algo:KineticProx} also needs input parameters $h,\varepsilon,
 \section{Numerical Simulations}\label{sec:NumericalSimulations}
 To illustrate the proposed computational framework, we next provide two numerical simulation case studies. In Sec. \ref{subsec:NumSimIEEEBus}, we consider the prediction of stochastic states for the IEEE 14 bus system--{\red{our main objective being to highlight the interpretability and utility of the proposed method in power systems engineering}}. In Sec. \ref{subsec:NumSimSynthetic}, we propagate the joint PDFs over the 100 dimensional state space of a synthetic power network with randomly generated parameters--our intent there is to highlight the scalability of the proposed method. 
 
+All simulations were performed in MATLAB R2019b on an iMac with 3.4 GHz Quad-Core Intel Core i5 processor and 8 GB memory. 
+
 
 
 \begin{figure*}[t]
@@ -548,13 +550,16 @@ We take the initial joint PDF as
 	&\qquad\times \underbrace{{\rm{Unif}}\left([-0.1,0.1]\;\text{rad/s}\right)}_{=:\Omega_{0}\left(\bm{\omega}(0)\right)},
 \label{rho0IEEE14}		
 \end{align}
-whose $\bm{\theta}$ marginal $ \vartheta_{0}\left(\bm{\theta}(0)\right)$ is a product von Mises PDF \cite{mardia2008multivariate,mardia2014some} supported over $\mathbb{T}^{5}$ with mean angles (in rad)
+whose $\bm{\theta}$ marginal $ \vartheta_{0}\left(\bm{\theta}(0)\right)$ is a product von Mises PDF\footnote{the factor $2$ inside the cosine ensures the range $[0,2\pi)$; it can be dispensed if we instead use the range $[-\pi,\pi)$ as common in directional statistics literature.} \cite{mardia2008multivariate,mardia2014some} supported over $\mathbb{T}^{5}$ with mean angles (in rad)
 \begin{align}
 \left(\mu_{\theta_{1}}(0),\hdots,\mu_{\theta_{5}}(0)\right)=\left(0, 6.1963, 6.0612, 6.0350, 6.0500\right),
 \label{MeanAngleInitialIEEE14}	
 \end{align}
 and concentration parameter $\kappa_{i}\geq 0$ set as 
 \[(\kappa_{1},\hdots,\kappa_5) = \left(5,6,7,4,5\right).\]
+In \eqref{rho0IEEE14}, $I_{0}(\cdot)$ denotes the modified Bessel function of the first kind with order zero, and can be evaluated via MATLAB command \texttt{besseli(0,$\cdot$)}. 
+
+
 The mean angles \eqref{MeanAngleInitialIEEE14} were obtained as steady state power flow solutions {\red{for the generator phase angles with constant load?? Please complete/edit this sentence}} Larger $\kappa_{i}$ entails a higher concentration around the mean angle $\mu_{\theta_{i}}(0)$ (setting $\kappa_i=0$ implies that $\theta_{i}(0)$ follows uniform distribution over $[0,2\pi)$).
 
 In \eqref{rho0IEEE14}, the $\bm{\omega}$ marginal $ \Omega_{0}\left(\bm{\omega}(0)\right)$ is a uniform PDF over $[-0.1,0.1]$ rad/s. Thus, the PDF $\rho_0$ in \eqref{rho0IEEE14} is supported over $\mathbb{T}^{5}\times [-0.1,0.1]$.
