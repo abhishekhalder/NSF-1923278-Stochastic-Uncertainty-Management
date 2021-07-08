@@ -55,15 +55,18 @@ fig = plt.figure(1, figsize=fig_size)  # figsize accepts only inches.
 # =============================================================================
 # Computational time plot 
 # =============================================================================
-Time_Synthetic = np.loadtxt("TimeSynthetic50Gen.txt")
-CompTime_Synthetic = np.loadtxt("ComptimeSythetic50Gen.txt")
+# Time_Synthetic = np.loadtxt("TimeSynthetic50Gen.txt")
+# CompTime_Synthetic = np.loadtxt("ComptimeSythetic50Gen.txt")
+
+Time_Synthetic = np.loadtxt("TimeSyntheticIEEE14bus.txt")
+CompTime_Synthetic = np.loadtxt("ComptimeSytheticIEEE14bus.txt")
 
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
 
 ax.semilogy(Time_Synthetic, CompTime_Synthetic,'-', color='b', lw=1.5)
 
-ax.set_ylim(5*10**-3, 5*10**-2)
+ax.set_ylim(10**-3, 6*10**-2)
 
 ax.tick_params(direction='in',which='both')
  # axx.xaxis.tick_top()
@@ -80,36 +83,37 @@ ax.set_xlabel(r"Physical time $t=kh$ [s]")
 # axx.legend(markerscale=1.5, numpoints=1,  ncol=1, bbox_to_anchor=(1.005, 1), frameon=False, prop={'size': 10.5})
 fig.set_size_inches(10.2, 6.2)
 
-plt.savefig('ComputationalTimeSynthetic50Gen.png', dpi=400)
+# plt.savefig('ComputationalTimeSynthetic50Gen.png', dpi=400)
+plt.savefig('ComputationalTimeSyntheticIEEE14bus.png', dpi=400)
 
 # =============================================================================
 # Relative error in mean vector: MC versus Prox plot
 # =============================================================================
-RelErrMeanVectorMCvsProx_Synthetic = np.loadtxt("RelErrMeanVectorMCvsProxSythetic50Gen.txt")
+# RelErrMeanVectorMCvsProx_Synthetic = np.loadtxt("RelErrMeanVectorMCvsProxSythetic50Gen.txt")
 
-fig = plt.figure()
-ax = fig.add_subplot(1, 1, 1)
+# fig = plt.figure()
+# ax = fig.add_subplot(1, 1, 1)
 
-ax.semilogy(Time_Synthetic[3:-1], RelErrMeanVectorMCvsProx_Synthetic[4:-1],'-', color='k', lw=1.5)
+# ax.semilogy(Time_Synthetic[3:-1], RelErrMeanVectorMCvsProx_Synthetic[4:-1],'-', color='k', lw=1.5)
 
-# ax.set_ylim(1*10**-3, 1.2*10**-2)
+# # ax.set_ylim(1*10**-3, 1.2*10**-2)
 
-ax.tick_params(direction='in',which='both')
- # axx.xaxis.tick_top()
+# ax.tick_params(direction='in',which='both')
+#  # axx.xaxis.tick_top()
 
-ax.grid(True,which="both",ls="-", color='0.75')
-# axx2.grid(True,which="both",ls="-", color='0.75')
-ax.tick_params(axis='both', labelsize=18)
+# ax.grid(True,which="both",ls="-", color='0.75')
+# # axx2.grid(True,which="both",ls="-", color='0.75')
+# ax.tick_params(axis='both', labelsize=18)
 
 
-ax.set_ylabel(r"Realtive error $\frac{\|\boldsymbol{\mu}_{k}^{\rm{MC}}-\boldsymbol{\mu}_{k}^{\rm{Prox}}\|_{2}}{\|\boldsymbol{\mu}_{k}^{\rm{MC}}\|_{2}}$")
-ax.set_xlabel(r"Physical time $t=kh$ [s]")
-# # axx.yaxis.set_label_coords(-0.125,-0.05)
+# ax.set_ylabel(r"Realtive error $\frac{\|\boldsymbol{\mu}_{k}^{\rm{MC}}-\boldsymbol{\mu}_{k}^{\rm{Prox}}\|_{2}}{\|\boldsymbol{\mu}_{k}^{\rm{MC}}\|_{2}}$")
+# ax.set_xlabel(r"Physical time $t=kh$ [s]")
+# # # axx.yaxis.set_label_coords(-0.125,-0.05)
 
-# axx.legend(markerscale=1.5, numpoints=1,  ncol=1, bbox_to_anchor=(1.005, 1), frameon=False, prop={'size': 10.5})
-fig.set_size_inches(10.2, 6.2)
+# # axx.legend(markerscale=1.5, numpoints=1,  ncol=1, bbox_to_anchor=(1.005, 1), frameon=False, prop={'size': 10.5})
+# fig.set_size_inches(10.2, 6.2)
 
-plt.savefig('RelativeErrorMeanMCVersusProxSynthetic50Gen.png', dpi=400)
+# plt.savefig('RelativeErrorMeanMCVersusProxSynthetic50Gen.png', dpi=400)
 
 
 

@@ -527,14 +527,37 @@ To illustrate the proposed computational framework, we next provide two numerica
 \label{fig:IEEE14marginals}
 \end{figure*}
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.95\linewidth]{ComputationalTimeSyntheticIEEE14bus.png}
+\caption{\small{The computational time for propagating the transient joint state PDFs over $\mathbb{T}^{5}\times\mathbb{R}^{5}$ for the simulation set up in Sec. \ref{subsec:NumSimIEEEBus}.}}
+\vspace*{-0.1in}
+\label{fig:CompTimeSynthetic}
+\end{figure}
 
 
-
-  
 
 \subsection{IEEE 14 Bus System}\label{subsec:NumSimIEEEBus}
+Following Sec. \ref{subsec:samplepathdynamics}, we consider the Kron-reduced dynamics \eqref{ItoSDEcomponentlevel} for the IEEE 14 bus system shown in Fig. \ref{fig:Motivating}. In this case, we have $n=5$ nodes which correspond to the buses 1, 2, 3, 6 and 8 in Fig. \ref{fig:Motivating}. {\red{The parameter values in \eqref{DefParam} use the network reduced admittance matrix computed from the CITE?? The parameters $m_{i}, \gamma_{i}$ are obtained from ....}} We randomly generated $\sigma_{i}\in [1,5]$ as
+\[(\sigma_{1},\hdots,\sigma_5) = \left(2.4628, 4.9266, 4.8724, 1.4215, 3.8681\right).\]
 
+We take the initial joint PDF as
+\begin{align}
+\rho_{0}&\equiv\rho(t=0,\bm{\theta}(0),\bm{\omega}(0)) = \vartheta_{0}\left(\bm{\theta}(0)\right)\Omega_{0}\left(\bm{\omega}(0)\right)\nonumber\\
+&=\underbrace{\left(\prod_{i=1}^{n=5}\dfrac{\exp\left(\kappa_{i}\cos\left(2\theta_{i}(0)-\mu_{\theta_{i}(0)}\right)\right)}{2\pi I_{0}(\kappa_{i})}\right)}_{=:\vartheta_{0}\left(\bm{\theta}(0)\right)}\nonumber\\
+	&\qquad\times \underbrace{{\rm{Unif}}\left([-0.1,0.1]\;\text{rad/s}\right)}_{=:\Omega_{0}\left(\bm{\omega}(0)\right)},
+\label{rho0IEEE14}		
+\end{align}
+whose $\bm{\theta}$ marginal $ \vartheta_{0}\left(\bm{\theta}(0)\right)$ is a product von Mises PDF \cite{mardia2008multivariate,mardia2014some} supported over $\mathbb{T}^{5}$ with mean angles (in rad)
+\begin{align}
+\left(\mu_{\theta_{1}}(0),\hdots,\mu_{\theta_{5}}(0)\right)=\left(0, 6.1963, 6.0612, 6.0350, 6.0500\right),
+\label{MeanAngleInitialIEEE14}	
+\end{align}
+and concentration parameter $\kappa_{i}\geq 0$ set as 
+\[(\kappa_{1},\hdots,\kappa_5) = \left(5,6,7,4,5\right).\]
+The mean angles \eqref{MeanAngleInitialIEEE14} were obtained as steady state power flow solutions {\red{for the generator phase angles with constant load?? Please complete/edit this sentence}} Larger $\kappa_{i}$ entails a larger concentration around the mean angle $\mu_{\theta_{i}}(0)$ (setting $\kappa_i=0$ implies that $\theta_{i}(0)$ follows uniform distribution over $[0,2\pi)$).
 
+In \eqref{rho0IEEE14}, the $\bm{\omega}$ marginal $ \Omega_{0}\left(\bm{\omega}(0)\right)$ is a uniform PDF over $[-0.1,0.1]$ rad/s. Thus, the PDF $\rho_0$ in \eqref{rho0IEEE14} is supported over $\mathbb{T}^{5}\times [-0.1,0.1]$.
 
 \begin{table}[t]
 \centering
@@ -572,7 +595,7 @@ coupling coefficient & $k_{ij}\begin{cases}
 \subsection{Synthetic Test System}\label{subsec:NumSimSynthetic}
 We next consider a power network with $n=50$ generators, and propagate the transient joint state PDFs supported over the 100 dimensional state space $\mathbb{T}^{50}\times\mathbb{R}^{50}$. We take the initial joint state PDF at $t=0$ as
 \begin{align}
-\rho_{0}\equiv\rho(t=0,\theta(0),\omega(0)) = &\;{\rm{Unif}}\left(\left([0,2\pi)\;\text{rad}\right)^{n}\right)\nonumber\\
+\rho_{0}\equiv\rho(t=0,\bm{\theta}(0),\bm{\omega}(0)) = &\;{\rm{Unif}}\left(\left([0,2\pi)\;\text{rad}\right)^{n}\right)\nonumber\\
 	&\qquad\times {\rm{Unif}}\left([-0.1,0.1]\;\text{rad/s}\right),
 \label{rho0synthetic}	
 \end{align}
@@ -870,8 +893,15 @@ P.~Kundur, \emph{Power System Stability and Control}, McGraw-Hill, New York, 199
 % === Kron reduction
 
 \bibitem{dorfler2012kron}
-F.~Dorfler, and F.~Bullo, ``Kron reduction of graphs with applications to electrical networks", \emph{IEEE Transactions on Circuits and Systems I: Regular Papers}, Vol. 60, No. 1, pp. 150--163, 2012.
+F.~Dorfler, and F.~Bullo, ``Kron Reduction of Graphs with Applications to Electrical Networks", \emph{IEEE Transactions on Circuits and Systems I: Regular Papers}, Vol. 60, No. 1, pp. 150--163, 2012.
 
+% === von Mises PDF on n torus: Tn
+\bibitem{mardia2008multivariate}
+K.V.~Mardia, G.~Hughes, C.C.~Taylor, H.~Singh, ``A Multivariate von Mises Distribution with Applications to Bioinformatics", \emph{Canadian Journal of Statistics}, Vol. 36, No. 1, pp. 99--109, 2008.
+
+\bibitem{mardia2014some}
+K.V.~Mardia, and J. Voss, ``Some Fundamental Properties of a
+Multivariate von Mises Distribution", \emph{Communications in Statistics - Theory and Methods}, Vol. 43, No. 6, pp. 1132--1144, 2014.
 
 	
 \end{thebibliography}

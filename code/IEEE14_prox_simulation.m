@@ -261,3 +261,10 @@ for j=1:num_Oscillator
         dlmwrite(textfilename_marg2D, marg2D_theta_omega_save{tt,j}.PF,'delimiter','\t','precision','%f');
     end    
 end
+
+%% save simulation time data
+textfilename = 'TimeSyntheticIEEE14bus.txt';
+dlmwrite(textfilename, t_vec,'delimiter','\t','precision','%.64f');
+
+textfilename = 'ComptimeSytheticIEEE14bus.txt';
+dlmwrite(textfilename, comptime,'delimiter','\t','precision','%.64f');
