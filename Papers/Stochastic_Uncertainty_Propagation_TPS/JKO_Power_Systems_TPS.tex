@@ -532,7 +532,7 @@ To illustrate the proposed computational framework, we next provide two numerica
 \includegraphics[width=0.95\linewidth]{ComputationalTimeSyntheticIEEE14bus.png}
 \caption{\small{The computational time for propagating the transient joint state PDFs over $\mathbb{T}^{5}\times\mathbb{R}^{5}$ for the simulation set up in Sec. \ref{subsec:NumSimIEEEBus}.}}
 \vspace*{-0.1in}
-\label{fig:CompTimeSynthetic}
+\label{fig:CompTimeIEEE14bus}
 \end{figure}
 
 
@@ -555,9 +555,13 @@ whose $\bm{\theta}$ marginal $ \vartheta_{0}\left(\bm{\theta}(0)\right)$ is a pr
 \end{align}
 and concentration parameter $\kappa_{i}\geq 0$ set as 
 \[(\kappa_{1},\hdots,\kappa_5) = \left(5,6,7,4,5\right).\]
-The mean angles \eqref{MeanAngleInitialIEEE14} were obtained as steady state power flow solutions {\red{for the generator phase angles with constant load?? Please complete/edit this sentence}} Larger $\kappa_{i}$ entails a larger concentration around the mean angle $\mu_{\theta_{i}}(0)$ (setting $\kappa_i=0$ implies that $\theta_{i}(0)$ follows uniform distribution over $[0,2\pi)$).
+The mean angles \eqref{MeanAngleInitialIEEE14} were obtained as steady state power flow solutions {\red{for the generator phase angles with constant load?? Please complete/edit this sentence}} Larger $\kappa_{i}$ entails a higher concentration around the mean angle $\mu_{\theta_{i}}(0)$ (setting $\kappa_i=0$ implies that $\theta_{i}(0)$ follows uniform distribution over $[0,2\pi)$).
 
 In \eqref{rho0IEEE14}, the $\bm{\omega}$ marginal $ \Omega_{0}\left(\bm{\omega}(0)\right)$ is a uniform PDF over $[-0.1,0.1]$ rad/s. Thus, the PDF $\rho_0$ in \eqref{rho0IEEE14} is supported over $\mathbb{T}^{5}\times [-0.1,0.1]$.
+
+With step size $h=10^{-3}$, we discretized time $t\in[0,1]$. Using Algorithm \ref{algo:KineticProx}, we propagated $N=1000$ random samples from \eqref{rho0IEEE14}, and evaluated at \eqref{rho0IEEE14}, to update the scattered weighted point clouds $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ over $\mathbb{T}^{5}\times\mathbb{R}^{5}$ at times $t_{k}:=kh$, $k\in\mathbb{N}$. We used the algorithmic parameters $\varepsilon=0.05$, $\delta=10^{-3}$, $L=300$.
+
+Fig. \ref{fig:IEEE14marginals} shows the time snapshots of the $(\theta_{i},\omega_{i})$ bivariate marginal PDFs for generator $i=1,\hdots, n=5$, computed using the weighted point clouds $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. Notice that in Fig. \ref{fig:IEEE14marginals}, the horizontal axes of the subfigures have periodic boundary conditions, i.e., $(\theta_{i},\omega_{i})\in\mathbb{T}\times\mathbb{R}$ (cylinder). Fig. \ref{fig:CompTimeIEEE14bus} shows the computational times needed to update $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ via Algorithm \ref{algo:KineticProx}.  
 
 \begin{table}[t]
 \centering
@@ -618,7 +622,7 @@ and following \cite[Sec. 5]{dorfler2012synchronization}, randomly generate the p
 \label{fig:RelErrSynthetic}
 \end{figure}
 
-With $N=2000$ random samples from the initial joint PDF \eqref{rho0synthetic}, and with the aforesaid randomly generated parameters, we employed the Euler-Maruyama scheme together with Algorithm \ref{algo:KineticProx} for propagating $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. We used $h=10^{-3}$, $\varepsilon = 0.05$, $\delta = 10^{-3}$, $L = 300$.
+With $N=2000$ random samples from the initial joint PDF \eqref{rho0synthetic}, and with the aforesaid randomly generated parameters, we employed the Euler-Maruyama scheme together with Algorithm \ref{algo:KineticProx} for propagating $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. As in Sec. \ref{subsec:NumSimIEEEBus}, we used $h=10^{-3}$, $\varepsilon = 0.05$, $\delta = 10^{-3}$, $L = 300$.
 
 Fig. \ref{fig:CompTimeSynthetic} highlights that for computing high dimensional transient joint state PDFs as in here, the proposed variational framework enjoys remarkably fast computational time. Notice that constructing histograms or other conventional density estimators for the joint state PDF by making a grid over the 100 dimensional state space, is computationally prohibitive. 
 
@@ -910,41 +914,41 @@ Multivariate von Mises Distribution", \emph{Communications in Statistics - Theor
 % biographies
 %\newpage
 
-\begin{IEEEbiography}[{\includegraphics[height=1.25in]{Abhishek-Halder.jpg}}]{Abhishek
-Halder}
-(S'10-M'14-SM'21) is an Assistant Professor in the Department of Applied Mathematics,
-and is an affiliated faculty in the Department of Electrical and Computer Engineering at
-University of California, Santa Cruz. Before that he held postdoctoral
-positions in the Department of Mechanical and Aerospace Engineering at
-University of California, Irvine, and in the Department of Electrical
-and Computer Engineering at Texas A\&M University. He obtained his
-Bachelors and Masters from Indian Institute of Technology Kharagpur in
-2008, and Ph.D. from Texas A\&M University in 2014, all in Aerospace
-Engineering. His research interests are in stochastic systems, control, learning and optimization with application focus on large scale cyber-physical
-systems.
-\end{IEEEbiography}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{XinboGeng.jpg}}]{Xinbo Geng} (S'13-M'20)
-received his B.E. degree in Electrical Engineering from Tsinghua University, Beijing, China, in 2013. He received the M.S. and Ph.D. degrees from Department of Electrical and Computer Engineering, Texas A\&M University, College Station, TX, in 2015 and 2019, respectively.
-He is a postdoctoral researcher jointly affiliated with Cornell University and Texas A\&M University since 2020.
-He was a power system design and studies intern at National Renewable Energy Lab in 2016, a data analyst intern at ISO New England in 2017, a visiting student at UC Berkeley and MIT in 2018, and a visiting student at University of Wisconsin Madison in 2019.
-His main research interest is decision making under uncertainties.
-\end{IEEEbiography}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{IEEEbiography}[{\includegraphics[height=1.25in]{kenneth.jpg}}]{Kenneth F. Caluya}
-is a Ph.D. student in the Department of Applied Mathematics at University of California, Santa Cruz. He obtained his B.S. degree in Mathematics at University of California, Riverside, in 2017. His research interests lie at the intersection of probability, convex optimization, partial differential equations, and dynamical systems.
-\end{IEEEbiography}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{IEEEbiography}[{\includegraphics[height=1.25in]{parmita.png}}]{Pegah Ojaghi}
-is a Ph.D. student in the Department of Computer Science and Engineering at University of California, Santa Cruz. She obtained M.S. in Computer Engineering from the University of California, Santa Cruz in 2020, and M.S. in Control Engineering from the Imam Khomeini International University, Qazvin, Iran in 2015. She obtained B.S. in Control Engineering from the Hamedan University of Technology, Hamedan, Iran in 2012.
-\end{IEEEbiography}
+%\begin{IEEEbiography}[{\includegraphics[height=1.25in]{Abhishek-Halder.jpg}}]{Abhishek
+%Halder}
+%(S'10-M'14-SM'21) is an Assistant Professor in the Department of Applied Mathematics,
+%and is an affiliated faculty in the Department of Electrical and Computer Engineering at
+%University of California, Santa Cruz. Before that he held postdoctoral
+%positions in the Department of Mechanical and Aerospace Engineering at
+%University of California, Irvine, and in the Department of Electrical
+%and Computer Engineering at Texas A\&M University. He obtained his
+%Bachelors and Masters from Indian Institute of Technology Kharagpur in
+%2008, and Ph.D. from Texas A\&M University in 2014, all in Aerospace
+%Engineering. His research interests are in stochastic systems, control, learning and optimization with application focus on large scale cyber-physical
+%systems.
+%\end{IEEEbiography}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{XinboGeng.jpg}}]{Xinbo Geng} (S'13-M'20)
+%received his B.E. degree in Electrical Engineering from Tsinghua University, Beijing, China, in 2013. He received the M.S. and Ph.D. degrees from Department of Electrical and Computer Engineering, Texas A\&M University, College Station, TX, in 2015 and 2019, respectively.
+%He is a postdoctoral researcher jointly affiliated with Cornell University and Texas A\&M University since 2020.
+%He was a power system design and studies intern at National Renewable Energy Lab in 2016, a data analyst intern at ISO New England in 2017, a visiting student at UC Berkeley and MIT in 2018, and a visiting student at University of Wisconsin Madison in 2019.
+%His main research interest is decision making under uncertainties.
+%\end{IEEEbiography}
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%\begin{IEEEbiography}[{\includegraphics[height=1.25in]{kenneth.jpg}}]{Kenneth F. Caluya}
+%is a Ph.D. student in the Department of Applied Mathematics at University of California, Santa Cruz. He obtained his B.S. degree in Mathematics at University of California, Riverside, in 2017. His research interests lie at the intersection of probability, convex optimization, partial differential equations, and dynamical systems.
+%\end{IEEEbiography}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%\begin{IEEEbiography}[{\includegraphics[height=1.25in]{parmita.png}}]{Pegah Ojaghi}
+%is a Ph.D. student in the Department of Computer Science and Engineering at University of California, Santa Cruz. She obtained M.S. in Computer Engineering from the University of California, Santa Cruz in 2020, and M.S. in Control Engineering from the Imam Khomeini International University, Qazvin, Iran in 2015. She obtained B.S. in Control Engineering from the Hamedan University of Technology, Hamedan, Iran in 2012.
+%\end{IEEEbiography}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
