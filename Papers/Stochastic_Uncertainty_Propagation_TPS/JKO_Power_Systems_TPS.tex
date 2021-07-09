@@ -26,6 +26,7 @@
 
 \renewcommand*{\thefootnote}{\fnsymbol{footnote}}
 \newcommand{\red}{\color{red}}
+<<<<<<< HEAD
 
 
 
@@ -39,19 +40,38 @@
         Pegah~Ojaghi,
         and~Xinbo~Geng,~\IEEEmembership{Member,~IEEE}% <-this % stops a space
 \thanks{A. Halder and K.F. Caluya are with the Department of Applied Mathematics, University of California, Santa Cruz, CA 95064, USA, {\texttt{\{ahalder,kcaluya\}@ucsc.edu}}.}% <-this % stops a space
+=======
+
+
+
+\begin{document}
+
+\title{\LARGE \bf Stochastic Uncertainty Propagation in Power System Dynamics using Measure-valued Proximal Recursions}
+
+\author{Abhishek~Halder,~\IEEEmembership{Senior Member,~IEEE,} 
+%\author{Abhishek~Halder,~\IEEEmembership{Member,~IEEE,}
+Xinbo~Geng,~\IEEEmembership{Member,~IEEE,}
+        Kenneth~F. Caluya,
+        and~Pegah~Ojaghi% <-this % stops a space
+\thanks{A. Halder and K.F. Caluya are with the Department of Applied Mathematics, University of California, Santa Cruz, CA 95064, USA, {\texttt{\{ahalder,kcaluya\}@ucsc.edu}}.}% <-this % stops a space
+>>>>>>> 1fdb1f70e0079d2abe275d3bdca9cc245852d511
 \thanks{X. Geng is with the School of Electrical and Computer Engineering, Cornell University, Ithaca, NY 14850, USA, {\texttt{xg72@cornell.edu}}.} %
 \thanks{P. Ojaghi is with the Department of Computer Science and Engineering, University of California, Santa Cruz, CA 95064, USA, {\texttt{pojaghi@ucsc.edu}}.}%
 \thanks{This research was partially supported by the NSF award 1923278.}}% <-this % stops a space
-%\thanks{Manuscript received April 19, 2005; revised August 26, 2015.}}% The paper headers
+%\thanks{Manuscript received April 19, 2005; revised August 26, 2015.}}
+% The paper headers
 %\markboth{Journal of \LaTeX\ Class Files,~Vol.~14, No.~8, August~2015}%
 
-\maketitle
+\maketitle
+
 \begin{abstract}
 We present a proximal algorithm that performs a variational recursion on the space of joint probability measures to propagate the stochastic uncertainties in power system dynamics over high dimensional state space. The proposed algorithm takes advantage of the exact nonlinearity structures in the trajectory-level dynamics of the networked power systems, and is nonparametric. Lifting the dynamics to the space of probability measures allows us to design a scalable algorithm that obviates gridding the underlying high dimensional state space which is computationally prohibitive. The proximal recursion implements a generalized infinite dimensional gradient flow, and evolves probability weighted scattered point clouds. We clarify the theoretical nuances and algorithmic details specific for the power system nonlinearities, and provide illustrative numerical examples.
-\end{abstract}
+\end{abstract}
+
 \begin{IEEEkeywords}
 Uncertainty propagation, power system dynamics, kinetic Fokker-Planck equation, proximal operator.
-\end{IEEEkeywords}
+\end{IEEEkeywords}
+
 
 
 \section{Introduction}\label{sec:intro}
@@ -543,7 +563,10 @@ All simulations were performed in MATLAB R2019b on an iMac with 3.4 GHz Quad-Cor
 
 
 \subsection{IEEE 14 Bus System}\label{subsec:NumSimIEEEBus}
-Following Sec. \ref{subsec:samplepathdynamics}, we consider the Kron-reduced dynamics \eqref{ItoSDEcomponentlevel} for the IEEE 14 bus system shown in Fig. \ref{fig:Motivating}. In this case, we have $n=5$ nodes which correspond to the buses 1, 2, 3, 6 and 8 in Fig. \ref{fig:Motivating}. {\red{The parameter values in \eqref{DefParam} use the network reduced admittance matrix computed from the CITE?? The parameters $m_{i}, \gamma_{i}$ are obtained from ....}} We randomly generated $\sigma_{i}\in [1,5]$ as
+Following Sec. \ref{subsec:samplepathdynamics}, we consider the Kron-reduced dynamics \eqref{ItoSDEcomponentlevel} for the IEEE 14 bus system shown in Fig. \ref{fig:Motivating}. In this case, we have $n=5$ nodes which correspond to the buses 1, 2, 3, 6 and 8 in Fig. \ref{fig:Motivating}.
+{\red{The original parameters of the 14-bus system are from Matpower \cite{zimmerman2010matpower}. The calculation of network reduced admittance matrices in \eqref{DefParam} is described in \ref{subsec:samplepathdynamics} and \cite{dorfler2012kron}.
+The parameters $m_{i}, \gamma_{i}$ are obtained from ANDES \cite{cui2021andes}.}}
+We randomly generated $\sigma_{i}\in [1,5]$ as
 \[(\sigma_{1},\hdots,\sigma_5) = \left(2.4628, 4.9266, 4.8724, 1.4215, 3.8681\right).\]
 
 We take the initial joint PDF as
@@ -562,8 +585,7 @@ and concentration parameter $\kappa_{i}\geq 0$ set as
 \[(\kappa_{1},\hdots,\kappa_5) = \left(5,6,7,4,5\right).\]
 In \eqref{rho0IEEE14}, $I_{0}(\cdot)$ denotes the modified Bessel function of the first kind with order zero, given by $I_{0}(\kappa) = \sum_{r=0}^{\infty} \frac{\left(\kappa^{2}/4\right)^{r}}{(r!)^{2}}$, and can be evaluated via MATLAB command \texttt{besseli(0,$\cdot$)}. 
 
-
-The mean angles \eqref{MeanAngleInitialIEEE14} were obtained as steady state power flow solutions {\red{for the generator phase angles with constant load?? Please complete/edit this sentence}} Larger $\kappa_{i}$ entails a higher concentration around the mean angle $\mu_{\theta_{i}}(0)$ (setting $\kappa_i=0$ implies that $\theta_{i}(0)$ follows uniform distribution over $[0,2\pi)$).
+The mean angles \eqref{MeanAngleInitialIEEE14} were obtained from steady state AC power flow solutions. Larger $\kappa_{i}$ entails a higher concentration around the mean angle $\mu_{\theta_{i}}(0)$ (setting $\kappa_i=0$ implies that $\theta_{i}(0)$ follows uniform distribution over $[0,2\pi)$).
 
 In \eqref{rho0IEEE14}, the $\bm{\omega}$ marginal $ \Omega_{0}\left(\bm{\omega}(0)\right)$ is a uniform PDF over $[-0.1,0.1]$ rad/s. Thus, the PDF $\rho_0$ in \eqref{rho0IEEE14} is supported over $\mathbb{T}^{5}\times [-0.1,0.1]$.
 
@@ -699,7 +721,9 @@ i.e., $\Phi$ is stationary if and only if $\tilde{\rho}$ has $\bm{\eta}$ margina
 $$\tilde{\rho}_{\infty}(\bm{\xi},\bm{\eta}) \propto \exp\left(-2U(\bm{\xi})+\bm{\eta}^{\top}\bm{M}^{-1}\bm{\Gamma}\bm{\eta}\right),$$
 and is exactly where $\frac{\differential}{\differential t}\Phi = 0$. Therefore, $\frac{\differential}{\differential t}\Phi < 0$ along the transient solution of \eqref{NewPDE}, and $=0$ at the stationary solution of \eqref{NewPDE}.
 
-
+
+
+
 
 
 
@@ -926,10 +950,15 @@ Multivariate von Mises Distribution", \emph{Communications in Statistics - Theor
 \bibitem{mardia2009directional}
 K.V.~Mardia, and P.E.~Jupp, \emph{Directional Statistics}, Wiley, 1st edition, 1999.
 
+\bibitem{zimmerman2010matpower}
+R.D.~Zimmerman, C.E.~Murillo-S{\'a}nchez, R.J. Thomas, ``MATPOWER: Steady-state operations, planning, and analysis tools for power systems research and education'', \emph{IEEE Transactions on power systems},  Vol. 26, No. 1, pp. 12--19, 2010.
+
+\bibitem{cui2021andes}
+H.~Cui, F.~Li and K.~Tomsovic, ``Hybrid Symbolic-Numeric Framework for Power System Modeling and Analysis,'' \emph{IEEE Transactions on Power Systems}, vol. 36, no. 2, pp. 1373-1384, 2021.
 	
 \end{thebibliography}
 
-% insert where needed to balance the two columns on the last page with
+% insert where needed to balance the two columns on the last page with
 % biographies
 %\newpage
 
