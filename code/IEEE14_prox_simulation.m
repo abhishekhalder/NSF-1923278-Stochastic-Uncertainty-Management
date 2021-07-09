@@ -235,6 +235,8 @@ for j=1:num_Oscillator
         if j==1
             title(['$t=$' num2str(t_now_vec(tt))],'interpreter','latex')
         end
+        set(gca,'XTick',0:pi/2:2*pi, 'XTickLabel',{'$0$','$\frac{\pi}{2}$','$\pi$','$\frac{3\pi}{2}$','$2\pi$'})
+        set(get(gca,'XAxis'),'TickDir','out')
         axis tight
         hold on
     end    
