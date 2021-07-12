@@ -145,7 +145,7 @@ In this work, we consider the coupled stochastic differential equations (SDEs) a
 where the state variables are the rotor angles $\theta_{i}\in[0,2\pi)$ and the rotor angular velocities $\omega_{i}\in\mathbb{R}$, for $i\in\{1,\hdots,n\}$. The stochastic forcing is modeled through the standard Wiener process $w_{i}(t)$, and the diffusion coefficient $\sigma_{i}>0$ denotes the intensity of stochastic forcing at the $i$th generator.
  
 \begin{remark}
-We emphasize here that the network-reduced model \eqref{ItoSDEcomponentlevel} is obtained from the so-called structure preserving power network model \cite{odun2012structure} after applying the Kron reduction \cite{dorfler2012kron}, and therefore, has all-to-all connection topology.	
+We emphasize here that the network-reduced model \eqref{ItoSDEcomponentlevel} is obtained from the so-called structure preserving power network model \cite{odun2012structure} after applying the Kron reduction \cite{dorfler2012kron}, and therefore, has all-to-all connection topology. The derivation of the Kron-reduced parameters is outlined below.
 \end{remark}
 
 With the $i$th generator, we associate its inertia $m_{i}>0$ and damping coefficient $\gamma_{i}>0$. The other parameters: the \emph{effective power input} $P_{i}$, the \emph{phase shift} $\varphi_{ij}\in[0,\frac{\pi}{2})$, and the \emph{coupling coefficients} $k_{ij}\geq 0$, depend on the network reduced admittance matrix $\bm{Y}\equiv[Y_{ij}]_{i,j=1}^{n}\in\mathbb{C}^{n\times n}$. Specifically,
