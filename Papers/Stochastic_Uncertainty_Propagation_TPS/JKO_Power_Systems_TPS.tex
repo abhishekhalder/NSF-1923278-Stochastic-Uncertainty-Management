@@ -48,7 +48,7 @@
 \author{Abhishek~Halder,~\IEEEmembership{Senior Member,~IEEE,} 
         Kenneth~F. Caluya,
         Pegah~Ojaghi,
-        and~Xinbo~Geng,~\IEEEmembership{Member,~IEEE}% <-this % stops a space
+        and~Xinbo~Geng% <-this % stops a space
 \thanks{A. Halder and K.F. Caluya are with the Department of Applied Mathematics, University of California, Santa Cruz, CA 95064, USA, {\texttt{\{ahalder,kcaluya\}@ucsc.edu}}.}% <-this % stops a space
 \thanks{P. Ojaghi is with the Department of Computer Science and Engineering, University of California, Santa Cruz, CA 95064, USA, {\texttt{pojaghi@ucsc.edu}}.}%
 \thanks{X. Geng is with the School of Electrical and Computer Engineering, Cornell University, Ithaca, NY 14850, USA, {\texttt{xg72@cornell.edu}}.} %
@@ -515,11 +515,16 @@ with an entropic regularization of the variational update \eqref{KineticProx}, a
 
 
 Finally, we transform the proximal updates back to the $\bm{x}\equiv\left(\bm{\theta},\bm{\omega}\right)^{\top}$ state space via the pushforward $\bm{\Psi}^{-1}$ as
-\begin{align}
-\varrho_{k}\left(\bm{\theta}_{k}^{i},\bm{\omega}_{k}^{i}\right) &= \bm{\Psi}^{-1}_{\sharp} \tilde{\varrho}_{k}\left(\bm{\xi}_{k}^{i},\bm{\eta}_{k}^{i}\right) \nonumber\\
-&= \left(\prod_{j=1}^{n}m_{j}/\sigma_{j}\right)^{\!\!2}\tilde{\varrho}_{k}\left(\bm{M}\bm{\Sigma}^{-1}\bm{\theta}_{k}^{i},\bm{M}\bm{\Sigma}^{-1}\bm{\omega}_{k}^{i}\right),
+% \begin{align}
+% \varrho_{k}\left(\bm{\theta}_{k}^{i},\bm{\omega}_{k}^{i}\right) &= \bm{\Psi}^{-1}_{\sharp} \tilde{\varrho}_{k}\left(\bm{\xi}_{k}^{i},\bm{\eta}_{k}^{i}\right) \nonumber\\
+% &= \left(\prod_{j=1}^{n}m_{j}/\sigma_{j}\right)^{\!\!2}\tilde{\varrho}_{k}\left(\bm{M}\bm{\Sigma}^{-1}\bm{\theta}_{k}^{i},\bm{M}\bm{\Sigma}^{-1}\bm{\omega}_{k}^{i}\right),
+% \label{BringBackOriginalStateSpace}	
+% \end{align}
+\begin{multline}
+\varrho_{k}\left(\bm{\theta}_{k}^{i},\bm{\omega}_{k}^{i}\right) = \bm{\Psi}^{-1}_{\sharp} \tilde{\varrho}_{k}\left(\bm{\xi}_{k}^{i},\bm{\eta}_{k}^{i}\right) \\
+= \left(\prod_{j=1}^{n}m_{j}/\sigma_{j}\right)^{\!\!2}\tilde{\varrho}_{k}\left(\bm{M}\bm{\Sigma}^{-1}\bm{\theta}_{k}^{i},\bm{M}\bm{\Sigma}^{-1}\bm{\omega}_{k}^{i}\right),
 \label{BringBackOriginalStateSpace}	
-\end{align}
+\end{multline}
 for all $i=1,\hdots,N$. The $\varrho_{k}\left(\bm{\theta},\bm{\omega}\right)$ from \eqref{BringBackOriginalStateSpace} approximates $\rho(t,\bm{\theta},\bm{\omega})$ (the transient solution of \eqref{KineticFPK}) in the sense \eqref{ConvergenceGuarantee}. 
 
 For completeness, the algorithm \textproc{Prox} for updating $\{\tilde{\varrho}_{k-1}^{i}\}_{i=1}^{N}\mapsto\{\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ is outlined in Algorithm \ref{algo:KineticProx}. As shown in Fig. \ref{fig:BlockDiagm}, this algorithm, at a conceptual level, takes the pre and post update state samples 
@@ -558,7 +563,7 @@ All simulations were performed in MATLAB R2019b on an iMac with 3.4 GHz Quad-Cor
 
 
 \subsection{IEEE 14 Bus System}\label{subsec:NumSimIEEEBus}
-We consider the Kron-reduced dynamics \eqref{ItoSDEcomponentlevel} for the IEEE 14 bus system shown in Fig. \ref{fig:Motivating}. In this case, we have $n=5$ nodes which correspond to the buses 1, 2, 3, 6 and 8 in Fig. \ref{fig:Motivating}. We obtained the parameters of the 14 bus system from MATPOWER \cite{zimmerman2010matpower}. The calculation of Kron-reduced admittance matrix and current vector in \eqref{DefParam} followed Sec.  \ref{subsec:samplepathdynamics}; see also \cite{dorfler2012kron}. The parameters $m_{i}, \gamma_{i}$ were obtained from the open-source Python-based
+We consider the Kron-reduced dynamics \eqref{ItoSDEcomponentlevel} for the IEEE 14 bus system shown in Fig. \ref{fig:Motivating}. In this case, we have $n=5$ nodes which correspond to the buses 1, 2, 3, 6 and 8 in Fig. \ref{fig:Motivating}. We obtained the parameters of the 14-bus system from MATPOWER \cite{zimmerman2010matpower}. The calculation of Kron-reduced admittance matrix and current vector in \eqref{DefParam} followed Sec.  \ref{subsec:samplepathdynamics}; see also \cite{dorfler2012kron}. The parameters $m_{i}, \gamma_{i}$ were obtained from the open-source Python-based
 library ANDES \cite{cui2021andes}.
 
 We randomly generated the noise coefficients $\sigma_{i}\in [1,5]$ as
@@ -624,13 +629,17 @@ coupling coefficient & $k_{ij}\begin{cases}
 
 \subsection{Synthetic Test System}\label{subsec:NumSimSynthetic}
 We next consider a power network with $n=50$ generators, and propagate the transient joint state PDFs supported over the 100 dimensional state space $\mathbb{T}^{50}\times\mathbb{R}^{50}$. We take the initial joint state PDF at $t=0$ as
-\begin{align}
-\rho_{0}\equiv\rho(t=0,\bm{\theta}(0),\bm{\omega}(0)) = &\;{\rm{Unif}}\left(\left([0,2\pi)\;\text{rad}\right)^{n}\right)\nonumber\\
-	&\qquad\times {\rm{Unif}}\left([-0.1,0.1]\;\text{rad/s}\right),
+% \begin{align}
+% \rho_{0}\equiv\rho(t=0,\bm{\theta}(0),\bm{\omega}(0)) = &\;{\rm{Unif}}\left(\left([0,2\pi)\;\text{rad}\right)^{n}\right)\nonumber\\
+% 	&\qquad\times {\rm{Unif}}\left([-0.1,0.1]\;\text{rad/s}\right),
+% \label{rho0synthetic}	
+% \end{align}
+\begin{multline}
+\rho_{0}\equiv\rho(t=0,\bm{\theta}(0),\bm{\omega}(0)) = \;{\rm{Unif}}\left(\left([0,2\pi)\;\text{rad}\right)^{n}\right) \\
+	\qquad\times {\rm{Unif}}\left([-0.1,0.1]\;\text{rad/s}\right),
 \label{rho0synthetic}	
-\end{align}
+\end{multline}
 and following \cite[Sec. 5]{dorfler2012synchronization}, randomly generate the parameters as in Table \ref{table:ParamUncertaintiesSynthetic}. These parameter ranges are consistent with the same found in \cite{sauerpai1998,andersonBook1977,kundurBook1994}.
-
 
 
 \begin{figure}[t]
