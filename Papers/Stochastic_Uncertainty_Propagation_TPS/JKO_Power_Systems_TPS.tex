@@ -642,7 +642,7 @@ coupling coefficient & $k_{ij}\begin{cases}
 \end{table}
 
 \subsection{Synthetic Test System}\label{subsec:NumSimSynthetic}
-We next consider a power network with $n=50$ generators, and propagate the transient joint state PDFs supported over the 100 dimensional state space $\mathbb{T}^{50}\times\mathbb{R}^{50}$. We take the initial joint state PDF at $t=0$ as
+To highlight the scalability of the proposed method, we next consider a power network with $n=50$ generators, and propagate the transient joint state PDFs supported over the 100 dimensional state space $\mathbb{T}^{50}\times\mathbb{R}^{50}$. We take the initial joint state PDF at $t=0$ as
 % \begin{align}
 % \rho_{0}\equiv\rho(t=0,\bm{\theta}(0),\bm{\omega}(0)) = &\;{\rm{Unif}}\left(\left([0,2\pi)\;\text{rad}\right)^{n}\right)\nonumber\\
 % 	&\qquad\times {\rm{Unif}}\left([-0.1,0.1]\;\text{rad/s}\right),
@@ -673,7 +673,7 @@ and following \cite[Sec. 5]{dorfler2012synchronization}, randomly generate the p
 
 With $N=2000$ random samples from the initial joint PDF \eqref{rho0synthetic}, and with the aforesaid randomly generated parameters, we employed the procedure detailed in Sec. \ref{sec:ProxAlgo} for propagating $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. As in Sec. \ref{subsec:NumSimIEEEBus}, we used $h=10^{-3}$, $\varepsilon = 0.05$, $\delta = 10^{-3}$, $L = 300$ in Algorithm \ref{algo:KineticProx}.
 
-Fig. \ref{fig:CompTimeSynthetic} highlights that for computing high dimensional transient joint state PDFs as in here, the proposed variational framework enjoys remarkably fast computational time. Notice that constructing histograms or other conventional density estimators for the joint state PDF by making a grid over the 100 dimensional state space, is computationally prohibitive. 
+Fig. \ref{fig:CompTimeSynthetic} highlights that for computing high dimensional transient joint state PDFs as in here, the proposed variational framework enjoys remarkably fast computational time. Notice that constructing histograms or other conventional density estimators for the joint state PDF by making a grid over the 100 dimensional state space, is computationally prohibitive in a general purpose computer. 
 
 To depict the numerical accuracy, Fig. \ref{fig:RelErrSynthetic} plots the (time-varying) relative error between the empirical (i.e., Monte Carlo estimate) mean vector $\bm{\mu}_{k}^{\text{MC}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$, and the ``proximal mean" vector $\bm{\mu}_{k}^{\text{Prox}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$. The latter was computed using the proximal updates $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. Fig. \ref{fig:RelErrSynthetic} shows that the time varying statistics from these two computation match very well at all times.
 

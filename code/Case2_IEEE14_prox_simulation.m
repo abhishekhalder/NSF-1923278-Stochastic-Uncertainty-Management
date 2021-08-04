@@ -43,12 +43,31 @@ I_reduced_phase = (I_reduced_phase(2,2:end))';
 I_reduced = I_reduced_mag.*exp(1i*I_reduced_phase);
 
 %P_mech = gen_param(:,2);
-P_mech = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/Data/case2_time_series_P_mech_in_per_unit.csv');
+P_mech_coarse = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/Data/case2_time_series_P_mech_in_per_unit.csv');
 %P_mech = (P_mech(2:end))';
-P_load = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/Data/case2_time_series_P_load_at_genbuses.csv');
+P_load_coarse = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/Data/case2_time_series_P_load_at_genbuses.csv');
 %P_load = (P_load(2:end))';
 
-t_vec_coarse = P_mech(:,1);
+h = 1e-3;                         % time step
+t_vec_coarse = P_mech_coarse(:,1);
+t_vec = t_vec_coarse(1):h:t_vec_coarse(end);
+
+%initialize
+P_mech = zeros(numel(t_vec),num_Oscillator);
+P_load = zeros(numel(t_vec),num_Oscillator);
+% interpolate the time varying powers to a finer grid
+figure
+for j=2:size(P_mech_coarse,2)-1    
+    P_mech(:,j) = interp1(t_vec_coarse,P_mech_coarse(:,j),t_vec,'spline');
+    P_load(:,j) = interp1(t_vec_coarse,P_load_coarse(:,j),t_vec,'spline');
+
+    plot(t_vec,P_mech_coarse(:,j),'LineWidth',2)    
+    xlabel('$t$','FontSize', 30,'Interpreter','latex')
+end
+set(gca,'FontSize',30)
+legend('$P_{1}^{\text{mech}}$','$P_{2}^{\text{mech}}$','$P_{3}^{\text{mech}}$','$P_{4}^{\text{mech}}$','$P_{5}^{\text{mech}}$','FontSize', 30,'Interpreter','latex');
+axis tight
+
 
 % effective power input
 P = P_mech - P_load - ((E_mag.^2).*diag(Y_reduced_real)) + real(E.*(conj(I_reduced)));
@@ -74,10 +93,9 @@ theta0_a = 0 ; theta0_b = 2*pi; omega0_a = -.1 ; omega0_b = .1;
 % parameters for proximal recursion
 nSample = 1000;                      % number of samples                                                           
 epsilon = 0.5;                      % regularizing coefficient                                      
-h = 1e-3;                         % time step
-numSteps = 1e3;                    % number of steps k, in discretization t=kh
+%numSteps = 1e3;                    % number of steps k, in discretization t=kh
 cc = 1e7;
-t_vec = h*(1:1:numSteps);
+%t_vec = h*(1:1:numSteps);
 %% popagate joint PDF
  
 % samples from initial joint PDF
