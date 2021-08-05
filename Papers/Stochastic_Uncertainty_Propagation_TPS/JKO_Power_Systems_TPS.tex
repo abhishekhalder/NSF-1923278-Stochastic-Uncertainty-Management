@@ -107,6 +107,9 @@ Several technical challenges need to be overcome to achieve scalable computation
 \subsubsection{Contributions of this paper}
 Our main contribution is to demonstrate that by harnessing recent developments in generalized gradient flows \cite{ambrosio2008gradient} and proximal algorithms \cite{parikh2014proximal}, it is possible to perform \emph{nonparametric} propagation of the joint state PDFs subject to the stochastic nonlinear dynamics of a networked power system, and that the computation can be performed in a gridless and scalable manner. In doing so, the paper also makes theoretical contribution by introducing a change of coordinates that transforms the joint PDF evolution equations in way that is amenable for the aforesaid generalized proximal recursions.
 
+From a methodological perspective, while proximal algorithms are well-studied \cite{parikh2014proximal,rockafellar1976monotone,combettes2011proximal} in finite dimensional optimization context, the utility of generalized proximal recursions to compute the transient solutions of partial differential equations (PDEs) is relatively less known. This paper highlights this connection by solving the PDE induced by the stochastic power system dynamics.
+
+
 Our technical approach juxtaposes with the existing power systems literature discussed above, in that we approximate neither the dynamical nonlinearity nor the statistics. Instead of treating the exact nonlinearity as bane, we exploit the geometry induced by the power system's dynamical nonlinearity over the manifold of time-varying joint state PDFs, thereby enabling a new proximal algorithm to compute the transient joint PDFs.
 
 \subsubsection{Notation and organization}
@@ -264,7 +267,7 @@ Given the sample path dynamics \eqref{ItoSDEcomponentlevel} or equivalently \eqr
 \end{align} 
 denoting initial condition uncertainties at time $t=t_{0}$, and prescribed parametric uncertainties given by the joint parameter PDF $\rho_{\text{param}}$, the uncertainty propagation problem calls for computing the transient joint state PDFs $\rho(t,\bm{x})\equiv\rho(t,\bm{\theta},\bm{\omega})$ for any desired time $t \geq t_{0}$, which is a nonnegative function supported on the state space $\mathbb{T}^{n} \times \mathbb{R}^{n}$ satisfying $\int \rho = 1$ for all $t\geq t_{0}$.
 
-The corresponding macroscopic dynamics governing the flow of the joint state PDF $\rho(t,\bm{\theta},\bm{\omega})$ is given by a kinetic Fokker-Planck \cite{villani2006hypocoercive} partial differential equation (PDE)
+The corresponding macroscopic dynamics governing the flow of the joint state PDF $\rho(t,\bm{\theta},\bm{\omega})$ is given by a kinetic Fokker-Planck \cite{villani2006hypocoercive} PDE
 \begin{align}
 \frac{\partial \rho}{\partial t} &= - \langle \bm{\omega},\nabla_{\bm{\theta}}\rho \rangle  + \nabla_{\bm{\omega}} \cdot \left( \rho \left( \bm{M}^{-1}\bm{\Gamma}\bm{\omega} + \bm{M}^{-1}\nabla_{\bm{\theta}}V(\bm{\theta}) \right.\right.\nonumber\\
 &\qquad\qquad\qquad \left.\left. +\frac{1}{2} \bm{M}^{-1}\bm{\Sigma}\bm{\Sigma}^{\top}\bm{M}^{-1} \nabla_{\bm{\omega}} \log \rho \right) \right),
@@ -869,6 +872,11 @@ R.E. Bellman, \emph{Dynamic Programming}, Courier Dover Publications, 1957.
 \bibitem{parikh2014proximal}
 N.~Parikh, and S.~Boyd, ``Proximal Algorithms", \emph{Foundations and Trends in Optimization}, Vol. 1, No. 3, pp. 127--239, 2014.
 
+\bibitem{rockafellar1976monotone}
+R.T.~Rockafellar, ``Monotone Operators and the Proximal Point Algorithm", \emph{SIAM Journal on Control and Optimization}, Vol. 14, No. 5, pp. 877--898, 1976.
+
+\bibitem{combettes2011proximal}
+P.L.~Combettes, and J-C.~Pesquet, ``Proximal Splitting Methods in Signal Processing", in \emph{Fixed-point algorithms for inverse problems in science and engineering}, pp. 185--212, 2011. 
 
 
 % == Kuramoto second order ===
