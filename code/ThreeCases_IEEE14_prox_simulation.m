@@ -178,21 +178,21 @@ norm_diff_mean_mc_vs_prox = sqrt(sum((mean_mc - mean_prox).^2,1))./sqrt(sum(mean
 
 %% plots
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-figure(1)
-semilogy(t_vec, comptime, 'LineWidth', 2)
-set(gca,'FontSize',30)
-xlabel('Physical time $t=kh$ [s]','FontSize',30)
-ylabel('Computational time [s]','FontSize',30)
-% ylim([1e-3 1.2e-2])
-% YTick = [2e-3 8e-3 2e-2];
-% YTickLabels = cellstr(num2str(round(log10(YTick(:))), '10^%d'));
-grid on
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-figure(2)
-semilogy(t_vec(4:end), norm_diff_mean_mc_vs_prox(5:end),'-k','Linewidth',2)
-set(gca,'FontSize',30)
-xlabel('Physical time $t=kh$ [s]','FontSize',30)
-ylabel('Realtive error $\frac{\|\mu_{\rm{MC}}-\mu_{\rm{Prox}}\|_{2}}{\|\mu_{\rm{MC}}\|_{2}}$','FontSize',30,'interpreter','latex')
+% figure(1)
+% semilogy(t_vec, comptime, 'LineWidth', 2)
+% set(gca,'FontSize',30)
+% xlabel('Physical time $t=kh$ [s]','FontSize',30)
+% ylabel('Computational time [s]','FontSize',30)
+% % ylim([1e-3 1.2e-2])
+% % YTick = [2e-3 8e-3 2e-2];
+% % YTickLabels = cellstr(num2str(round(log10(YTick(:))), '10^%d'));
+% grid on
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% figure(2)
+% semilogy(t_vec(4:end), norm_diff_mean_mc_vs_prox(5:end),'-k','Linewidth',2)
+% set(gca,'FontSize',30)
+% xlabel('Physical time $t=kh$ [s]','FontSize',30)
+% ylabel('Realtive error $\frac{\|\mu_{\rm{MC}}-\mu_{\rm{Prox}}\|_{2}}{\|\mu_{\rm{MC}}\|_{2}}$','FontSize',30,'interpreter','latex')
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % fs  = 15;
 % for i=1:dim
