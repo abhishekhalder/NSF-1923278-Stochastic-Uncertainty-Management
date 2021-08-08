@@ -240,13 +240,16 @@ xt = [1 0 -1 0 -0.5]; yt = [0 1 -0.64 -1 -1.25];
 figure('color','w')
 for j=1:num_Oscillator
     for tt=1:length(t_now_idx_vec)
-        
+        % univariate omega marginals
+        [omega_save1D{tt,j},marg1D_omega_save{tt,j}] = getMarginal1D(omega_upd(:,j,tt),rho_theta_omega_upd(:,tt),nBins);
+
+        % bivariate marginals
         [theta_temp{tt,j},omega_save{tt,j},marg2D_theta_omega_temp{tt,j}] = getMarginal2D(theta_upd(:,j,tt),omega_upd(:,j,tt),rho_theta_omega_upd(:,tt),nBins);
-             
+        % make new bivariate grid     
         [theta_save{tt,j},omega_save{tt,j}] = meshgrid(linspace(0,2*pi,nBins),linspace(min(omega_save{tt,j}(:)),max(omega_save{tt,j}(:)),nBins));
-        
+        % interpolate bivariate marginal on new bivariarte grid
         marg2D_theta_omega_save{tt,j} = interp2(theta_temp{tt,j},omega_save{tt,j},marg2D_theta_omega_temp{tt,j}.PF,theta_save{tt,j},omega_save{tt,j},'spline');
-        
+        % zero the spurious negative values of the bivariate marginal resulting from interpolation
         marg2D_theta_omega_save{tt,j}(marg2D_theta_omega_save{tt,j}<0) = 0;
         
         maxMargValMatrix(tt,j) = max(max(marg2D_theta_omega_save{tt,j}));
@@ -303,9 +306,33 @@ h = colorbar('peer', cbax, 'southoutside', ...
   'position', [left1 cb_bottom cb_width cb_height],...
   'FontSize',30,'TickLabelInterpreter','latex');
 
-% save 2D marginal data as .txt file
+% plot 1D omega marginals
+figure;
 for j=1:num_Oscillator
     for tt=1:length(t_now_idx_vec)
+        subplot(num_Oscillator,length(t_now_idx_vec),tt+(j-1)*length(t_now_idx_vec))
+        plot(omega_save1D{tt,j},marg1D_omega_save{tt,j}.MC,'--ro','LineWidth',2)
+        hold on
+        plot(omega_save1D{tt,j},marg1D_omega_save{tt,j}.PF1,'-bs','LineWidth',2)
+        hold on
+        plot(omega_save1D{tt,j},marg1D_omega_save{tt,j}.PF2,'-kd','LineWidth',2)
+        if j==1
+            title(['$t=$' num2str(t_now_vec(tt))],'interpreter','latex')
+        end
+    end
+end
+
+% save marginal data as .txt file
+for j=1:num_Oscillator
+    for tt=1:length(t_now_idx_vec)
+        % save univariate omega marginal data
+        textfilename_omega1D = ['case1_line_13_failure_IEEE14BusGenIdx' num2str(j) 'omega1Dt' num2str(t_now_vec(tt)) '.txt'];
+        dlmwrite(textfilename_omega1D, omega_save1D{tt,j},'delimiter','\t','precision','%f');
+        
+        textfilename_marg1D = ['case1_line_13_failure_IEEE14BusGenIdx' num2str(j) 'marg1Dt' num2str(t_now_vec(tt)) '.txt'];
+        dlmwrite(textfilename_marg1D, marg1D_omega_save{tt,j}.MC,'delimiter','\t','precision','%f');
+        
+        % save bivariate marginal data
         textfilename_theta2D = ['case1_line_13_failure_IEEE14BusGenIdx' num2str(j) 'theta2Dt' num2str(t_now_vec(tt)) '.txt'];
         dlmwrite(textfilename_theta2D, theta_save{tt,j},'delimiter','\t','precision','%f');
     
