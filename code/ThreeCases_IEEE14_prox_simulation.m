@@ -17,12 +17,12 @@ bus_init = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertain
 % case2_time_series_
 
 % parameters for the IEEE 14 bus system
-Y_reduced_imag = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/Data/case1_line_13_failure_Y_reduced_imag_part.csv');
-Y_reduced_real = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/Data/case1_line_13_failure_Y_reduced_real_part.csv');
+Y_reduced_imag = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/Data/case0_norminal_Y_reduced_imag_part.csv');
+Y_reduced_real = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/Data/case0_norminal_Y_reduced_real_part.csv');
 % reduced admittance matrix
 Y_reduced = complex(Y_reduced_real,Y_reduced_imag);
 
-gen_param = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/Data/case1_line_13_failure_gen_parameters.csv');
+gen_param = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/Data/case0_norminal_gen_parameters.csv');
 gen_bus_idx = gen_param(:,1);
 
 num_Oscillator = numel(gen_bus_idx); dim  = 2*num_Oscillator;
@@ -35,17 +35,17 @@ E = E_mag.*exp(1i*E_phase);
 %I_reduced_polar = readmatrix('I_red.csv');
 %I_reduced_mag = I_reduced_polar(:,1);
 %I_reduced_phase = I_reduced_polar(:,2);
-I_reduced_mag = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/Data/case1_line_13_failure_I_red_magnitude.csv');
+I_reduced_mag = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/Data/case0_norminal_I_red_magnitude.csv');
 I_reduced_mag = (I_reduced_mag(2,2:end))';
-I_reduced_phase = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/Data/case1_line_13_failure_I_red_angle.csv');
+I_reduced_phase = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/Data/case0_norminal_I_red_angle.csv');
 I_reduced_phase = (I_reduced_phase(2,2:end))';
 
 I_reduced = I_reduced_mag.*exp(1i*I_reduced_phase);
 
 %P_mech = gen_param(:,2);
-P_mech = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/Data/case1_line_13_failure_P_mech_in_per_unit.csv');
+P_mech = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/Data/case0_norminal_P_mech_in_per_unit.csv');
 P_mech = (P_mech(2:end))';
-P_load = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/Data/case1_line_13_failure_P_load_at_genbuses.csv');
+P_load = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/Data/case0_norminal_P_load_at_genbuses.csv');
 P_load = (P_load(2:end))';
 
 % effective power input
@@ -326,27 +326,27 @@ end
 for j=1:num_Oscillator
     for tt=1:length(t_now_idx_vec)
         % save univariate omega marginal data
-        textfilename_omega1D = ['case1_line_13_failure_IEEE14BusGenIdx' num2str(j) 'omega1Dt' num2str(t_now_vec(tt)) '.txt'];
+        textfilename_omega1D = ['case0_norminal_IEEE14BusGenIdx' num2str(j) 'omega1Dt' num2str(t_now_vec(tt)) '.txt'];
         dlmwrite(textfilename_omega1D, omega_save1D{tt,j},'delimiter','\t','precision','%f');
         
-        textfilename_marg1D = ['case1_line_13_failure_IEEE14BusGenIdx' num2str(j) 'marg1Dt' num2str(t_now_vec(tt)) '.txt'];
+        textfilename_marg1D = ['case0_norminal_IEEE14BusGenIdx' num2str(j) 'marg1Dt' num2str(t_now_vec(tt)) '.txt'];
         dlmwrite(textfilename_marg1D, marg1D_omega_save{tt,j}.MC,'delimiter','\t','precision','%f');
         
         % save bivariate marginal data
-        textfilename_theta2D = ['case1_line_13_failure_IEEE14BusGenIdx' num2str(j) 'theta2Dt' num2str(t_now_vec(tt)) '.txt'];
+        textfilename_theta2D = ['case0_norminal_IEEE14BusGenIdx' num2str(j) 'theta2Dt' num2str(t_now_vec(tt)) '.txt'];
         dlmwrite(textfilename_theta2D, theta_save{tt,j},'delimiter','\t','precision','%f');
     
-        textfilename_omega2D = ['case1_line_13_failure_IEEE14BusGenIdx' num2str(j) 'omega2Dt' num2str(t_now_vec(tt)) '.txt'];
+        textfilename_omega2D = ['case0_norminal_IEEE14BusGenIdx' num2str(j) 'omega2Dt' num2str(t_now_vec(tt)) '.txt'];
         dlmwrite(textfilename_omega2D, omega_save{tt,j},'delimiter','\t','precision','%f');
     
-        textfilename_marg2D = ['case1_line_13_failure_IEEE14BusGenIdx' num2str(j) 'marg2Dt' num2str(t_now_vec(tt)) '.txt'];
+        textfilename_marg2D = ['case0_norminal_IEEE14BusGenIdx' num2str(j) 'marg2Dt' num2str(t_now_vec(tt)) '.txt'];
         dlmwrite(textfilename_marg2D, marg2D_theta_omega_save{tt,j},'delimiter','\t','precision','%f');
     end    
 end
 
 %% save simulation time data
-textfilename = 'case1_line_13_failure_TimeSyntheticIEEE14bus.txt';
+textfilename = 'case0_norminal_TimeSyntheticIEEE14bus.txt';
 dlmwrite(textfilename, t_vec,'delimiter','\t','precision','%.64f');
 
-textfilename = 'case1_line_13_failure_ComptimeSytheticIEEE14bus.txt';
+textfilename = 'case0_norminal_ComptimeSytheticIEEE14bus.txt';
 dlmwrite(textfilename, comptime,'delimiter','\t','precision','%.64f');
