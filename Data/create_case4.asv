@@ -1,0 +1,46 @@
+clear; clc; close all;
+define_constants;
+
+%% Case 4: time series from real-world
+mpc0 = loadcase('case14.m');
+
+data_folder = 'C:\Users\still\Documents\Github\NSF-1923278-Stochastic-Uncertainty-Management\Data\RawData\DownloadedFromERCOT\';
+load_data = readmatrix([data_folder,'load_time_series_1second.csv']);
+wind_data = readmatrix([data_folder,'wind_time_series_1second.csv']);
+
+second_series = load_data(:,1);
+nt = length(second_series); nbus = size(mpc2.bus,1); ngen = size(mpc2.gen,1);
+
+% mapping regions to 
+% bus -- ERCOT Region -- Column in csv
+% 3 : COAST : 1
+% 14: EAST : 2
+% 12: FAR WEST : 3
+% 13: NORTH: 4
+% 9: NORTH CENTRAL : 5
+% 4: SOUTH CENTRAL: 6
+% 2: SOUTH : 7
+% 5: WEST: 8
+
+mapping = [3; 14; 12; 13; 9; 4; 2; 5];
+power_factor = mpc0.bus(:,PD) ./ mpc0.bus(:,QD);
+power_factor
+PD_series = 
+QD_series = 
+
+PG_series = zeros(ngen,nt); VM_series = zeros(nbus,nt); VA_series = zeros(nbus,nt);
+for t = 1:nt
+    mpc_t = mpc2;
+    mpc_t.bus(:,PD) = PD_series(:,t);
+    mpc_t.bus(:,QD) = QD_series(:,t);
+    result_t = runopf(mpc_t);
+    assert( result_t.success );
+    PG_series(:,t) = result_t.gen(:,PG);
+    VM_series(:,t) = result_t.bus(:,VM);
+    VA_series(:,t) = result_t.bus(:,VA);
+end
+
+
+% create_network_reduced_files(mpc0, second_series, PG_series/mpc2.baseMVA,...
+%         PD_series/mpc2.baseMVA, QD_series/mpc2.baseMVA,...
+%         VM_series, VA_series,'case4_time_series');
