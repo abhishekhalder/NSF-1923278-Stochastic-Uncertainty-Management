@@ -578,7 +578,7 @@ ax.plot(case1new_omega5t5, 1.0*np.ones(case1new_omega5t5.size), case1rho1D_omega
 fill = plt.fill_between(case1new_omega5t5, np.zeros(case1new_omega5t5.size), case1rho1D_omega5t5(case1new_omega5t5), color='k', alpha=0.5*myalphavalue)
 fill_collection = ax.add_collection3d(fill, zs=1.0, zdir='y')
 
-plt.title('$\omega$ marginals for the IEEE 14 bus simulation, Case II', color='gray')
+plt.title('$\omega$ marginals for the IEEE 14 bus system, Case II', color='gray')
 plt.xlabel("$\omega$ [rad/s]",labelpad=10)
 plt.ylabel("time [s]",labelpad=12)
 # # ax.set_zticks([])
@@ -656,7 +656,7 @@ ax.plot(case1new_omega4t5, 1.0*np.ones(case1new_omega4t5.size), case1rho1D_omega
 fill = plt.fill_between(case1new_omega4t5, np.zeros(case1new_omega4t5.size), case1rho1D_omega4t5(case1new_omega4t5), color='c', alpha=0.5*myalphavalue)
 fill_collection = ax.add_collection3d(fill, zs=1.0, zdir='y')
 
-plt.title('$\omega$ marginals for the IEEE 14 bus 6 (generator 4)', color='gray')
+plt.title('$\omega$ marginals for the bus 6 (generator 4) in IEEE 14 bus system', color='gray')
 plt.xlabel("$\omega$ [rad/s]",labelpad=10)
 plt.ylabel("time [s]",labelpad=12)
 # # ax.set_zticks([])
