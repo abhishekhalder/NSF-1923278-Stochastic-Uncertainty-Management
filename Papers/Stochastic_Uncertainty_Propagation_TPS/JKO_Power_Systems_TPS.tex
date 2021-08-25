@@ -5,7 +5,7 @@
 \hyphenation{op-tical net-works semi-conduc-tor}
 
 \usepackage{amsmath,graphicx,amsfonts,amssymb,amsthm,epsfig,mathrsfs,balance}
-\usepackage{subcaption,tikz,color,multirow,algorithm,algpseudocode,algorithmicx}
+\usepackage{subfigure,tikz,color,multirow,algorithm,algpseudocode,algorithmicx}
 \usepackage{cite,url,framed,bm,dsfont,lipsum}
 \usepackage{cuted}
 \setlength\stripsep{3pt plus 1pt minus 1pt}
@@ -566,6 +566,22 @@ All simulations were performed in MATLAB R2019b on an iMac with 3.4 GHz Quad-Cor
 
 
 
+\begin{figure*}[ht!]
+   \subfigure[]{\includegraphics[width=0.322\textwidth]{Case0_OmegaMarginals.png}}
+   \hspace{\fill}
+   \subfigure[]{\includegraphics[width=0.322\textwidth]{Case1_OmegaMarginals.png}}
+   \hspace{\fill}
+   \subfigure[]{\includegraphics[width=0.309\textwidth]{Case0Case1Combined_Gen4_OmegaMarginals.png}}
+\caption{\small{For $i=1,\hdots,5$, the $\omega_{i}$ marginals (a) for Case I, and (b) for Case II, resulting from the IEEE 14 bus simulation described in Sec. \ref{subsec:NumSimIEEEBus}. (c) Comparison of the $\omega_{4}$ marginals for bus 6 in the nominal (Case I) and post-fault (Case II) scenarios.}}
+\vspace*{-0.1in}
+\label{fig:IEEE14omegamarginalsCase12}
+\end{figure*}
+
+
+
+
+
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.95\linewidth]{ComputationalTimeSyntheticIEEE14bus.png}
@@ -580,7 +596,17 @@ All simulations were performed in MATLAB R2019b on an iMac with 3.4 GHz Quad-Cor
 We consider the Kron-reduced dynamics \eqref{ItoSDEcomponentlevel} for the IEEE 14 bus system shown in Fig. \ref{fig:Motivating}. In this case, we have $n=5$ nodes which correspond to the buses 1, 2, 3, 6 and 8 in Fig. \ref{fig:Motivating}. We obtained the parameters of the 14-bus system from MATPOWER \cite{zimmerman2010matpower}. The calculation of Kron-reduced admittance matrix and current vector in \eqref{DefParam} followed Sec.  \ref{subsec:samplepathdynamics}; see also \cite{dorfler2012kron}. The parameters $m_{i}, \gamma_{i}$ were obtained from the open-source Python-based
 library ANDES \cite{cui2021andes}.
 
-We randomly generated the noise coefficients $\sigma_{i}\in [1,5]$ as
+Our numerical simulations for the IEEE 14 bus system consider the following three cases:
+
+\noindent\textbf{Case I.} Nominal case where ...
+
+\noindent\textbf{Case II.} post-contingency simulation after the line 13 fails.
+
+\noindent\textbf{Case III.}	load data are time-varying ...
+
+ 
+
+For all the three cases, we used the randomly generated noise coefficients $\sigma_{i}\in [1,5]$ as
 \[(\sigma_{1},\hdots,\sigma_5) = \left(2.4628, 4.9266, 4.8724, 1.4215, 3.8681\right).\]
 
 We take the initial joint PDF as
@@ -603,9 +629,17 @@ The mean angles \eqref{MeanAngleInitialIEEE14} were obtained from steady state A
 
 In \eqref{rho0IEEE14}, the $\bm{\omega}$ marginal $ \Omega_{0}\left(\bm{\omega}(0)\right)$ is a uniform PDF over $[-0.1,0.1]$ rad/s. Thus, the PDF $\rho_0$ in \eqref{rho0IEEE14} is supported over $\mathbb{T}^{5}\times [-0.1,0.1]$.
 
-With step size $h=10^{-3}$, we discretized time $t\in[0,1]$. Using the algorithm detailed in Sec. \ref{sec:ProxAlgo}, we propagated $N=1000$ random samples from \eqref{rho0IEEE14}, and evaluated at \eqref{rho0IEEE14}, to update the scattered weighted point clouds $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ over $\mathbb{T}^{5}\times\mathbb{R}^{5}$ at times $t_{k}:=kh$, $k\in\mathbb{N}$. In Algorithm \ref{algo:KineticProx}, we used the algorithmic parameters $\varepsilon=0.05$, $\delta=10^{-3}$, $L=300$.
+With step size $h=10^{-3}$, we discretized time $t\in[0,1]$. Using the algorithm detailed in Sec. \ref{sec:ProxAlgo}, for all the three cases, we propagated $N=1000$ random samples from \eqref{rho0IEEE14}, and evaluated at \eqref{rho0IEEE14}, to update the scattered weighted point clouds $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ over $\mathbb{T}^{5}\times\mathbb{R}^{5}$ at times $t_{k}:=kh$, $k\in\mathbb{N}$. In Algorithm \ref{algo:KineticProx}, we used the algorithmic parameters $\varepsilon=0.05$, $\delta=10^{-3}$, $L=300$.
 
-Fig. \ref{fig:IEEE14marginalsCase0} and Fig. \ref{fig:IEEE14marginalsCase1} show the time snapshots of the $(\theta_{i},\omega_{i})$ bivariate marginal PDFs for \textbf{Case I} and \textbf{Case II} respectively, associated with the generator $i=1,\hdots, n=5$. These marginals are computed using the corresponding weighted point clouds $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. %Notice that in Fig. \ref{fig:IEEE14marginals}, the horizontal axes of the subfigures have periodic boundary conditions, i.e., $(\theta_{i},\omega_{i})\in\mathbb{T}\times\mathbb{R}$ (cylinder). 
+Fig. \ref{fig:IEEE14marginalsCase0} and Fig. \ref{fig:IEEE14marginalsCase1} show the time snapshots of the $(\theta_{i},\omega_{i})$ bivariate marginal PDFs for \textbf{Case I} and \textbf{Case II} respectively, associated with the generator $i=1,\hdots, n=5$. These marginals are computed using the corresponding weighted point clouds $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$.
+
+ %Notice that in Fig. \ref{fig:IEEE14marginals}, the horizontal axes of the subfigures have periodic boundary conditions, i.e., $(\theta_{i},\omega_{i})\in\mathbb{T}\times\mathbb{R}$ (cylinder).
+
+Fig. \ref{fig:IEEE14omegamarginalsCase12} shows the corresponding univariate $\omega_{i}$-marginal PDFs. In particular, Fig. \ref{fig:IEEE14omegamarginalsCase12}(c) helps compare the $\omega_{4}$ marginal evolution for bus 6 in the nominal (Case I) and post-fault (Case II) scenarios. Since Case II considers the failure of line 13, we expect from Fig. \ref{fig:Motivating} that the transient effects of this fault will be prominent for bus 6. Indeed, Fig. \ref{fig:IEEE14omegamarginalsCase12}(c) shows that although the $\omega_{4}$ marginals in both Case I and II, at all times have highest probability around $0$ rad/s, the post-fault marginals show larger dispersion.  
+
+
+
+
 Fig. \ref{fig:CompTimeIEEE14bus} shows the computational times needed to update $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ via the algorithm in Sec.  \ref{sec:ProxAlgo}.  
 
 
