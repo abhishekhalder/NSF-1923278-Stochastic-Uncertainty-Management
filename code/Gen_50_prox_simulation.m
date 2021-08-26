@@ -1,4 +1,4 @@
-close all; clear; clc;
+cclose all; clear; clc;
 %% Parameters
 beta = 2; % inverse temperature
 % golbal parameters 
