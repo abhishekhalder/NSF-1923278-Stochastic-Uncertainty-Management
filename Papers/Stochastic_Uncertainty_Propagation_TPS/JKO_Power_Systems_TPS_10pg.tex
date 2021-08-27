@@ -569,25 +569,30 @@ To illustrate the proposed computational framework, we next provide two numerica
 
 
 
-\begin{figure*}[ht!]
-   \subfigure[]{\includegraphics[width=0.322\textwidth]{Case0_OmegaMarginals.png}}
-   \hspace{\fill}
-   \subfigure[]{\includegraphics[width=0.322\textwidth]{Case1_OmegaMarginals.png}}
-   \hspace{\fill}
-   \subfigure[]{\includegraphics[width=0.309\textwidth]{Case0Case1Combined_Gen4_OmegaMarginals.png}}
-\caption{\small{For $i=1,\hdots,5$, the $\omega_{i}$ marginals (a) for Case I, and (b) for Case II, resulting from the IEEE 14 bus simulation described in Sec. \ref{subsec:NumSimIEEEBus}. (c) Comparison of the $\omega_{4}$ marginals for bus 6 in the nominal (Case I) and post-fault (Case II) scenarios.}}
+%\begin{figure*}[ht!]
+%   \subfigure[]{\includegraphics[width=0.322\textwidth]{Case0_OmegaMarginals.png}}
+%   \hspace{\fill}
+%   \subfigure[]{\includegraphics[width=0.322\textwidth]{Case1_OmegaMarginals.png}}
+%   \hspace{\fill}
+%   \subfigure[]{\includegraphics[width=0.309\textwidth]{Case0Case1Combined_Gen4_OmegaMarginals.png}}
+%\caption{\small{For $i=1,\hdots,5$, the $\omega_{i}$ marginals (a) for Case I, and (b) for Case II, resulting from the IEEE 14 bus simulation described in Sec. \ref{subsec:NumSimIEEEBus}. (c) Comparison of the $\omega_{4}$ marginals for bus 6 in the nominal (Case I) and post-fault (Case II) scenarios.}}
+%\vspace*{-0.1in}
+%\label{fig:IEEE14omegamarginalsCase12}
+%\end{figure*}
+
+\begin{figure}[ht!]
+\includegraphics[width=0.95\linewidth]{Case0Case1Combined_Gen4_OmegaMarginals.png}
+\caption{\small{Comparison of the $\omega_{4}$ marginals for bus 6 in the nominal (Case I) and post-fault (Case II) scenarios in the IEEE 14 bus simulation described in Sec. \ref{subsec:NumSimIEEEBus}.}}
 \vspace*{-0.1in}
 \label{fig:IEEE14omegamarginalsCase12}
-\end{figure*}
-
-
+\end{figure}
 
 
 
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.95\linewidth]{ComputationalTimeSyntheticIEEE14busCase1and2combined.png}
+\includegraphics[width=0.9\linewidth]{ComputationalTimeSyntheticIEEE14busCase1and2combined.png}
 \caption{\small{The computational time for propagating the transient joint state PDFs over $\mathbb{T}^{5}\times\mathbb{R}^{5}$ for the simulation set up in Sec. \ref{subsec:NumSimIEEEBus}.}}
 \vspace*{-0.1in}
 \label{fig:CompTimeIEEE14bus}
