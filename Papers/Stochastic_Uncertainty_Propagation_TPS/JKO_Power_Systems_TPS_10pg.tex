@@ -1,0 +1,1087 @@
+\documentclass[10pt,twocolumn]{IEEEtran}
+
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+\usepackage{amsmath,graphicx,amsfonts,amssymb,amsthm,epsfig,mathrsfs,balance}
+\usepackage{subfigure,tikz,color,multirow,algorithm,algpseudocode,algorithmicx}
+\usepackage{cite,url,framed,bm,dsfont,lipsum}
+\usepackage{cuted}
+\setlength\stripsep{3pt plus 1pt minus 1pt}
+
+\setlength{\tabcolsep}{1.1pt}
+
+\newtheorem{assumption}{Assumption}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}{Definition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{remark}{Remark}
+\newtheorem{property}{Property}
+\newtheorem{example}{Example}
+
+\newcommand{\differential}{{\rm{d}}}
+
+\renewcommand*{\thefootnote}{\fnsymbol{footnote}}
+\newcommand{\red}{\color{red}}
+
+%\begin{document}
+%
+%\title{\LARGE \bf Stochastic Uncertainty Propagation in Power System Dynamics using Measure-valued Proximal Recursions}
+%
+%\author{Abhishek~Halder,~\IEEEmembership{Senior Member,~IEEE,} 
+%%\author{Abhishek~Halder,~\IEEEmembership{Member,~IEEE,}
+%        Kenneth~F. Caluya,
+%        Pegah~Ojaghi,
+%        and~Xinbo~Geng,~\IEEEmembership{Member,~IEEE}% <-this % stops a space
+%\thanks{A. Halder and K.F. Caluya are with the Department of Applied Mathematics, University of California, Santa Cruz, CA 95064, USA, {\texttt{\{ahalder,kcaluya\}@ucsc.edu}}.}% <-this % stops a space
+%=======
+
+
+
+\begin{document}
+
+\title{\LARGE \bf Stochastic Uncertainty Propagation in Power System Dynamics using Measure-valued Proximal Recursions}
+
+\author{Abhishek~Halder,~\IEEEmembership{Senior Member,~IEEE,} 
+        Kenneth~F. Caluya,
+        Pegah~Ojaghi,
+        and~Xinbo~Geng,~\IEEEmembership{Member,~IEEE}% <-this % stops a space
+\thanks{A. Halder and K.F. Caluya are with the Department of Applied Mathematics, University of California, Santa Cruz, CA 95064, USA, {\texttt{\{ahalder,kcaluya\}@ucsc.edu}}.}% <-this % stops a space
+\thanks{P. Ojaghi is with the Department of Computer Science and Engineering, University of California, Santa Cruz, CA 95064, USA, {\texttt{pojaghi@ucsc.edu}}.}%
+\thanks{X. Geng is with the School of Electrical and Computer Engineering, Cornell University, Ithaca, NY 14850, USA, {\texttt{xg72@cornell.edu}}.} %
+\thanks{This research was partially supported by the NSF award 1923278.}}% <-this % stops a space
+%\thanks{Manuscript received April 19, 2005; revised August 26, 2015.}}
+% The paper headers
+%\markboth{Journal of \LaTeX\ Class Files,~Vol.~14, No.~8, August~2015}%
+
+\maketitle
+
+\begin{abstract}
+We present a proximal algorithm that performs a variational recursion on the space of joint probability measures to propagate the stochastic uncertainties in power system dynamics over high dimensional state space. The proposed algorithm takes advantage of the exact nonlinearity structures in the trajectory-level dynamics of the networked power systems, and is nonparametric. Lifting the dynamics to the space of probability measures allows us to design a scalable algorithm that obviates gridding the underlying high dimensional state space which is computationally prohibitive. The proximal recursion implements a generalized infinite dimensional gradient flow, and evolves probability weighted scattered point clouds. We clarify the theoretical nuances and algorithmic details specific for the power system nonlinearities, and provide illustrative numerical examples.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Uncertainty propagation, power system dynamics, kinetic Fokker-Planck equation, proximal operator.
+\end{IEEEkeywords}
+
+
+
+\section{Introduction}\label{sec:intro}
+%\IEEEPARstart{T}{he} networked dynamics of electrical generators and loads include different types of uncertainties: intermittencies in renewable generation, load level random fluctuations, parametric uncertainties in transmission lines, uncertainties in weather, unexpected outages, noise in phasor measurement unit sensing data, among others. While significant progress has been made in statistically quantifying these individual sources of uncertainties, it remains challenging \cite{schwalbe2015mathematical} to accurately predict the joint effect of these uncertainties on the safe and robust operation of the power system over time.
+
+%The study of power system dynamics with uncertainties is not new. However, 
+\IEEEPARstart{S}{tochastic} variabilities in power grid have increased significantly in recent years both in the generation side (e.g., due to growing penetration of renewables) as well as in the load side (e.g., due to widespread adoption of plug-in electric vehicles). Several studies \cite{timko1983monte,nwankpa1992stochastic,odun2012structure,ghanavati2016identifying,apostolopoulou2016assessment} have reported that even small stochastic effects can significantly alter the assessment of transient stability, or the performance of automatic generation control. However, the lack of a rigorous yet scalable stochastic computational framework continues to impede \cite{schwalbe2015mathematical} our ability to perform transient analysis involving time varying joint probability density functions (PDFs) over the states of a large power system network. In this paper, we present a new algorithm to address this computational need.  
+
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{IEEE14BusWithUnc.pdf}
+\caption{\small{A schematic of the IEEE 14 bus test system with stochastic uncertainties. The Uncertainty sources may include stochastic forcing and parametric uncertainties at some generators, random variabilities at some loads, and parametric uncertainties along some transmission lines. For depiction purposes, we indicated the parametric uncertainties as PDFs, and stochastic forcing as intermittent signals.}}
+\label{fig:Motivating}
+\vspace*{-0.1in}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.9\linewidth]{UncPropBlockDiagm.pdf}
+\caption{\small{Block diagram for joint state PDF propagation.}}
+\label{fig:UncertaintyPropagation}
+\vspace*{-0.1in}
+\end{figure}
+
+Given a networked power system, one can envisage at least three types of uncertainties affecting the dynamics: initial condition uncertainties in the state variables (e.g., rotor phase angles and angular velocities), parametric uncertainties (e.g., inertia and damping coefficients of the generators, reactance associated with different transmission lines), and stochastic forcing (e.g., intermittencies in renewable power generation, load and ambient temperature fluctuations). Fig. \ref{fig:Motivating} depicts a representative scenario. In addition, one could consider uncertainties due to random change in transmission topology resulting from unexpected outage, and uncertainties due to unmodeled dynamics. Given a statistical description of these uncertainties, our approach is to directly solve the \emph{macroscopic flow} of the joint PDFs governing the probabilistic evolution of the state as summarized in Fig. \ref{fig:UncertaintyPropagation}.
+
+
+\subsubsection{Related works}
+Even though the need for quantifying uncertainties in power systems simulations has been long-recognized \cite{allan8791,allan9296}, early studies were limited to statistical reliability assessment. Dynamic simulations with stochastic uncertainties for purposes such as transient stability analysis have been investigated via \emph{Monte Carlo simulations} \cite{timko1983monte,dong2012numerical,perninge2012importance,odun2012structure}.
+
+ As is well known, the Monte Carlo techniques are easy to apply but the computational cost scales exponentially with the number of dimensions, thus making it prohibitive for realistic power systems dynamic simulation. As an alternative, \emph{probabilistic small signal analysis} \cite{nwankpa1992stochastic,rueda2009assessment,huang2013quasi,dhople2013analysis} have appeared in the power systems literature, albeit at the expense of the additional assumption that the random perturbations remain ``small". \emph{Polynomial chaos and related stochastic collocation methods} \cite{hockenberry2004evaluation,xu2019propagating} can do away with the ``small stochastic perturbation" assumption but due to the finite-dimensional approximation of the probability space, computational performance degrades if the long-term statistics are desired. Furthermore, to cope with the stochasticity, these techniques require simulating a higher-dimensional system than the dimension of the physical state space, which further limits the scalability for nonlinear simulation. More recently, approximation methods such as \emph{stochastic averaging} \cite{ju2018analytical,ju2018stochastic} based on certain energy function \cite{pai1989energy,chang1995direct,sauerpai1998} have appeared. In \cite{maldonado2018uncertainty}, an algorithm for \emph{propagating first few statistical moments} was proposed. However, this leads to moment closure problems since the dimensions of the time-varying sufficient statistics associated with the corresponding transient joint state PDFs are not known in general. 
+
+In a different vein, \emph{deterministic bounded uncertainty models} for power flow simulations have been used \cite{dimitrovski2004boundary,hiskens2006sensitivity,chen2012method,althoff2014formal} for set-valued analysis. These, however, require approximating the underlying nonlinear differential algebraic equations (DAEs) appearing in power system dynamic simulation, and thus lead to conservative analysis. For example, the method in \cite{althoff2014formal} requires converting the nonlinear DAEs to linear DAEs in such a way that guarantees set-valued over-approximation of the reachable sets. Likewise, the convex optimization-based bounded uncertainty propagation methods in \cite{choi2017propagating,choi2018propagating} require second order approximation of the power flow state variables as function of the uncertainties.
+
+\subsubsection{Technical challenges}\label{subsubsec:technicalchallenges}
+Several technical challenges need to be overcome to achieve scalable computation enabling the prediction of the joint PDFs over a time horizon of interest. \emph{First}, the trajectory level dynamic models for power systems are inherently nonlinear, which do not preserve Gaussianity, thereby requiring nonparametric prediction of the joint PDFs. \emph{Second}, the joint PDFs for realistic power systems dynamic simulation must evolve over a high dimensional state space, i.e., the joint PDF at any given time has high dimensional support. This necessitates spatial discretization-free algorithms since standard function approximation or interpolation approaches would, in general, be met with ``curse-of-dimensionality" \cite{bellman1957}. The numerical challenges aside, one cannot theoretically guarantee to find a suite of basis functions for the manifold of nonparametric PDFs. \emph{Third}, prediction based on first few statistical moments is challenging since it is not possible to \emph{a priori} guarantee a fixed or even finite dimensional sufficient statistic. For instance, propagating only the mean and covariance could be misleading when the underlying joint PDFs are multi-modal.
+
+\subsubsection{Contributions of this paper}
+Our main contribution is to demonstrate that by harnessing recent developments in generalized gradient flows \cite{ambrosio2008gradient} and proximal algorithms \cite{parikh2014proximal}, it is possible to perform \emph{nonparametric} propagation of the joint state PDFs subject to the stochastic nonlinear dynamics of a networked power system, and that the computation can be performed in a gridless and scalable manner. In doing so, the paper also makes theoretical contribution by introducing a change of coordinates that transforms the joint PDF evolution equations in way that is amenable for the aforesaid generalized proximal recursions.
+
+From a methodological perspective, while proximal algorithms are well-studied \cite{parikh2014proximal,rockafellar1976monotone,combettes2011proximal} in finite dimensional optimization context, the utility of generalized proximal recursions to compute the transient solutions of partial differential equations (PDEs) is relatively less known. This paper highlights this connection by solving the PDE induced by the stochastic power system dynamics.
+
+
+Our technical approach juxtaposes with the existing power systems literature discussed above, in that we approximate neither the dynamical nonlinearity nor the statistics. Instead of treating the exact nonlinearity as bane, we exploit the geometry induced by the power system's dynamical nonlinearity over the manifold of time-varying joint state PDFs, thereby enabling a new proximal algorithm to compute the transient joint PDFs.
+
+\subsubsection{Notation and organization}
+%We use boldfaced small letters for vectors, and boldfaced capital letters for matrices. 
+The set of natural numbers, real numbers and complex numbers are denoted as $\mathbb{N}$, $\mathbb{R}$, and $\mathbb{C}$, respectively. The symbol $\nabla_{\bm{x}}$ denotes the Euclidean gradient operator with respect to (w.r.t.) the vector $\bm{x}$. Thus, $\nabla_{\bm{x}}\cdot$ stands for the divergence, and $\Delta_{\bm{x}}$ stands for the Laplacian w.r.t. vector $\bm{x}$. We use $\langle\cdot,\cdot\rangle$ to denote the standard Euclidean inner product. The real and imaginary parts of a complex number $z$ are denoted via $\Re(z)$ and $\Im(z)$, respectively. We use the superscript $*$ to denote the complex conjugate. The uniform probability distribution over an interval $[a,b]$ is denoted as ${\rm{Unif}}\left([a,b]\right)$. Likewise, the $n$ dimensional uniform probability distribution over $[a,b]^{n}$ is denoted as ${\rm{Unif}}\left([a,b]^{n}\right)$. The symbol $\propto$ denotes proportionality, $|\cdot|$ denotes the absolute magnitude, $\|\cdot\|_{2}$ denotes the standard Euclidean 2-norm, $\otimes$ denotes the Kronecker product, $\odot$ and $\oslash$ respectively denote the elementwise (Hadamard) product and division, $\det(\cdot)$ stands for the determinant, and the subscript $_{\sharp}$ denotes the pushforward of a PDF via a map. The $n\times n$ identity and zero matrices are denoted as $\bm{I}_{n}$ and $\bm{0}_{n\times n}$, respectively.
+
+The rest of this paper is structured as follows. Section \ref{sec:models} details the power system dynamics models at the microscopic or trajectory level (Sec. \ref{subsec:samplepathdynamics}) as well as at the macroscopic or statistical ensemble level (Sec. \ref{subsec:macroscopic}). The proposed idea of realizing the flow of the joint state PDFs subject to the macroscopic power system dynamics via infinite dimensional proximal recursions, is explained in Section \ref{sec:prox}. Section \ref{sec:ProxAlgo} elucidates the corresponding proximal algorithm that enables the computation of the transient joint state PDFs via weighted point cloud evolution. Numerical simulations illustrating the proposed framework are reported in Section \ref{sec:NumericalSimulations}. Section \ref{sec:conclusion} concludes the paper.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Models}\label{sec:models}
+
+\subsection{Sample Path Dynamics}\label{subsec:samplepathdynamics}
+
+%\subsubsection{Deterministic dynamics and network reduced model}
+%Before considering stochastic uncertainties in the dynamics, let us briefly recall the network reduced power systems model \cite[Ch. 7]{sauerpai1998} in the deterministic case. Suppose we denote the collection of generator buses in a networked power system as $\mathcal{G}$, and the collection of non-generator buses as $\mathcal{N}$. Assuming that the non-generator buses are modeled as constant current loads, with currents $I_i$, $i \in \mathcal{N}$, the power flow equations become
+%\begin{subequations}
+%\begin{eqnarray}
+%m_i \ddot{\theta} + \gamma_i \dot{\theta_i} = P_{mech,i} - P_{load,i} - \sum_{j} |V_i| |V_j| |Y_{ij}| \sin(\theta_i - \theta_j + \phi_{ij}) &~ i \in \mathcal{G}~\text{buses with generators} \\
+%0 = - \text{Real}(V_i I_i^\dagger) - \sum_{j} |V_i| |V_j| |Y_{ij}| \sin(\theta_i - \theta_j + \phi_{ij}) &~ i \in \mathcal{L}~\text{buses without generators} \\
+%\end{eqnarray}
+%\end{subequations}
+%Note: $P_{mech,i} \in \mathbb{R}$, $P_{load,i} \in \mathbb{R}$ and $I_i \in \mathbb{C}$ are all give parameters; load current is a complex number. 
+%
+%
+%\subsubsection{Stochastic dynamics}
+In this work, we consider the coupled stochastic differential equations (SDEs) associated with the networked-reduced power systems model \cite[Ch. 7]{sauerpai1998}. Specifically, for a power network with $n$ generators, the stochastic dynamics for the $i$-th generator is given by the It\^{o} SDEs
+\begin{subequations}
+\begin{align}
+&{\mathrm{d}}\theta_{i} = \omega_{i}\:{\mathrm{d}}t,\label{RotAngleGen}\\
+&m_{i}\:{\mathrm{d}}\omega_{i} =	\left(\!P_{i} - \gamma_{i}\omega_{i} - \displaystyle\sum_{j=1}^{n} k_{ij}\sin\left(\theta_{i}-\theta_{j}-\varphi_{ij}\right)\!\right){\mathrm{d}}t \nonumber\\
+&\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad+\sigma_{i}\:{\mathrm{d}}w_{i},
+\end{align}
+\label{ItoSDEcomponentlevel}
+\end{subequations}
+where the state variables are the rotor angles $\theta_{i}\in[0,2\pi)$ and the rotor angular velocities $\omega_{i}\in\mathbb{R}$, for $i\in\{1,\hdots,n\}$. The stochastic forcing is modeled through the standard Wiener process $w_{i}(t)$, and the diffusion coefficient $\sigma_{i}>0$ denotes the intensity of stochastic forcing at the $i$th generator.
+ 
+\begin{remark}
+We emphasize here that the network-reduced model \eqref{ItoSDEcomponentlevel} is obtained from the so-called structure preserving power network model \cite{odun2012structure} after applying the Kron reduction \cite{dorfler2012kron}, and therefore, has all-to-all connection topology. The derivation of the Kron-reduced parameters is outlined below.
+\end{remark}
+
+With the $i$th generator, we associate its inertia $m_{i}>0$ and damping coefficient $\gamma_{i}>0$. The other parameters: the \emph{effective power input} $P_{i}$, the \emph{phase shift} $\varphi_{ij}\in[0,\frac{\pi}{2})$, and the \emph{coupling coefficients} $k_{ij}\geq 0$, depend on the network reduced admittance matrix $\bm{Y}\equiv[Y_{ij}]_{i,j=1}^{n}\in\mathbb{C}^{n\times n}$. Specifically,
+\begin{subequations}
+\begin{align}
+ P_{i} &= P_{i}^{\text{mech}} - P_{i}^{\text{load}} - |E_{i}|^{2} \Re\left(Y_{ii}\right) + \Re\left(E_i \cdot I_{i}^{*}\right),\label{defPi}\\
+ \varphi_{ij} &= \begin{cases} -\arctan\left(\dfrac{\Re\left(Y_{ij}\right)}{\Im\left(Y_{ij}\right)}\right), & \text{if}\;i\neq j,\\
+ 0, & \text{otherwise},
+ \end{cases}\\
+ k_{ij} &= \begin{cases} |E_{i}| |E_{j}| \vert Y_{ij}\vert, & \text{if}\;i\neq j,\\
+ 0, & \text{otherwise},
+ \end{cases}
+\end{align}
+\label{DefParam}
+\end{subequations}
+where $P_{i}^{\text{mech}}$ is the mechanical power input, $P_{i}^{\text{load}}$ is the real load, $E_{i}$ is the internal voltage, and $I_{i}\in\mathbb{C}$ is the current for generator $i$.
+
+% The coupling coefficients $k_{ij}$, roughly speaking, denote the maximum power transferred between generators $i$ and $j$ with $k_{ii}=0$ for $i\in\{1,\hdots,n\}$. In general, $k_{ij}$ is a function of the internal voltages at the $i$-th and $j$-th generator, and the magnitude of the $(i,j)$-th entry of the network reduced admittance matrix. We suppose that the elements $k_{ij}$ comprise a coupling matrix $\bm{K}$ of appropriate dimension. 
+
+
+%Suppose we denote the collection of generator buses in an \emph{unreduced} power system as $\mathcal{G}$, and the collection of non-generator buses as $\mathcal{N}$. 
+Suppose that the \emph{unreduced} power network has $n$ generators and $m$ buses. Then the unreduced admittance matrix $\bm{Y}_{\rm{unreduced}}\in \mathbb{C}^{(n+m)\times(n+m)}$ can be partitioned as
+\begin{align}
+\bm{Y}_{\rm{unreduced}} = \begin{bmatrix} 
+\begin{array}{c|c}
+\bm{Y}_{\rm{bnd}} & \bm{Y}_{\rm{bnd{\text{-}}int}} \\
+\hline\vspace*{-0.12in}\\
+\bm{Y}_{\rm{bnd{\text{-}}int}}^{\top} & \bm{Y}_{\rm{int}}
+\end{array}	
+ \end{bmatrix},
+\label{PartionedAdmittanceMatrix}	
+\end{align} 
+where $\bm{Y}_{\rm{bnd}}\in\mathbb{C}^{n\times n}$, $\bm{Y}_{\rm{int}}\in\mathbb{C}^{m\times m}$, $\bm{Y}_{\rm{bnd{\text{-}}int}}\in\mathbb{C}^{n\times m}$. The matrix \eqref{PartionedAdmittanceMatrix} relates the unreduced current vector $I_{\rm{unreduced}}\in\mathbb{C}^{n+m}$ with the unreduced voltage vector $E_{\rm{unreduced}}\in\mathbb{C}^{n+m}$ via the Kirchhoff equations
+\begin{align}
+I_{\rm{unreduced}} = \bm{Y}_{\rm{unreduced}} E_{\rm{unreduced}},
+\label{DefUnreducedY}	
+\end{align}
+or equivalently, via its partitioned version associated with the interior and the boundary nodes:
+\begin{align}
+\begin{array}{c}
+\begin{bmatrix}
+I_{\rm{bnd}}\\
+I_{\rm{int}} 	
+\end{bmatrix}	
+\end{array} = \bm{Y}_{\rm{unreduced}} \begin{array}{c}
+\begin{bmatrix}
+E_{\rm{bnd}}\\
+E_{\rm{int}} 	
+\end{bmatrix}	
+\end{array},
+\label{PartitionedKirchoffEquation}	
+\end{align}
+where $I_{\rm{bnd}},E_{\rm{bnd}}\in\mathbb{C}^{n}$ and $I_{\rm{int}},E_{\rm{int}}\in\mathbb{C}^{m}$.
+%The reduced admittance matrix
+%\begin{eqnarray}
+%\bm{Y} &=& Y_{\mathcal{G}\mathcal{G}} - Y_{\mathcal{G}\mathcal{L}} Y_{\mathcal{L}\mathcal{L}}^{-1} Y_{\mathcal{L}\mathcal{G}} \\
+%I_{red} &=& Y_{\mathcal{G}\mathcal{L}}Y_{\mathcal{L}\mathcal{L}}^{-1} I
+%\end{eqnarray}
+
+The network reduced admittance matrix $\bm{Y}\in\mathbb{C}^{n\times n}$ in \eqref{DefParam} is the Schur complement of \eqref{PartionedAdmittanceMatrix} w.r.t. the block $\bm{Y}_{\rm{int}}$, i.e.,
+\[\bm{Y} = \bm{Y}_{\rm{unreduced}} / \bm{Y}_{\rm{int}} := \bm{Y}_{\rm{bnd}} - \bm{Y}_{\rm{bnd{\text{-}}int}} \bm{Y}_{\rm{int}}^{-1}\bm{Y}_{\rm{bnd{\text{-}}int}}^{\top}.\]
+The network reduced current vector $I\in\mathbb{C}^{n}$ in \eqref{defPi} is obtained as
+\[I  = \bm{Y}E_{\rm{bnd}} - I_{\rm{bnd}}.\]
+
+One can view (\ref{ItoSDEcomponentlevel}) as the noisy version of the second order nonuniform Kuramoto oscillator model \cite{dorfler2012synchronization,rodrigues2016kuramoto}, given by
+\begin{align}
+m_{i}\ddot{\theta}_{i} + \gamma_{i}\dot{\theta}_{i} &= P_{i} - \displaystyle\sum_{j=1}^{n} k_{ij}\sin\left(\theta_{i} - \theta_{j} - \varphi_{ij}\right) \nonumber\\
+&\qquad\qquad+ \sigma_{i} \times \text{stochastic forcing},
+\label{LangevinForm}	
+\end{align}
+where the stochastic forcing is standard Gaussian white noise. 
+
+We define the \emph{positive diagonal} matrices
+\begin{align*}
+\bm{M} &:= {\rm{diag}}\left(m_{1},\hdots,m_{n}\right), \nonumber\\
+\bm{\Gamma} &:= {\rm{diag}}\left(\gamma_{1},\hdots,\gamma_{n}\right),\nonumber\\
+\bm{\Sigma} &:= {\rm{diag}}\left(\sigma_{1},\hdots,\sigma_{n}\right),
+%\label{PosDiagMatrices}	
+\end{align*}
+and rewrite (\ref{ItoSDEcomponentlevel}) as a mixed conservative-dissipative SDE in state vector $\bm{x} := (\bm{\theta},\bm{\omega})^{\top} \in \mathbb{T}^{n} \times \mathbb{R}^{n}$ as
+\begin{align}
+\begin{pmatrix}
+{\mathrm{d}}\bm{\theta}\\
+{\mathrm{d}}\bm{\omega}	
+\end{pmatrix}
+\! = \!\begin{pmatrix}
+\bm{\omega}\\
+-\bm{M}^{-1}\nabla_{\bm{\theta}}V(\bm{\theta}) -\bm{M}^{-1}\bm{\Gamma}\bm{\omega}  	
+\end{pmatrix}{\mathrm{d}}t + \!\begin{pmatrix}
+ \bm{0}_{n\times n}\\
+ \bm{M}^{-1}\bm{\Sigma}	
+ \end{pmatrix}{\mathrm{d}}\bm{w},
+\label{ItoSDEvectorlevel}
+\end{align}
+where 
+%$\odot$ denotes element-wise product, $\oslash$ denotes element-wise division, the , the rotor inertia vector $\bm{m} = (m_{1},\hdots,m_{n})^{\top}\in\mathbb{R}^{n}_{>0}$, the rotor damping coefficient vector $\bm{\gamma} = (\gamma_{1}, \hdots, \gamma_{n})^{\top}\in\mathbb{R}^{n}_{>0}$, the diffusion coefficient vector $\bm{\sigma} = (\sigma_{1}, \hdots, \sigma_{n})^{\top}\in\mathbb{R}^{n}_{>0}$, and 
+$\bm{w}\in\mathbb{R}^{n}$ is the standard vector Wiener process, $\mathbb{T}^{n}$ denotes the $n$-torus $[0,2\pi)^{n}$, and the potential function $V : \mathbb{T}^{n} \mapsto \mathbb{R}$ is given by
+\begin{align}
+V(\bm{\theta}) := -\displaystyle\sum_{i=1}^{n} P_{i}\theta_{i} + \!\displaystyle\sum_{i,j=1}^{n}\!k_{ij}\left(1 - \cos(\theta_{i}-\theta_{j}-\varphi_{ij})\right).
+\label{potential}	
+\end{align}
+%wherein $\mathcal{E}$ is the set of edges for the underlying graph modeling the power system network topology. 
+The potential (\ref{potential}) has a natural energy function interpretation and can also be motivated by a mechanical mass-spring-damper analogy \cite{dorfler2013synchronization,ishizaki2018}. %The function $V$ is continuously differentiable, bounded below, and goes to $+\infty$ as $\|\bm{\theta}\|_{2}\rightarrow +\infty$.
+%In the development below, an important role will be played by the ``Hamiltonian-like" function
+%\begin{align}
+%H(\bm{x})\equiv H(\bm{\theta},\bm{\omega}) := \frac{1}{2}\bm{\omega}^{\top}{\rm{diag}}\left(\bm{\gamma}\oslash\bm{m}\right)\bm{\omega} \: + \: V(\bm{\theta}).
+%\label{hamiltonian}	
+%\end{align}
+
+
+\subsection{Macroscopic Dynamics}\label{subsec:macroscopic}
+Given the sample path dynamics \eqref{ItoSDEcomponentlevel} or equivalently \eqref{ItoSDEvectorlevel}, a prescribed initial joint state PDF 
+\begin{align}
+\rho_{0}(\bm{x})\equiv\rho(t=t_{0},\bm{\theta}(t_{0}),\bm{\omega}(t_{0}))
+\label{FPKInitCond}	
+\end{align} 
+denoting initial condition uncertainties at time $t=t_{0}$, and prescribed parametric uncertainties given by the joint parameter PDF $\rho_{\text{param}}$, the uncertainty propagation problem calls for computing the transient joint state PDFs $\rho(t,\bm{x})\equiv\rho(t,\bm{\theta},\bm{\omega})$ for any desired time $t \geq t_{0}$, which is a nonnegative function supported on the state space $\mathbb{T}^{n} \times \mathbb{R}^{n}$ satisfying $\int \rho = 1$ for all $t\geq t_{0}$.
+
+The corresponding macroscopic dynamics governing the flow of the joint state PDF $\rho(t,\bm{\theta},\bm{\omega})$ is given by a kinetic Fokker-Planck \cite{villani2006hypocoercive} PDE
+\begin{align}
+\frac{\partial \rho}{\partial t} &= - \langle \bm{\omega},\nabla_{\bm{\theta}}\rho \rangle  + \nabla_{\bm{\omega}} \cdot \left( \rho \left( \bm{M}^{-1}\bm{\Gamma}\bm{\omega} + \bm{M}^{-1}\nabla_{\bm{\theta}}V(\bm{\theta}) \right.\right.\nonumber\\
+&\qquad\qquad\qquad \left.\left. +\frac{1}{2} \bm{M}^{-1}\bm{\Sigma}\bm{\Sigma}^{\top}\bm{M}^{-1} \nabla_{\bm{\omega}} \log \rho \right) \right),
+\label{KineticFPK}	
+\end{align}
+subject to the initial condition \eqref{FPKInitCond} and the joint parameter PDF $\rho_{\text{param}}$. Of course, this subsumes special cases such as when either the initial condition or the parameter vector is deterministic. A direct numerical solution of this PDE initial value problem using conventional discretization (e.g., finite difference) or function approximation techniques will not be scalable in general, as explained in Sec. \ref{subsubsec:technicalchallenges}. In the next Section, we discuss how a measure-valued variational recursion proposed in our recent works \cite{caluya2019ACC,caluya2019TAC,halder2020hopfield,caluya2021TAC,caluya2020reflected} can be employed to address this challenge.
+
+We mention here that (\ref{ItoSDEvectorlevel}) has been used in \cite{ju2018analytical,ju2018stochastic} for uncertainty propagation via stochastic averaging approximation where the univariate energy PDF was proposed as a ``proxy" for the entire joint PDF. Most relevant to our approach in the power systems literature is the work in \cite{wang2013fokker}, which indeed voiced the need for computing the transient joint PDFs but only dealt with the single-machine-infinite-bus case -- simplest ($n=1$) instance of (\ref{ItoSDEvectorlevel}). The resulting bivariate Fokker-Planck PDE in \cite{wang2013fokker} was solved via finite element discretization, and revealed rich stochastic dynamics and nontrivial transient stability aspects even in this simple case. However, it is unreasonable to expect that a finite element discretization, or in fact any spatial discretization scheme to solve (\ref{KineticFPK}) for moderately large $n$ in seconds of computational time, thereby limiting our current ability for realistic power systems simulation with stochastic variability. This calls for fundamentally re-thinking what does it mean to solve the PDE (\ref{KineticFPK}) for dynamics (\ref{ItoSDEvectorlevel}).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Measure-valued Proximal Recursion}\label{sec:prox}
+\subsection{Generalized Gradient Descent}\label{subsec:GenGradDescent}
+Let $\mathcal{P}_{2}\left(\mathbb{T}^{n} \times \mathbb{R}^{n}\right)$ denote the manifold of joint PDFs supported over the state space $\mathbb{T}^{n} \times \mathbb{R}^{n}$, with finite second raw moments. Symbolically,
+\begin{align}
+\mathcal{P}_{2}\left(\mathbb{T}^{n} \times \mathbb{R}^{n}\right) := &\bigg\{\rho : \mathbb{T}^{n} \times \mathbb{R}^{n} \mapsto \mathbb{R}_{\geq 0} \mid \int \rho = 1,\nonumber\\
+&\hspace*{-0.8in}\int\bm{x}^{\top}\bm{x}\:\rho(\bm{x})\:\differential\bm{x} <\infty\; \text{for all}\;\bm{x}\equiv(\bm{\theta},\bm{\omega})^{\top}\in\mathbb{T}^{n} \times \mathbb{R}^{n} \bigg\}.
+\label{DefP2}	
+\end{align}
+We propose to solve the initial value problem for the PDE \eqref{KineticFPK} by viewing its flow $\rho(t,\bm{\theta},\bm{\omega})$ as the gradient descent of some functional $\Phi:\mathcal{P}_{2}\left(\mathbb{T}^{n} \times \mathbb{R}^{n}\right)\mapsto \mathbb{R}_{\geq 0}$ w.r.t. some distance 
+\[{\rm{dist}}:\mathcal{P}_{2}\left(\mathbb{T}^{n} \times \mathbb{R}^{n}\right)\times\mathcal{P}_{2}\left(\mathbb{T}^{n} \times \mathbb{R}^{n}\right)\mapsto\mathbb{R}_{\geq 0}.\]
+We now explain this idea in detail.
+
+\begin{figure}[tb]
+\centering
+\includegraphics[width=0.9\linewidth]{ProxSchmatic.pdf}
+\caption{\small{A schematic of approximating the flow of the joint PDF trajectory $\rho(t,\bm{x})$ via the sequence $\{\varrho_{k}\}_{k\in\mathbb{N}}$ generated by a variational recursion over $\mathcal{P}_{2}\left(\mathbb{T}^{n}\times\mathbb{R}^{n}\right)$. The curve $\rho(t,\bm{x})$ solves a kinetic Fokker-Planck PDE initial value problem. Points on this curve (shown as three filled circled markers at three specific instances $t_0,t_1,t_2$) are joint PDFs. While the joint PDFs are supported over the finite dimensional base manifold $\mathbb{T}^{n}\times\mathbb{R}^{n}$, the proximal updates $\{\varrho_{k}\}_{k\in\mathbb{N}}$ (shown as circled markers with no face-color) evolve over the infinite dimensional manifold $\mathcal{P}_{2}\left(\mathbb{T}^{n}\times\mathbb{R}^{n}\right)$.}}
+\vspace*{-0.1in}
+\label{fig:ProxSchematic}
+\end{figure}
+
+
+
+
+
+
+For $k\in\mathbb{N}$, and for some chosen step size $h>0$, we discretize time as $t_{k} := kh$, and define the infinite dimensional proximal operator of the functional $h\Phi$ w.r.t. the distance ${\rm{dist}}(\cdot,\cdot)$, given by
+\begin{eqnarray}
+{\text{prox}}^{{\rm{dist}}}_{h\Phi}(\varrho_{k-1}) := \underset{\varrho\in\mathcal{P}_{2}} {{\rm{arg\:inf}}}\: \frac{1}{2} {\rm{dist}}^{2}\left(\varrho,\varrho_{k-1}\right) + h\: \Phi(\varrho).
+\label{InfiniteDimProxOpDef}
+\end{eqnarray}
+Now consider a proximal recursion over the manifold $\mathcal{P}_{2}$ as
+\begin{eqnarray}
+\varrho_{k} = {\text{prox}}^{{\rm{dist}}}_{h\Phi}(\varrho_{k-1}), \quad k\in\mathbb{N}, \quad \varrho_{0}(\bm{x}) := \rho_{0}(\bm{x}).
+\label{ProxRecursionInfiniteDim}	
+\end{eqnarray}
+Given the PDE \eqref{KineticFPK}, we would like to design the functional pair $\left(\Phi,{\rm{dist}}\right)$ such that the sequence of functions $\{\varrho_{k}\}_{k\in\mathbb{N}}$ generated by the proximal recursion \eqref{ProxRecursionInfiniteDim}, in the small time step limit, converges to the flow $\rho(t=kh,\bm{\theta},\bm{\omega})$ generated by the PDE initial value problem of interest. In particular,
+\begin{align}
+\varrho_{k}(\bm{\theta},\bm{\omega}) \xrightarrow{h\downarrow 0} \rho(t=kh,\bm{\theta},\bm{\omega}) \;\text{in}\;L^{1}\left(\mathbb{T}^{n} \times \mathbb{R}^{n}\right).
+\label{ConvergenceGuarantee}	
+\end{align}
+We remark here that \eqref{DefP2}, \eqref{InfiniteDimProxOpDef}, \eqref{ProxRecursionInfiniteDim}, \eqref{ConvergenceGuarantee} can be written more generally in therms of the joint probability measures instead of PDFs, i.e., even when the underlying measures are not absolutely continuous. Fig. \ref{fig:ProxSchematic} illustrates the idea of approximating the joint PDF trajectory $\rho(t,\bm{x})$ through the sequence $\{\varrho_{k}\}_{k\in\mathbb{N}}$ computed from a variational recursion over $\mathcal{P}_{2}\left(\mathbb{T}^{n}\times\mathbb{R}^{n}\right)$.
+
+We can interpret the proximal operator \eqref{InfiniteDimProxOpDef} as a generalized gradient step for the functional $\Phi$ in the manifold $\mathcal{P}_{2}$. The proximal recursions \eqref{ProxRecursionInfiniteDim} define an infinite dimensional gradient descent of the functional $h\Phi$ over $\mathcal{P}_{2}$ w.r.t. the distance ${\rm{dist}}$. This is reminiscent of the finite dimensional gradient descent, where a gradient flow generated by an ordinary differential equation initial value problem can be recovered as the small time step limit of the sequence of vectors generated by a standard Euclidean proximal recursion; see e.g., \cite[Sec. I]{caluya2019TAC}.
+
+That the flow generated by a Fokker-Planck PDE initial value problem can be recovered from a variational recursion of the form \eqref{ProxRecursionInfiniteDim} was first proposed in \cite{jordan1998variational}, showing that when the drift in the sample path dynamics is a gradient vector field and the diffusion is a scalar multiple of identity matrix, then ${\rm{dist}}(\cdot,\cdot)$ can be taken as the Wasserstein-2 metric arising in the theory of optimal transport \cite{villani2003topics} with $\Phi(\cdot)$ as the free energy functional. In particular, the functional $\Phi$ serves as a Lyapunov functional in the sense $\frac{\differential}{\differential t}\Phi < 0$ along the transient solution of the Fokker-Planck PDE initial value problem. This idea has since been generalized to many other types of PDE initial value problems, see e.g., \cite{ambrosio2008gradient,santambrogio2017euclidean}. 
+
+The algorithmic appeal of the proximal recursion \eqref{ProxRecursionInfiniteDim} is that it opens up the possibility to compute the solution of the PDE initial value problem via recursive convex minimization. A point cloud-based proximal algorithm was proposed in \cite{caluya2019ACC,caluya2019TAC} which was reported to have very fast runtime. Notice that even though the drift in \eqref{ItoSDEvectorlevel} is \emph{not} a gradient vector field, the algorithm in \cite[Sec. V.B]{caluya2019TAC} constructed a pair $\left(\Phi,{\rm{dist}}\right)$ such that \eqref{ProxRecursionInfiniteDim} provably approximates the transient solution of the corresponding kinetic Fokker-Planck PDE with guarantee \eqref{ConvergenceGuarantee}. However, that algorithm cannot be applied to \eqref{KineticFPK} as is. The reasons are explained next.
+
+\subsection{Statistical Mechanics Perspective}
+A new difficulty for our SDE \eqref{ItoSDEvectorlevel} is that we have \emph{anisotropic} degenerate diffusion, i.e., the strengths of the noise acting in the last $n$ components of \eqref{ItoSDEvectorlevel} are nonuniform since $\bm{M}^{-1}\bm{\Sigma}$ is not identity. This complicates the matter because the construction of the functional $\Phi$ in \eqref{ProxRecursionInfiniteDim} is usually motivated via free energy considerations utilizing the structure of the \emph{stationary} PDF $\rho_{\infty}(\bm{\theta},\bm{\omega})$ for \eqref{KineticFPK}. The $\rho_{\infty}$ is, in turn, guaranteed to be a unique \emph{Boltzmann distribution} of the form\footnote{here $Z$ is a normalizing constant known as the ``partition function".}
+\begin{subequations}
+\begin{align}
+\rho_{\infty}\left(\bm{\theta},\bm{\omega}\right) &= \dfrac{1}{Z}\exp\left(-\beta H\right), \\
+H(\bm{\theta},\bm{\omega}) &:= V(\bm{\theta}) + \frac{1}{2}\langle\bm{\omega},\bm{M\omega}\rangle,	
+\end{align}	
+\label{BoltzmannPDF}
+\end{subequations}
+\emph{if and only if} the so-called \emph{Einstein relation} \cite{hernandez1989equilibrium,chen2015fast} holds:
+\begin{align}
+\bm{\Sigma}\bm{\Sigma}^{\top} = \beta^{-1}\left(\bm{\Gamma} + \bm{\Gamma}^{\top}\right) \quad\text{for some}\;\beta > 0.
+\label{EinsteinRelation}	
+\end{align}
+In our case, $\bm{\Sigma,\Gamma}$ are positive diagonal, and \eqref{EinsteinRelation} is equivalent to the proportionality constraint: $\sigma_{i}^{2} \propto \gamma_{i}$ for all $i=1,\hdots,n$.
+
+In the power systems context, we cannot relate the damping coefficients $\gamma_i$ with the squared intensities of stochastic forcing $\sigma_{i}^{2}$ for the generators. Thus, \eqref{EinsteinRelation} will not hold in practice, meaning either we cannot guarantee existence-uniqueness for $\rho_{\infty}$, or even if $\rho_{\infty}$ exists, it will not be of the form \eqref{BoltzmannPDF}. On one hand, this implies that our construction of $\Phi$ may not be guided by free energy considerations. On the other hand, since we are only interested in computing the transient joint PDFs, i.e., \emph{non-equilibrium} statistical mechanics, the lack of a fluctuation-dissipation relation like \eqref{EinsteinRelation} should not be a fundamental impediment in setting up a recursion such as \eqref{ProxRecursionInfiniteDim}. We next show that a simple change of variable can indeed circumvent this issue. 
+
+
+\subsection{From Anisotropic to Isotropic Degenerate Diffusion}\label{subsec:FromAnisoToIso}
+Consider the $2n\times 2n$ matrix
+\begin{align}
+\bm{\Psi}:= \bm{I}_{2} \otimes \left(\bm{M}\bm{\Sigma}^{-1}\right), \label{DefPsi}	
+\end{align}
+and define the invertible linear map
+\begin{align}
+\begin{pmatrix}
+\bm{\theta}\\
+\bm{\omega}	
+\end{pmatrix} \mapsto \begin{pmatrix}
+\bm{\xi}\\
+\bm{\eta}	
+\end{pmatrix} := \bm{\Psi} \begin{pmatrix}
+\bm{\theta}\\
+\bm{\omega}	
+\end{pmatrix}. \label{ChangeOfVar}
+\end{align}
+Applying It\^{o}'s lemma \cite[Ch. 4.2]{oksendal2013stochastic} to the map \eqref{ChangeOfVar}, and using \eqref{ItoSDEvectorlevel}, we find that the transformed state vector $(\bm{\xi},\bm{\eta})^{\top}$ solves the It\^{o} SDE 
+\begin{align}
+\begin{pmatrix}
+{\mathrm{d}}\bm{\xi}\\
+{\mathrm{d}}\bm{\eta}	
+\end{pmatrix}
+\! = \!\begin{pmatrix}
+\bm{\eta}\\
+-\nabla_{\bm{\xi}}U(\bm{\xi}) -\nabla_{\bm{\eta}}F\left(\bm{\eta}\right)  	
+\end{pmatrix}{\mathrm{d}}t + \!\begin{pmatrix}
+ \bm{0}_{n\times n}\\
+ \bm{I}_{n}	
+ \end{pmatrix}{\mathrm{d}}\bm{w},
+\label{XiEtaVectorSDE}	
+\end{align}
+where the potentials
+{\small{\begin{subequations}
+\begin{align}
+U(\bm{\xi}) &:= \!-\displaystyle\sum_{i=1}^{n}\!\frac{1}{\sigma_{i}}P_{i}\xi_{i} + \!\!\displaystyle\sum_{i,j=1}^{n}\!\!\dfrac{m_{i}}{\sigma_{i}^{2}}k_{ij}\!\left(\!1 \!- \!\cos\!\left(\!\dfrac{\sigma_{i}}{m_{i}}\xi_{i} - \dfrac{\sigma_{j}}{m_{j}}\xi_{j} - \varphi_{ij}\!\!\right)\!\right), \label{defU}\\
+F(\bm{\eta}) &:= \dfrac{1}{2}\langle\bm{\eta},\bm{M}^{-1}\bm{\Gamma}\bm{\eta}\rangle. \label{defF}	
+\end{align}
+\label{NewPotentials}	
+\end{subequations}}}
+
+
+Notice that \eqref{XiEtaVectorSDE} is a mixed conservative-dissipative SDE with \emph{isotropic} degenerate diffusion. In particular, the pushforward of the known initial joint PDF \eqref{FPKInitCond} via $\bm{\Psi}$, is given by
+\begin{align}
+\tilde{\rho}_{0}(\bm{\xi},\bm{\eta}) := \bm{\Psi}_{\sharp} \rho_{0} 
+&= \dfrac{\rho_{0}\left(\bm{\Psi}^{-1} \begin{pmatrix}
+\bm{\xi}\\
+\bm{\eta}	
+\end{pmatrix}\right)}{|\det\left(\bm{\Psi}\right)|} \nonumber\\
+&= \dfrac{\rho_{0}\left(\bm{\Sigma}\bm{M}^{-1}\bm{\xi},\bm{\Sigma}\bm{M}^{-1}\bm{\eta}\right)}{\left(\displaystyle\prod_{j=1}^{n}m_{j}/\sigma_{j}\right)^{\!2}},
+\label{PushforwardOfIC}	
+\end{align}
+where we used the standard properties of the Kronecker product. The transient joint state PDF $\tilde{\rho}(t,\bm{\xi},\bm{\eta})$ corresponding to \eqref{XiEtaVectorSDE} solves the PDE initial value problem
+\begin{subequations}
+\begin{align}
+&\dfrac{\partial\tilde{\rho}}{\partial t} = -\langle\bm{\eta},\nabla_{\bm{\xi}}\tilde{\rho}\rangle + \nabla_{\bm{\eta}}\cdot\left(\tilde{\rho}\left(\nabla_{\bm{
+\xi}}U(\bm{\xi})+\nabla_{\bm{\eta}}F(\bm{\eta})\right)\right) + \dfrac{1}{2}\Delta_{\bm{\eta}}\tilde{\rho}, \label{NewPDE}\\
+&\tilde{\rho}(t=t_{0},\bm{\xi},\bm{\eta}) = \underbrace{\tilde{\rho}_{0}(\bm{\xi},\bm{\eta})}_{\text{from}\;\eqref{PushforwardOfIC}}. \label{NewIC}	
+\end{align}
+\label{TransformedPDEivp}	
+\end{subequations}
+In other words, \eqref{TransformedPDEivp} is the macroscopic dynamics corresponding to the sample path dynamics \eqref{XiEtaVectorSDE}.
+
+Since \eqref{NewPDE} is a kinetic Fokker-Planck PDE with isotropic degenerate diffusion, our strategy is to perform a proximal recursion of the form \eqref{ProxRecursionInfiniteDim} for \eqref{TransformedPDEivp} in $(\bm{\xi},\bm{\eta})$ coordinates, and then to pushforward the resulting joint PDFs via $\bm{\Psi}^{-1}$ to the original state space. This is what we detail next.
+
+
+
+
+
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=.7\linewidth]{BlockDiagm.pdf}
+\caption{\small{Schematic of the proposed proximal algorithm for propagating the joint state PDF as probability weighted scattered point cloud $\{\tilde{\bm{x}}_{k}^{i},\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$. The states $\{\tilde{\bm{x}}_{k}^{i}\}_{i=1}^{N}$ are updated by the Euler-Maruyama scheme applied to (\ref{ItoSDEvectorlevel}); the corresponding probability weights $\{\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ are updated via discrete version of the proximal recursion (\ref{KineticProx}) as detailed in Sec. \ref{sec:ProxAlgo}.}}
+\label{fig:BlockDiagm}
+\vspace*{-0.1in}
+\end{figure}
+
+
+
+\subsection{Proximal Update}\label{subsec:ProxUpdate}
+Looking at \eqref{NewPotentials} and \eqref{NewPDE}, it is natural to consider an energy functional of the form
+\begin{align}
+\Phi(\tilde{\rho}) := \!\!\displaystyle\int_{\mathbb{T}^{n}\times\mathbb{R}^{n}}\!\!\!\left(\!\bm{M}^{-1}\bm{\Gamma}U(\bm{\xi})+ F\left(\bm{\eta}\right) + \frac{1}{2}\log\tilde{\rho}\!\right)\tilde{\rho}\:\differential\bm{\xi}\:\differential\bm{\eta},
+\label{LyapButNotProx}	
+\end{align}
+which is the sum of a potential energy (expected value of scaled $U$), a weighted kinetic energy (expected value of $F$), and an internal energy (scaled negative entropy, the entropy being $-\int\tilde{\rho}\log\tilde{\rho}$). Indeed, it can be shown that (Appendix \ref{AppLyap}) the functional \eqref{LyapButNotProx} is a Lyapunov-like functional, i.e., $\Phi$ is decreasing along the solution of \eqref{NewPDE}.
+
+However, unlike the gradient drift case mentioned in Sec. \ref{subsec:GenGradDescent}, it is not possible to express the right hand side of \eqref{NewPDE} as the Wasserstein gradient of the functional \eqref{LyapButNotProx}. To see this, recall that the Wasserstein gradient is defined as \cite[Ch. 8]{ambrosio2008gradient} 
+$$\nabla^{\text{Wasserstein}}\Phi := -\nabla\cdot\left(\rho\nabla\dfrac{\delta\Phi}{\delta\rho}\right),$$
+where $\nabla$ denotes the standard Euclidean gradient w.r.t. the vector $(\bm{\xi},\bm{\eta})^{\top}$, and $\frac{\delta}{\delta\rho}$ denotes the functional derivative. From \eqref{FunctionalDerivative}, \eqref{defvectorfieldv} and \eqref{firstequality} in Appendix A, it is clear that the vector field $\bm{v}$ defined in \eqref{defvectorfieldv} is not equal to the negative of $\nabla\dfrac{\delta\Phi}{\delta\rho}$. Thus, even though the functional \eqref{LyapButNotProx} decreases along the transient solution of \eqref{NewPDE}, we cannot interpret the flow generated by \eqref{TransformedPDEivp} as the Wasserstein gradient flow of the functional \eqref{LyapButNotProx}. Thus, in \eqref{InfiniteDimProxOpDef}, we cannot construct $(\Phi,{\rm{dist}})$ by pairing \eqref{LyapButNotProx} with the Wasserstein metric.
+
+To set up a variational recursion of the form \eqref{InfiniteDimProxOpDef} for \eqref{TransformedPDEivp}, we set $(\Phi,{\rm{dist}}) \equiv \left(\widetilde{\Phi},\widetilde{W}\right)$ where
+\begin{align}
+\widetilde{\Phi}(\tilde{\rho}) := \int_{\mathbb{T}^{n} \times \mathbb{R}^{n}}\left(F(\boldsymbol{\eta})+\frac{1}{2} \log \tilde{\rho}\right) \tilde{\rho}\: \mathrm{d} \boldsymbol{\xi} \mathrm{d} \boldsymbol{\eta},
+\label{Phitilde}	
+\end{align}
+and 
+\begin{align}
+\widetilde{W}^{2}\left(\tilde{\varrho}, \tilde{\varrho}_{k-1}\right):=\!&\inf _{\pi \in \Pi\left(\tilde{\varrho}, \tilde{\varrho}_{k-1}\right)}\!\int_{\mathbb{T}^{2 n} \times \mathbb{R}^{2 n}}\!\!\left\{\left\|\overline{\boldsymbol{\eta}}-\boldsymbol{\eta}+h \nabla_{\boldsymbol{\xi}} U(\boldsymbol{\xi})\right\|_{2}^{2}\right.\nonumber\\
+&\hspace*{-0.2in}\left.+12\left\|\frac{\overline{\boldsymbol{\xi}}-\boldsymbol{\xi}}{h}-\frac{\overline{\boldsymbol{\eta}}+\boldsymbol{\eta}}{2}\right\|_{2}^{2}\right\} \mathrm{d} \pi(\boldsymbol{\xi}, \boldsymbol{\eta}, \overline{\boldsymbol{\xi}}, \overline{\boldsymbol{\eta}}).
+\label{Wtilde}	
+\end{align}
+In \eqref{Wtilde}, $\Pi\left(\tilde{\varrho}, \tilde{\varrho}_{k-1}\right)$ denotes the collection of all joint PDFs supported on $\mathbb{T}^{2 n} \times \mathbb{R}^{2 n}$ that have finite second raw moments, with the first marginal $\tilde{\varrho}$, and the second marginal $\tilde{\varrho}_{k-1}$.
+
+That the sequence of functions $\{\tilde{\varrho}_{k}\}$ for $k\in\mathbb{N}$, generated by the proximal recursion
+\begin{align}
+\tilde{\varrho}_{k} &= {\text{prox}}^{\widetilde{W}}_{h\widetilde{\Phi}}(\tilde{\varrho}_{k-1}) \nonumber\\
+&\equiv \underset{\tilde{\rho}\in\mathcal{P}_{2}}{\arg\inf}\:\frac{1}{2}\widetilde{W}^{2}\left(\tilde{\varrho},\tilde{\varrho}_{k-1}\right) + h\:\widetilde{\Phi}(\tilde{\rho}), \quad \tilde{\varrho}_{0} := \tilde{\rho}_{0},
+\label{KineticProx}	
+\end{align}
+converges to the flow generated by \eqref{TransformedPDEivp}, i.e., 
+$$\tilde{\varrho}_{k}(\bm{\xi},\bm{\eta}) \xrightarrow{h\downarrow 0} \tilde{\varrho}(t=kh,\bm{\xi},\bm{\eta})\;\text{in}\;L^{1}\left(\mathbb{T}^{n}\times\mathbb{R}^{n}\right),$$
+was established in \cite{duong2014conservative}. To numerically perform the recursion \eqref{KineticProx}, we employ the proximal algorithm proposed in \cite{caluya2019TAC} with finite number of samples, as explained next.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+\section{Proximal Algorithm}\label{sec:ProxAlgo}
+We solve \eqref{KineticProx} by recursively updating the probability-weighted scattered point clouds $\{\tilde{\bm{x}}_{k}^{i},\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ where 
+$$\tilde{\bm{x}}_{k}^{i}:=\left(\bm{\xi}_{k}^{i},\bm{\eta}_{k}^{i}\right)^{\!\top}, \quad i=1,\hdots,N, \quad k\in\mathbb{N}.$$
+Thus, $\tilde{\varrho}_{k}^{i}$ is the joint PDF value obtained from \eqref{KineticProx} at $\tilde{\bm{x}}_{k}^{i}$, the $i$th (transformed) state sample at the $k$th time step. The high level schematic of the algorithm is shown in Fig. \ref{fig:BlockDiagm}. 
+
+
+In the numerical simulations reported in Sec. \ref{sec:NumericalSimulations}, the states $\{\tilde{\bm{x}}_{k}^{i}\}_{i=1}^{N}$ are updated by the Euler-Maruyama scheme applied to (\ref{ItoSDEvectorlevel}). If one wishes so, the Euler-Maruyama scheme in Fig. \ref{fig:BlockDiagm} may be replaced by other SDE integrators, see e.g., \cite[Sec. III.B.2, Remark 1]{caluya2019TAC}. 
+
+To numerically perform the proximal updates $\{\tilde{\varrho}_{k-1}^{i}\}_{i=1}^{N}\mapsto\{\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ for $k\in\mathbb{N}$, we implement an instance of the Algorithm 1 in \cite{caluya2019TAC}. The algorithm involves a dualization along
+with an entropic regularization of the variational update \eqref{KineticProx}, and then solving the same using a fixed point recursion that is provably contractive; we refer the interested readers to \cite[Sec. V.B]{caluya2019TAC} for details. This enables a nonparametric computation of $\tilde{\varrho}_{k}^{i} \equiv \tilde{\varrho}_{k}\left(\bm{\xi}_{k}^{i},\bm{\eta}_{k}^{i}\right)$ for $i=1,\hdots,N$.
+
+
+
+\begin{algorithm}[t]
+\caption{Proposed proximal algorithm for $\tilde{\bm{\varrho}}_{k-1}\mapsto\tilde{\bm{\varrho}}_{k}$}
+\label{algo:KineticProx}
+\begin{algorithmic}[1]
+\Procedure{Prox}{$\bm{\varrho}_{k-1}, \tilde{\bm{x}}_{k-1}, \tilde{\bm{x}}_{k}, h, \varepsilon, N, \delta, L$}
+\For{$i=1$ to $N$}
+\State $\bm{\zeta}_{k-1}(i) \gets \exp\left(-\left(\bm{\eta}_{k-1}^{i}\right)^{\top}\bm{\eta}_{k-1}^{i}-1\right)$
+\For{$j=1$ to $N$}
+\State $\bm{C}_{k}(i,j) \gets \parallel\bm{\eta}_{k-1}^{j} - \bm{\eta}_{k}^{i}+ h\nabla U(\bm{\xi}_{k}^{i})\parallel_{2}^{2}$
+\State \qquad\quad $+12\bigg\|\dfrac{\bm{\xi}_{k-1}^{j}-\bm{\xi}_{k}^{i}}{h} - \dfrac{\bm{\eta}_{k-1}^{j} + \bm{\eta}_{k}^{i}}{2}\bigg\|_{2}^{2}$
+\EndFor
+\EndFor
+\State $\bm{\Gamma}_{k} \gets \exp\left(-\bm{C}_{k}/2\varepsilon\right)$ \Comment{elementwise exponential}
+\State $\bm{z}_{0} \gets {\rm{rand}}_{N\times 1}$ \Comment{random vector of size $N\times 1$}
+\State $\bm{z} \gets \left[\bm{z}_{0}, \bm{0}_{N\times(L-1)}\right]$ \Comment{initialize}
+\State $\bm{y} \gets \left[\tilde{\bm{\varrho}}_{k-1}\oslash\left(\bm{\Gamma}_{k}\bm{z}_{0}\right), \bm{0}_{N\times(L-1)}\right]$ \Comment{initialize}
+\State $\ell = 1$
+\While{$\ell\leq L$}
+\State $\bm{z}(:,\ell+1) \gets \left(\bm{\zeta}_{k-1}\oslash\left(\bm{\Gamma}_{k}^{\top}\bm{y}(:,\ell)\right)\right)^{\frac{1}{1+2\varepsilon/h}}$
+\State $\bm{y}(:,\ell+1) \gets \tilde{\bm{\varrho}}_{k-1} \oslash \left(\bm{\Gamma}_{k}\bm{z}(:,\ell+1)\right)$
+\If{$\|\bm{y}(:,\ell+1)-\bm{y}(:,\ell)\|_{2}<\delta$ \& $\|\bm{z}(:,\ell+1)-\bm{z}(:,\ell)\|_{2}<\delta$} \Comment{error within tolerance}
+\State break
+\Else
+\State $\ell \gets \ell + 1$
+\EndIf
+\EndWhile\\
+\Return $\tilde{\bm{\varrho}}_{k} \gets \bm{z}(:,\ell) \odot \left(\bm{\Gamma}_{k}^{\top}\bm{y}(:,\ell)\right)$ \Comment{proximal update}
+\EndProcedure	
+\end{algorithmic}
+\end{algorithm}
+
+
+
+
+
+Finally, we transform the proximal updates back to the $\bm{x}\equiv\left(\bm{\theta},\bm{\omega}\right)^{\top}$ state space via the pushforward $\bm{\Psi}^{-1}$ as
+% \begin{align}
+% \varrho_{k}\left(\bm{\theta}_{k}^{i},\bm{\omega}_{k}^{i}\right) &= \bm{\Psi}^{-1}_{\sharp} \tilde{\varrho}_{k}\left(\bm{\xi}_{k}^{i},\bm{\eta}_{k}^{i}\right) \nonumber\\
+% &= \left(\prod_{j=1}^{n}m_{j}/\sigma_{j}\right)^{\!\!2}\tilde{\varrho}_{k}\left(\bm{M}\bm{\Sigma}^{-1}\bm{\theta}_{k}^{i},\bm{M}\bm{\Sigma}^{-1}\bm{\omega}_{k}^{i}\right),
+% \label{BringBackOriginalStateSpace}	
+% \end{align}
+\begin{multline}
+\varrho_{k}\left(\bm{\theta}_{k}^{i},\bm{\omega}_{k}^{i}\right) = \bm{\Psi}^{-1}_{\sharp} \tilde{\varrho}_{k}\left(\bm{\xi}_{k}^{i},\bm{\eta}_{k}^{i}\right) \\
+= \left(\prod_{j=1}^{n}m_{j}/\sigma_{j}\right)^{\!\!2}\tilde{\varrho}_{k}\left(\bm{M}\bm{\Sigma}^{-1}\bm{\theta}_{k}^{i},\bm{M}\bm{\Sigma}^{-1}\bm{\omega}_{k}^{i}\right),
+\label{BringBackOriginalStateSpace}	
+\end{multline}
+for all $i=1,\hdots,N$. The $\varrho_{k}\left(\bm{\theta},\bm{\omega}\right)$ from \eqref{BringBackOriginalStateSpace} approximates $\rho(t,\bm{\theta},\bm{\omega})$ (the transient solution of \eqref{KineticFPK}) in the sense \eqref{ConvergenceGuarantee}. 
+
+For completeness, the algorithm \textproc{Prox} for updating $\{\tilde{\varrho}_{k-1}^{i}\}_{i=1}^{N}\mapsto\{\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ is outlined in Algorithm \ref{algo:KineticProx}. As shown in Fig. \ref{fig:BlockDiagm}, this algorithm, at a conceptual level, takes the pre and post update state samples 
+\[\{\tilde{\bm{x}}_{k-1}^{i}\}_{i=1}^{N}\equiv\{\left(\bm{\xi}_{k-1}^{i},\bm{\eta}_{k-1}^{i}\right)\}_{i=1}^{N}, \; \{\tilde{\bm{x}}_{k}^{i}\}_{i=1}^{N}\equiv\{\left(\bm{\xi}_{k}^{i},\bm{\eta}_{k}^{i}\right)\}_{i=1}^{N},\]
+and $\{\tilde{\varrho}_{k-1}^{i}\}_{i=1}^{N}$ as inputs, and outputs the proximal updates $\{\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$. For each $k\in\mathbb{N}$, the updated probability weighted point clouds $\{\tilde{\bm{x}}_{k}^{i},\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ are then brought back to the original state space via $\bm{\Psi}^{-1}$ as $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$, as explained earlier.
+
+
+The Algorithm \ref{algo:KineticProx} also needs input parameters $h,\varepsilon,N,\delta,L$. Specifically, $h$ is the time-step size, $\varepsilon$ is an entropic regularization weight internal to the \textproc{Prox} algorithm, and $N$ is the number of samples. The parameters $\delta$ and $L$ codify the numerical tolerance and maximum number of iterations, respectively, for the while loop in Algorithm \ref{algo:KineticProx}. Its convergence guarantees can be found in \cite[Sec. III.C]{caluya2019TAC}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Numerical Simulations}\label{sec:NumericalSimulations}
+To illustrate the proposed computational framework, we next provide two numerical simulation case studies. In Sec. \ref{subsec:NumSimIEEEBus}, we consider the prediction of transient stochastic states for the IEEE 14 bus system for the nominal case as well as for the case when a line failure occurs. In Sec. \ref{subsec:NumSimSynthetic}, we propagate the joint PDFs over the 100 dimensional state space of a synthetic power network with randomly generated parameters--our intent there is to highlight the scalability of the proposed method. 
+
+All simulations were performed in MATLAB R2019b on an iMac with 3.4 GHz Quad-Core Intel Core i5 processor and 8 GB memory. 
+
+
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.9\linewidth]{IEEE14marginalsCase0.png}
+\caption{\small{Time evolution of the $(\theta_{i},\omega_{i})$ bivariate marginal PDFs of the generator $i=1,\hdots,5$, for the Kron-reduced IEEE 14 bus simulation setup \textbf{Case I} described in Sec. \ref{subsec:NumSimIEEEBus}. The $5$ rows above correspond to the $5$ generator nodes; these are buses 1, 2, 3, 6 and 8 in Fig. \ref{fig:Motivating}. The columns correspond to the time snapshots. The colorbar at the bottom shows the marginal PDF values. The $\theta_i$ are in rad, the $\omega_i$ are in rad/s.}}
+\vspace*{-0.1in}
+\label{fig:IEEE14marginalsCase0}
+\end{figure*}
+
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.9\linewidth]{IEEE14marginalsCase1.png}
+\caption{\small{Time evolution of the $(\theta_{i},\omega_{i})$ bivariate marginal PDFs of the generator $i=1,\hdots,5$, for the Kron-reduced IEEE 14 bus simulation setup \textbf{Case II} described in Sec. \ref{subsec:NumSimIEEEBus}. The $5$ rows above correspond to the $5$ generator nodes; these are buses 1, 2, 3, 6 and 8 in Fig. \ref{fig:Motivating}. The columns correspond to the time snapshots. The colorbar at the bottom shows the marginal PDF values. The $\theta_i$ are in rad, the $\omega_i$ are in rad/s.}}
+\vspace*{-0.1in}
+\label{fig:IEEE14marginalsCase1}
+\end{figure*}
+
+
+
+\begin{figure*}[ht!]
+   \subfigure[]{\includegraphics[width=0.322\textwidth]{Case0_OmegaMarginals.png}}
+   \hspace{\fill}
+   \subfigure[]{\includegraphics[width=0.322\textwidth]{Case1_OmegaMarginals.png}}
+   \hspace{\fill}
+   \subfigure[]{\includegraphics[width=0.309\textwidth]{Case0Case1Combined_Gen4_OmegaMarginals.png}}
+\caption{\small{For $i=1,\hdots,5$, the $\omega_{i}$ marginals (a) for Case I, and (b) for Case II, resulting from the IEEE 14 bus simulation described in Sec. \ref{subsec:NumSimIEEEBus}. (c) Comparison of the $\omega_{4}$ marginals for bus 6 in the nominal (Case I) and post-fault (Case II) scenarios.}}
+\vspace*{-0.1in}
+\label{fig:IEEE14omegamarginalsCase12}
+\end{figure*}
+
+
+
+
+
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.95\linewidth]{ComputationalTimeSyntheticIEEE14busCase1and2combined.png}
+\caption{\small{The computational time for propagating the transient joint state PDFs over $\mathbb{T}^{5}\times\mathbb{R}^{5}$ for the simulation set up in Sec. \ref{subsec:NumSimIEEEBus}.}}
+\vspace*{-0.1in}
+\label{fig:CompTimeIEEE14bus}
+\end{figure}
+
+
+
+\subsection{IEEE 14 Bus System}\label{subsec:NumSimIEEEBus}
+We consider the Kron-reduced dynamics \eqref{ItoSDEcomponentlevel} for the IEEE 14 bus system shown in Fig. \ref{fig:Motivating}. In this case, we have $n=5$ nodes which correspond to the buses 1, 2, 3, 6 and 8 in Fig. \ref{fig:Motivating}. We obtained the parameters of the 14-bus system from MATPOWER \cite{zimmerman2010matpower}. The calculation of Kron-reduced admittance matrix and current vector in \eqref{DefParam} followed Sec.  \ref{subsec:samplepathdynamics}; see also \cite{dorfler2012kron}. The parameters $m_{i}, \gamma_{i}$ were obtained from the open-source Python-based
+library ANDES \cite{cui2021andes}.
+
+Our numerical simulations for the IEEE 14 bus system consider the following three cases:
+
+\noindent\textbf{Case I.} Nominal case where ...
+
+\noindent\textbf{Case II.} post-contingency simulation after the line 13 fails.
+
+\noindent\textbf{Case III.}	load data are time-varying ...
+
+ 
+
+For all the three cases, we used the randomly generated noise coefficients $\sigma_{i}\in [1,5]$ as
+\[(\sigma_{1},\hdots,\sigma_5) = \left(2.4628, 4.9266, 4.8724, 1.4215, 3.8681\right).\]
+
+We take the initial joint PDF as
+\begin{align}
+\rho_{0}&\equiv\rho(t=0,\bm{\theta}(0),\bm{\omega}(0)) = \vartheta_{0}\left(\bm{\theta}(0)\right)\Omega_{0}\left(\bm{\omega}(0)\right)\nonumber\\
+&=\underbrace{\left(\prod_{i=1}^{n=5}\dfrac{\exp\left(\kappa_{i}\cos\left(2\theta_{i}(0)-\mu_{\theta_{i}(0)}\right)\right)}{2\pi I_{0}(\kappa_{i})}\right)}_{=:\vartheta_{0}\left(\bm{\theta}(0)\right)}\nonumber\\
+	&\qquad\times \underbrace{{\rm{Unif}}\left([-0.1,0.1]\;\text{rad/s}\right)}_{=:\Omega_{0}\left(\bm{\omega}(0)\right)},
+\label{rho0IEEE14}		
+\end{align}
+whose $\bm{\theta}$ marginal $ \vartheta_{0}\left(\bm{\theta}(0)\right)$ is a product von Mises PDF\footnote{the factor $2$ inside the cosine ensures the range $[0,2\pi)$; it can be dispensed if we instead use the range $[-\pi,\pi)$ for the angular variables, as common in the directional statistics literature \cite{mardia2009directional}.} \cite{mardia2008multivariate,mardia2014some} supported over $\mathbb{T}^{5}$ with mean angles (in rad)
+\begin{align}
+\left(\mu_{\theta_{1}}(0),\hdots,\mu_{\theta_{5}}(0)\right)=\left(0, 6.1963, 6.0612, 6.0350, 6.0500\right),
+\label{MeanAngleInitialIEEE14}	
+\end{align}
+and concentration parameter $\kappa_{i}\geq 0$ set as 
+\[(\kappa_{1},\hdots,\kappa_5) = \left(5,6,7,4,5\right).\]
+In \eqref{rho0IEEE14}, $I_{0}(\cdot)$ denotes the modified Bessel function of the first kind with order zero, given by $I_{0}(\kappa) = \sum_{r=0}^{\infty} \frac{\left(\kappa^{2}/4\right)^{r}}{(r!)^{2}}$, and can be evaluated via MATLAB command \texttt{besseli(0,$\cdot$)}. 
+
+The mean angles \eqref{MeanAngleInitialIEEE14} were obtained from steady state AC power flow solutions. Larger $\kappa_{i}$ entails a higher concentration around the mean angle $\mu_{\theta_{i}}(0)$ (setting $\kappa_i=0$ implies that $\theta_{i}(0)$ follows uniform distribution over $[0,2\pi)$).
+
+In \eqref{rho0IEEE14}, the $\bm{\omega}$ marginal $ \Omega_{0}\left(\bm{\omega}(0)\right)$ is a uniform PDF over $[-0.1,0.1]$ rad/s. Thus, the PDF $\rho_0$ in \eqref{rho0IEEE14} is supported over $\mathbb{T}^{5}\times [-0.1,0.1]$.
+
+With step size $h=10^{-3}$, we discretized time $t\in[0,1]$. Using the algorithm detailed in Sec. \ref{sec:ProxAlgo}, for all the three cases, we propagated $N=1000$ random samples from \eqref{rho0IEEE14}, and evaluated at \eqref{rho0IEEE14}, to update the scattered weighted point clouds $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ over $\mathbb{T}^{5}\times\mathbb{R}^{5}$ at times $t_{k}:=kh$, $k\in\mathbb{N}$. In Algorithm \ref{algo:KineticProx}, we used the algorithmic parameters $\varepsilon=0.05$, $\delta=10^{-3}$, $L=300$.
+
+Fig. \ref{fig:IEEE14marginalsCase0} and Fig. \ref{fig:IEEE14marginalsCase1} show the time snapshots of the $(\theta_{i},\omega_{i})$ bivariate marginal PDFs for \textbf{Case I} and \textbf{Case II} respectively, associated with the generator $i=1,\hdots, n=5$. These marginals are computed using the corresponding weighted point clouds $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$.
+
+ %Notice that in Fig. \ref{fig:IEEE14marginals}, the horizontal axes of the subfigures have periodic boundary conditions, i.e., $(\theta_{i},\omega_{i})\in\mathbb{T}\times\mathbb{R}$ (cylinder).
+
+Fig. \ref{fig:IEEE14omegamarginalsCase12} shows the corresponding univariate $\omega_{i}$-marginal PDFs. In particular, Fig. \ref{fig:IEEE14omegamarginalsCase12}(c) helps compare the $\omega_{4}$ marginal evolution for bus 6 in the nominal (Case I) and post-fault (Case II) scenarios. Since Case II considers the failure of line 13, from Fig. \ref{fig:Motivating} we intuitively expect that the transient effects of this fault will be prominent for bus 6 (generator 4). Indeed, Fig. \ref{fig:IEEE14omegamarginalsCase12}(c) shows that although the $\omega_{4}$ marginals in both Case I and II, at all times have highest probability around $0$ rad/s, the post-fault marginals show larger spread or dispersion of the probability mass, as expected. {\red{That the generator 4 states in Case II have larger uncertainties than in Case I, is also visible in the bivariate marginal plots if we compare the fourth row in Fig. \ref{fig:IEEE14marginalsCase0} with the same in Fig. \ref{fig:IEEE14marginalsCase1}.}} 
+
+
+
+
+Fig. \ref{fig:CompTimeIEEE14bus} shows the computational times needed to update $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ via the algorithm in Sec. \ref{sec:ProxAlgo}, for both Cases I and II.  
+
+
+
+\begin{table}[t]
+\centering
+\begin{tabular}{| l | l |} 
+\hline
+Parameter description & Values\\
+\hline\hline
+&\\
+nominal frequency & $f_{0} = 60$ Hz\\
+&\\
+inertia & $m_{i}\in{\rm{Unif}}\left([2,12]\right)/2\pi f_{0}$\\
+& \\
+damping coefficient & $\gamma_{i}\in{\rm{Unif}}\left([20,30]\right)/2\pi f_{0}$\\
+& \\
+diffusion coefficient & $\sigma_{i}\in{\rm{Unif}}\left([1,5]\right)$\\
+& \\
+tangent of phase shift & $\tan\varphi_{ij}\begin{cases}
+=0 & \text{for}\; i=j\\
+\in{\rm{Unif}}\left([0,0.25]\right)& \text{for}\; i\neq j
+\end{cases}$\\
+& \\
+effective power input & $P_{i}\in{\rm{Unif}}\left([0,10]\right)$\\
+& \\
+coupling coefficient & $k_{ij}\begin{cases}
+=0 & \text{for}\; i=j\\
+\in{\rm{Unif}}\left([0.7,1.2]\right) & \text{for}\; i\neq j	
+\end{cases}$\\
+& \\
+\hline
+\end{tabular}
+\caption{Parameters used for the numerical simulation in Sec. \ref{subsec:NumSimSynthetic}. The indices $i,j\in\{1,\hdots,n\}$ where the number of generators $n=50$ in Sec. \ref{subsec:NumSimSynthetic}.}
+\label{table:ParamUncertaintiesSynthetic}
+\vspace*{-0.1in}
+\end{table}
+
+\subsection{Synthetic Test System}\label{subsec:NumSimSynthetic}
+To highlight the scalability of the proposed method, we next consider a power network with $n=50$ generators, and propagate the transient joint state PDFs supported over the 100 dimensional state space $\mathbb{T}^{50}\times\mathbb{R}^{50}$. We take the initial joint state PDF at $t=0$ as
+% \begin{align}
+% \rho_{0}\equiv\rho(t=0,\bm{\theta}(0),\bm{\omega}(0)) = &\;{\rm{Unif}}\left(\left([0,2\pi)\;\text{rad}\right)^{n}\right)\nonumber\\
+% 	&\qquad\times {\rm{Unif}}\left([-0.1,0.1]\;\text{rad/s}\right),
+% \label{rho0synthetic}	
+% \end{align}
+\begin{multline}
+\rho_{0}\equiv\rho(t=0,\bm{\theta}(0),\bm{\omega}(0)) = \;{\rm{Unif}}\left(\left([0,2\pi)\;\text{rad}\right)^{n}\right) \\
+	\qquad\times {\rm{Unif}}\left([-0.1,0.1]\;\text{rad/s}\right),
+\label{rho0synthetic}	
+\end{multline}
+and following \cite[Sec. 5]{dorfler2012synchronization}, randomly generate the parameters as in Table \ref{table:ParamUncertaintiesSynthetic}. These parameter ranges are consistent with the same found in \cite{sauerpai1998,andersonBook1977,kundurBook1994}.
+
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.95\linewidth]{ComputationalTimeSynthetic50Gen.png}
+\caption{\small{The computational time for propagating the transient joint state PDFs over $\mathbb{T}^{50}\times\mathbb{R}^{50}$ for the simulation set up in Sec. \ref{subsec:NumSimSynthetic}.}}
+\vspace*{-0.1in}
+\label{fig:CompTimeSynthetic}
+\end{figure}
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.95\linewidth]{RelativeErrorMeanMCVersusProxSynthetic50Gen.png}
+\caption{\small{The relative error between the empirical mean (i.e., Monte Carlo estimate) $\bm{\mu}_{k}^{\text{MC}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$, and the mean $\bm{\mu}_{k}^{\text{Prox}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$ obtained using the proximal updates of the joint state PDFs, for the simulation set up in Sec. \ref{subsec:NumSimSynthetic}.}}
+\vspace*{-0.1in}
+\label{fig:RelErrSynthetic}
+\end{figure}
+
+With $N=2000$ random samples from the initial joint PDF \eqref{rho0synthetic}, and with the aforesaid randomly generated parameters, we employed the procedure detailed in Sec. \ref{sec:ProxAlgo} for propagating $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. As in Sec. \ref{subsec:NumSimIEEEBus}, we used $h=10^{-3}$, $\varepsilon = 0.05$, $\delta = 10^{-3}$, $L = 300$ in Algorithm \ref{algo:KineticProx}.
+
+Fig. \ref{fig:CompTimeSynthetic} highlights that for computing high dimensional transient joint state PDFs as in here, the proposed variational framework enjoys remarkably fast computational time. Notice that constructing histograms or other conventional density estimators for the joint state PDF by making a grid over the 100 dimensional state space, is computationally prohibitive in a general purpose computer. 
+
+To depict the numerical accuracy, Fig. \ref{fig:RelErrSynthetic} plots the (time-varying) relative error between the empirical (i.e., Monte Carlo estimate) mean vector $\bm{\mu}_{k}^{\text{MC}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$, and the ``proximal mean" vector $\bm{\mu}_{k}^{\text{Prox}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$. The latter was computed using the proximal updates $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. Fig. \ref{fig:RelErrSynthetic} shows that the time varying statistics from these two computation match very well at all times.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Conclusion}\label{sec:conclusion}
+We proposed a nonparametric algorithm to propagate the joint state PDFs subject to networked power system dynamics with stochastic initial conditions, parameters and process noise. Our development is built on recent advances in generalized gradient flows on the space of PDFs, and new analytical results specific to the power system's stochastic dynamics that are presented in this paper. The novelty of the proposed proximal algorithm is that it does not approximate the dynamical or statistical nonlinearities. Instead, the algorithm allows gridless computation by actually exploiting the structure of the PDE governing the evolution of the joint state PDF that is induced by the underlying nonlinear sample path dynamics of a networked power system. Numerical case studies reveal that the proposed computational framework can be a scalable way to propagate stochastic uncertainties in realistic power networks.
+
+Possible future directions include generalizing the proposed method for more complex generator dynamics, and to use this framework to actively steer the uncertainties via optimal control on the space of joint PDFs. 
+
+
+\appendices
+\section{Showing $\Phi(\tilde{\rho})$ is Decreasing along the Flow Generated by \eqref{TransformedPDEivp}}\label{AppLyap}
+Let $\tilde{\rho}(t,\bm{\xi},\bm{\eta})$ be the transient solution of \eqref{TransformedPDEivp}. Define
+$$\bm{\ell}_{\bm{\xi}} := \frac{1}{2}\nabla_{\bm{\xi}}\log\tilde{\rho}, \quad \bm{\ell}_{\bm{\eta}} := \frac{1}{2}\nabla_{\bm{\eta}}\log\tilde{\rho},$$
+and rewrite \eqref{NewPDE} as
+$$\dfrac{\partial\tilde{\rho}}{\partial t} = - \nabla\cdot\left(\tilde{\rho}\bm{v}\right)$$
+where $\nabla$ is the $2n\times 1$ Euclidean gradient w.r.t. the vector $(\bm{\xi},\bm{\eta})^{\top}$, and the vector field
+\begin{align}
+\bm{v} := \begin{pmatrix}
+ \bm{\eta}\\
+ -\nabla_{\bm{\xi}}U(\bm{\xi}) - \bm{M}^{-1}\bm{\Gamma}\bm{\eta} - \bm{\ell}_{\bm{\eta}}	
+ \end{pmatrix}.
+\label{defvectorfieldv}	
+\end{align}
+
+
+Now consider the time derivative of the functional \eqref{LyapButNotProx} along \eqref{NewPDE}. Following \cite[Proposition 1]{krichene2020global}, 
+\begin{align}
+\frac{\differential}{\differential t}\Phi = \displaystyle\int_{\mathbb{T}^{n}\times\mathbb{R}^{n}} \bigg\langle\nabla\dfrac{\delta\Phi}{\delta\tilde{\rho}}, \tilde{\rho}\bm{v}\bigg\rangle\:\differential\bm{\xi}\differential\bm{\eta},
+\label{dPhidt}	
+\end{align}
+wherein the functional derivative
+\begin{align}
+\dfrac{\delta\Phi}{\delta\tilde{\rho}}	= \!\bm{M}^{-1}\bm{\Gamma}U(\bm{\xi})+ F\left(\bm{\eta}\right) + \frac{1}{2} + \frac{1}{2}\log\tilde{\rho}.
+\label{FunctionalDerivative}
+\end{align}
+Recalling the explicit form of $F(\bm{\eta})$ from \eqref{defF}, and using \eqref{FunctionalDerivative}, we simplify \eqref{dPhidt} as
+\begin{strip}
+\hrule
+\begin{subequations}
+\begin{align}
+\frac{\differential}{\differential t}\Phi &= \!\displaystyle\int_{\mathbb{T}^{n}\times\mathbb{R}^{n}}\!\bigg\langle\begin{pmatrix}
+\bm{M}^{-1}\bm{\Gamma}\nabla_{\bm{\xi}}U(\bm{\xi}) + \bm{\ell}_{\bm{\xi}}\\
+\bm{M}^{-1}\bm{\Gamma}\bm{\eta} + \bm{\ell}_{\bm{\eta}}	
+\end{pmatrix}, \begin{pmatrix}
+ \bm{\eta}\\
+ -\nabla_{\bm{\xi}}U(\bm{\xi}) - \bm{M}^{-1}\bm{\Gamma}\bm{\eta} - \bm{\ell}_{\bm{\eta}}	
+ \end{pmatrix}\bigg\rangle\tilde{\rho}(t,\bm{\xi},\bm{\eta})\:\differential\bm{\xi}\:\differential\bm{\eta}	\label{firstequality}\\
+&= \!\displaystyle\int_{\mathbb{T}^{n}\times\mathbb{R}^{n}}\!\bigg\{-\|\bm{M}^{-1}\bm{\Gamma}\bm{\eta}\|_{2}^{2} - \|\bm{\ell}_{\bm{\eta}}\|_{2}^{2} - 2\langle \bm{M}^{-1}\bm{\Gamma}\bm{\eta},\bm{\ell}_{\bm{\eta}}\rangle + \langle \bm{\ell}_{\bm{\xi}},\bm{\eta}\rangle - \langle\bm{\ell}_{\bm{\eta}},\nabla_{\bm{\xi}}U(\bm{\xi})\rangle\bigg\}\tilde{\rho}(t,\bm{\xi},\bm{\eta})\:\differential\bm{\xi}\:\differential\bm{\eta} \label{lastbutoneequality}\\
+&= -\displaystyle\int_{\mathbb{T}^{n}\times\mathbb{R}^{n}}\|\bm{M}^{-1}\bm{\Gamma}\bm{\eta} + \bm{\ell}_{\bm{\eta}}\|_{2}^{2}\:\tilde{\rho}(t,\bm{\xi},\bm{\eta})\:\differential\bm{\xi} \:\differential\bm{\eta}, \label{lastequality}
+\end{align}
+\label{ExplicitdPhidt}	
+\end{subequations}
+\hrule	
+\end{strip}
+where \eqref{lastequality} follows from the fact that the integrals involving $\langle \bm{\ell}_{\bm{\xi}},\bm{\eta}\rangle$ and $\langle\bm{\ell}_{\bm{\eta}},\nabla_{\bm{\xi}}U(\bm{\xi})\rangle$ in \eqref{lastbutoneequality} are zero, see \cite[Appendix D.3]{krichene2020global}.
+
+From \eqref{ExplicitdPhidt}, it follows that $\frac{\differential}{\differential t}\Phi \leq 0$, i.e., $\Phi$ is non-increasing along the flow generated by \eqref{TransformedPDEivp}. Furthermore, \eqref{lastequality} tells us that $\frac{\differential}{\differential t}\Phi = 0$ if and only if 
+$$\bm{M}^{-1}\bm{\Gamma}\bm{\eta} + \bm{\ell}_{\bm{\eta}} = 0,$$
+i.e., $\Phi$ is stationary if and only if $\tilde{\rho}$ has $\bm{\eta}$ marginal $\int\tilde{\rho}\:\differential\bm{\xi} \propto \exp\left(-\bm{\eta}^{\top}\bm{M}^{-1}\bm{\Gamma}\bm{\eta}\right)$. Following the steps as in \cite[Appendix E.1]{krichene2020global}, this is achieved at the stationary solution of \eqref{NewPDE} with $\bm{\xi}$ marginal $\int\tilde{\rho}\:\differential\bm{\eta} \propto \exp\left(-2U(\bm{\xi})\right)$. In other words, the stationary solution of \eqref{NewPDE} must be of the form 
+$$\tilde{\rho}_{\infty}(\bm{\xi},\bm{\eta}) \propto \exp\left(-2U(\bm{\xi})+\bm{\eta}^{\top}\bm{M}^{-1}\bm{\Gamma}\bm{\eta}\right),$$
+and is exactly where $\frac{\differential}{\differential t}\Phi = 0$. Therefore, $\frac{\differential}{\differential t}\Phi < 0$ along the transient solution of \eqref{NewPDE}, and $=0$ at the stationary solution of \eqref{NewPDE}.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{99}
+
+\bibitem{schwalbe2015mathematical}
+M. Schwalbe, \emph{Mathematical Sciences Research Challenges for the Next-generation Electric Grid: Summary of a Workshop}, National Academies Press, 2015. 
+
+% lit review starts here
+%========================
+\bibitem{allan8791}
+R.N. Allan, R. Billinton, A.M. Breipohl, and C.H. Grigg, ``Bibliography On the Application of Probability Methods in Power Systems Reliability Evaluation 1987--1991", \emph{IEEE Transactions on Power Systems}, Vol. 9, pp. 41--49, 1994. 
+
+\bibitem{allan9296}
+------, ``Bibliography On the Application of Probability Methods in Power Systems Reliability Evaluation 1992--1996", \emph{IEEE Transactions on Power Systems}, Vol. 14, pp. 51--57, 1999.
+
+%==== MC =====
+
+\bibitem{timko1983monte}
+K.J. Timko, A. Bose, and P.M. Anderson, ``Monte Carlo Simulation of Power System Stability", 
+\emph{IEEE Transactions on Power Apparatus and Systems}, Vol. PAS-102, No. 10, pp. 3453--3459, 1983.
+
+\bibitem{dong2012numerical}
+Z.Y. Dong, J.H. Zhao, and D.J. Hill, ``Numerical Simulation for Stochastic Transient Stability Assessment", \emph{IEEE Transactions on Power Systems}, Vol. 27, No. 4, pp. 1741--1749, 2012. 
+
+\bibitem{perninge2012importance}
+M. Perninge, F. Lindskog, and L. Soder, ``Importance Sampling of Injected Powers for Electric Power System Security Analysis", \emph{IEEE Transactions on Power Systems}, Vol. 27, No. 1, pp. 3--11, 2012. 
+
+\bibitem{odun2012structure}
+T. Odun-Ayo, and M.L. Crow, ``Structure-preserved Power System Transient Stability using Stochastic Energy Functions", \emph{IEEE Transactions on Power Systems}, Vol. 27, No. 3, pp. 1450--1458, 2012. 
+
+% ==== AGC ======
+
+\bibitem{ghanavati2016identifying}
+G. Ghanavati, P.D.H. Hines, and T.I. Lakoba, ``Identifying Useful Statistical Indicators of Proximity to Instability in Stochastic Power Systems", \emph{IEEE Transactions on Power Systems}, Vol. 31, No. 2, pp. 1360--1368, 2016.
+
+\bibitem{apostolopoulou2016assessment}
+D. Apostolopoulou, A.D. Dom{\'\i}nguez-Garc{\'\i}a, P.W. Sauer, ``An Assessment of the Impact of Uncertainty on Automatic Generation Control Systems", \emph{IEEE Transactions on Power Systems}, Vol. 31, No. 4, pp. 2657--2665, 2016.
+
+
+ % == Probabilistic small signal analysis ===
+
+\bibitem{nwankpa1992stochastic}
+C.O. Nwankpa, S.M. Shahidehpour, and Z. Schuss, ``A Stochastic Approach to Small Disturbance Stability Analysis", \emph{IEEE Transactions on Power Systems}, Vol. 7, No. 4, pp. 1519--1528, 1992. 
+
+ 
+\bibitem{rueda2009assessment}
+J.L. Rueda, D.G. Colom{\'e}, and I. Erlich, ``Assessment and Enhancement of Small Signal Stability Considering Uncertainties", \emph{IEEE Transactions on Power Systems}, Vol. 24, No. 1, pp. 198--207, 2009. 
+ 
+\bibitem{huang2013quasi}
+H. Huang, C. Chung, K.W. Chan, and H. Chen, ``Quasi-Monte Carlo Based Probabilistic Small Signal Stability Analysis for Power Systems with Plug-in Electric Vehicle and Wind Power Integration", \emph{IEEE Transactions on Power Systems}, Vol. 28, No. 3, pp. 3335--3343, 2013.
+
+\bibitem{dhople2013analysis}
+S.V. Dhople, Y.C. Chen, L. DeVille, A.D. Dom{\'\i}nguez-Garc{\'\i}a, ``Analysis of Power System Dynamics Subject to Stochastic Power Injections", \emph{IEEE Transactions on Circuits and Systems I: Regular Papers}, Vol. 60, No. 12, pp. 3341--3353, 2013.
+
+% === PC =========== 
+
+\bibitem{hockenberry2004evaluation}
+J.R. Hockenberry, and B.C. Lesieutre, ``Evaluation of Uncertainty in Dynamic Simulations of Power System Models: The Probabilistic Collocation Method", \emph{IEEE Transactions on Power Systems}, Vol. 28, No. 3, pp. 3335--3343, 2013.
+
+\bibitem{xu2019propagating}
+Y. Xu, L. Mili, A. Sandu, M.R. von Spakovsky, and J. Zhao, ``Propagating Uncertainty in Power System Dynamic Simulations using Polynomial Chaos", \emph{IEEE Transactions on Power Systems}, Vol. 34, No. 1, pp. 338--348, 2019.
+
+% === stochastic averaging based on energy function ====
+
+\bibitem{ju2018analytical}
+P. Ju, H. Li, C. Gan, Y. Liu, Y. Yu, and Y. Liu, ``Analytical Assessment for Transient Stability Under Stochastic Continuous Disturbances", \emph{IEEE Transactions on Power Systems}, Vol. 33, No. 2, pp. 2004--2014, 2018.
+
+\bibitem{ju2018stochastic}
+P. Ju, H. Li, X. Pan, C. Gan, Y. Liu, and Y. Liu, ``Stochastic Dynamic Analysis for Power Systems Under Uncertain Variability", \emph{IEEE Transactions on Power Systems}, Vol. 33, No. 4, pp. 3789--3799, 2018.
+
+\bibitem{pai1989energy}
+A. Pai, \emph{Energy Function Analysis for Power System Stability}, Springer Science \& Business Media, 1989.
+
+\bibitem{chang1995direct} 
+H-D. Chang, C-C. Chu, and G. Cauley, ``Direct Stability Analysis of Electric Power Systems using Energy Functions: Theory, Applications, and Perspective", \emph{Proceedings of the IEEE}, Vol. 83, No. 11, pp. 1497--1529, 1995.
+
+\bibitem{sauerpai1998}
+P.W. Sauer, and M.A. Pai, \emph{Power System Dynamics and Stability}, Prentice-Hall, 1998.
+
+% === statistical moments =====
+
+\bibitem{maldonado2018uncertainty}
+D.A. Maldonado, M. Schanen, and M. Anitescu, ``Uncertainty Propagation in Power System Dynamics with the Method of Moments", \emph{2018 IEEE Power \& Energy Society General Meeting (PESGM)}, pp. 1--5, 2018. doi: 10.1109/PESGM.2018.8586023
+ 
+
+% === deterministic bounded uncertainty ====
+
+\bibitem{dimitrovski2004boundary}
+A. Dimitrovski, and K. Tomsovic, ``Boundary Load Flow Solutions", \emph{IEEE Transactions on Power Systems}, Vol. 19, No. 1, pp. 348--355, 2004.
+
+\bibitem{hiskens2006sensitivity}
+I.A. Hiskens, and J. Alseddiqui, ``Sensitivity, Approximation, and Uncertainty in Power System Dynamic Simulation", \emph{IEEE Transactions on Power Systems}, Vol. 21, No. 4, pp. 1808--1820, 2006. 
+
+\bibitem{chen2012method}
+Y.C. Chen, and A.D. Dominguez-Garcia, ``A Method to Study the Effect of Renewable Resource Variability on Power System Dynamics", \emph{IEEE Transactions on Power Systems}, Vol. 27, No. 4, pp. 1978--1989, 2012.
+
+\bibitem{althoff2014formal}
+M. Althoff, ``Formal and Compositional Analysis of Power Systems using Reachable Sets", \emph{IEEE Transactions on Power Systems}, Vol. 29, No. 5, pp. 2270--2280, 2014. 
+
+\bibitem{choi2017propagating}
+H. Choi, P.J. Seiler, and S.V. Dhople, ``Propagating Uncertainty in Power-System DAE Models with Semidefinite Programming", \emph{IEEE Transactions on Power Systems}, Vol. 32, No. 4, pp. 3146--3156, 2017.
+
+\bibitem{choi2018propagating}
+H. Choi, P.J. Seiler, and S.V. Dhople, ``Propagating Uncertainty in Power Flow With the Alternating Direction Method of Multipliers", \emph{IEEE Transactions on Power Systems}, Vol. 33, No. 4, pp. 4124--4133, 2018.
+
+% Bellman: curse of dimensionality
+% =====================================
+\bibitem{bellman1957}
+R.E. Bellman, \emph{Dynamic Programming}, Courier Dover Publications, 1957.
+
+% Proximal algorithm
+% =====================================
+\bibitem{parikh2014proximal}
+N.~Parikh, and S.~Boyd, ``Proximal Algorithms", \emph{Foundations and Trends in Optimization}, Vol. 1, No. 3, pp. 127--239, 2014.
+
+\bibitem{rockafellar1976monotone}
+R.T.~Rockafellar, ``Monotone Operators and the Proximal Point Algorithm", \emph{SIAM Journal on Control and Optimization}, Vol. 14, No. 5, pp. 877--898, 1976.
+
+\bibitem{combettes2011proximal}
+P.L.~Combettes, and J-C.~Pesquet, ``Proximal Splitting Methods in Signal Processing", in \emph{Fixed-point algorithms for inverse problems in science and engineering}, pp. 185--212, 2011. 
+
+
+% == Kuramoto second order ===
+
+\bibitem{dorfler2012synchronization}
+F. D\"{o}rfler, and F. Bullo, ``Synchronization and Transient Stability in Power Networks and Nonuniform Kuramoto Oscillators", \emph{SIAM Journal on Control and Optimization}, Vol. 50, No. 3, pp. 1616--1642, 2012.
+
+\bibitem{rodrigues2016kuramoto}
+F.A. Rodrigues, T.K. Peron, P. Ji, and J. Kurths, ``The Kuramoto Model in Complex Networks", \emph{Physics Reports}, Vol. 610, pp. 1--98, 2016.
+
+\bibitem{dorfler2013synchronization}
+F. D{\"o}rfler, M. Chertkov, and F. Bullo, ``Synchronization in Complex Oscillator Networks and Smart Grids", \emph{Proceedings of the National Academy of Sciences}, Vol. 100, No. 6, pp. 2005--2010, 2013.
+
+\bibitem{ishizaki2018}
+T. Ishizaki, A. Chakrabortty, and J-I. Imura. ``Graph-Theoretic Analysis of Power Systems", \emph{Proceedings of the IEEE}, Vol. 106, No. 5, pp. 931--952, 2018.
+
+\bibitem{villani2006hypocoercive}
+C.~Villani, ``Hypocoercive Diffusion Operators", \emph{in International Congress
+of Mathematicians}, Vol. 3, pp. 473--498, 2006.
+
+% == Our prox papers ===
+
+\bibitem{caluya2019ACC}
+K.F. Caluya, and A. Halder, ``Proximal Recursion for Solving the Fokker-Planck Equation", \emph{Proceedings of the 2019 American Control Conference}, pp. 4098--4103, 2019.
+
+\bibitem{caluya2019TAC}
+K.F. Caluya, and A. Halder, ``Gradient Flow Algorithms for Density Propagation in Stochastic Systems", \emph{IEEE Transactions on Automatic Control}, Vol. 65, No. 10, pp. 3991--4004, 2019.
+
+\bibitem{halder2020hopfield}
+A. Halder, K.F. Caluya, B. Travacca, and S.J. Moura, ``Hopfield Neural Network Flow: A Geometric Viewpoint", \emph{IEEE Transactions on Neural Networks and Learning Systems}, Vol. 31, No. 11, pp. 4869--4880, 2020. 
+
+
+\bibitem{caluya2021TAC}
+K.F. Caluya, and A. Halder, ``Wasserstein Proximal Algorithms for the Schr\"{o}dinger Bridge Problem: Density Control with Nonlinear Drift", \emph{IEEE Transactions on Automatic Control}, 2021.
+
+\bibitem{caluya2020reflected}
+K.F. Caluya, and A. Halder,``Reflected Schr\"{o}dinger Bridge: Density Control with Path Constraints", \emph{American Control Conference}, 2021.
+
+
+% === FPK for transient stability ====
+
+\bibitem{wang2013fokker}
+K. Wang, and M.L. Crow, ``The Fokker-Planck Equation for Power System Stability Probability Density Function Evolution", \emph{IEEE Transactions on Power Systems}, Vol. 28, No. 3, pp. 2994--3001, 2013.
+
+%== Wasserstein gradient flow ====
+
+\bibitem{jordan1998variational}
+R. Jordan, D. Kinderlehrer, and F. Otto, ``The Variational Formulation of the Fokker--Planck Equation", \emph{SIAM journal on mathematical analysis}, Vol. 29, pp. 1--17, 1998.
+
+\bibitem{villani2003topics}
+C. Villani, \emph{Topics in optimal transportation}, No. 58, American Mathematical Society, 2003.
+
+\bibitem{ambrosio2008gradient}
+L.~Ambrosio, N. Gigli, and G. Savar{\'e}, \emph{Gradient Flows: in Metric Spaces and in the Space of Probability Measures}, Springer Science \& Business Media, 2008.
+
+\bibitem{santambrogio2017euclidean}
+F.~Santambrogio, ``$\{$Euclidean, Metric, and Wasserstein$\}$ Gradient Flows: An Overview", \emph{Bulletin of Mathematical Sciences}, Vol. 7, No. 1, pp. 87--154, 2017. 
+
+% ==== Einstein relation =====
+
+\bibitem{hernandez1989equilibrium}
+D.B.~Hernandez, and M.~Pavon, ``Equilibrium Description of A Particle System in A Heat Bath", \emph{Acta Applicandae Mathematica}, Vol. 14, No. 3, pp. 239--258, 1989.
+
+\bibitem{chen2015fast}
+Y.~Chen, T.T.~Georgiou, and M.~Pavon, ``Fast Cooling for A System of Stochastic Oscillators", \emph{Journal of Mathematical Physics}, Vol. 56, No. 11, pp. 113302, 2015.
+
+% ==== Ito's lemma ========
+
+\bibitem{oksendal2013stochastic}
+B.~\O{}ksendal, \emph{Stochastic Differential Equations: An Introduction with Applications}, \emph{Springer Science \& Business Media}, 2013.
+
+% ==== Walid neural network ========
+
+\bibitem{krichene2020global}
+W. Krichene, K.F.~Caluya, and A.~Halder, ``Global Convergence of Second-order Dynamics in Two-layer Neural Networks", \emph{arXiv preprint arXiv:2007.06852}, 2020.
+
+% ==== M.H. Duong's prox for mixed conservative-dissipative =====
+
+\bibitem{duong2014conservative}
+M.H.~Duong, M.A.~Peletier, and J.~Zimmer, ``Conservative-dissipative Approximation Schemes for A Generalized Kramers Equation", \emph{Mathematical Methods in the Applied Sciences}, Vol. 37, No. 16, pp. 2517--2540, 2014.
+
+% === Power system book
+
+\bibitem{andersonBook1977}
+P.M.~Anderson, and A.A.~Fouad, \emph{Power System Control and Stability}, Iowa State University Press, Ames, IA, 1977.
+
+\bibitem{kundurBook1994}
+P.~Kundur, \emph{Power System Stability and Control}, McGraw-Hill, New York, 1994.
+
+% === Kron reduction
+
+\bibitem{dorfler2012kron}
+F.~Dorfler, and F.~Bullo, ``Kron Reduction of Graphs with Applications to Electrical Networks", \emph{IEEE Transactions on Circuits and Systems I: Regular Papers}, Vol. 60, No. 1, pp. 150--163, 2012.
+
+% === von Mises PDF on n torus: Tn
+\bibitem{mardia2008multivariate}
+K.V.~Mardia, G.~Hughes, C.C.~Taylor, H.~Singh, ``A Multivariate von Mises Distribution with Applications to Bioinformatics", \emph{Canadian Journal of Statistics}, Vol. 36, No. 1, pp. 99--109, 2008.
+
+\bibitem{mardia2014some}
+K.V.~Mardia, and J. Voss, ``Some Fundamental Properties of a
+Multivariate von Mises Distribution", \emph{Communications in Statistics - Theory and Methods}, Vol. 43, No. 6, pp. 1132--1144, 2014.
+
+\bibitem{mardia2009directional}
+K.V.~Mardia, and P.E.~Jupp, \emph{Directional Statistics}, Wiley, 1st edition, 1999.
+
+\bibitem{zimmerman2010matpower}
+R.D.~Zimmerman, C.E.~Murillo-S{\'a}nchez, and R.J. Thomas, ``MATPOWER: Steady-state Operations, Planning, and Analysis Tools for Power Systems Research and Education'', \emph{IEEE Transactions on Power Systems},  Vol. 26, No. 1, pp. 12--19, 2010.
+
+\bibitem{cui2021andes}
+H.~Cui, F.~Li, and K.~Tomsovic, ``Hybrid Symbolic-Numeric Framework for Power System Modeling and Analysis,'' \emph{IEEE Transactions on Power Systems}, vol. 36, no. 2, pp. 1373-1384, 2021.
+	
+\end{thebibliography}
+
+% insert where needed to balance the two columns on the last page with
+% biographies
+%\newpage
+
+%\begin{IEEEbiography}[{\includegraphics[height=1.25in]{Abhishek-Halder.jpg}}]{Abhishek
+%Halder}
+%(S'10-M'14-SM'21) is an Assistant Professor in the Department of Applied Mathematics,
+%and is an affiliated faculty in the Department of Electrical and Computer Engineering at
+%University of California, Santa Cruz. Before that he held postdoctoral
+%positions in the Department of Mechanical and Aerospace Engineering at
+%University of California, Irvine, and in the Department of Electrical
+%and Computer Engineering at Texas A\&M University. He obtained his
+%Bachelors and Masters from Indian Institute of Technology Kharagpur in
+%2008, and Ph.D. from Texas A\&M University in 2014, all in Aerospace
+%Engineering. His research interests are in stochastic systems, control, learning and optimization with application focus on large scale cyber-physical
+%systems.
+%\end{IEEEbiography}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{XinboGeng.jpg}}]{Xinbo Geng} (S'13-M'20)
+%received his B.E. degree in Electrical Engineering from Tsinghua University, Beijing, China, in 2013. He received the M.S. and Ph.D. degrees from Department of Electrical and Computer Engineering, Texas A\&M University, College Station, TX, in 2015 and 2019, respectively.
+%He is a postdoctoral researcher jointly affiliated with Cornell University and Texas A\&M University since 2020.
+%He was a power system design and studies intern at National Renewable Energy Lab in 2016, a data analyst intern at ISO New England in 2017, a visiting student at UC Berkeley and MIT in 2018, and a visiting student at University of Wisconsin Madison in 2019.
+%His main research interest is decision making under uncertainties.
+%\end{IEEEbiography}
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%\begin{IEEEbiography}[{\includegraphics[height=1.25in]{kenneth.jpg}}]{Kenneth F. Caluya}
+%is a Ph.D. student in the Department of Applied Mathematics at University of California, Santa Cruz. He obtained his B.S. degree in Mathematics at University of California, Riverside, in 2017. His research interests lie at the intersection of probability, convex optimization, partial differential equations, and dynamical systems.
+%\end{IEEEbiography}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%\begin{IEEEbiography}[{\includegraphics[height=1.25in]{parmita.png}}]{Pegah Ojaghi}
+%is a Ph.D. student in the Department of Computer Science and Engineering at University of California, Santa Cruz. She obtained M.S. in Computer Engineering from the University of California, Santa Cruz in 2020, and M.S. in Control Engineering from the Imam Khomeini International University, Qazvin, Iran in 2015. She obtained B.S. in Control Engineering from the Hamedan University of Technology, Hamedan, Iran in 2012.
+%\end{IEEEbiography}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% You can push biographies down or up by placing
+% a \vfill before or after them. The appropriate
+% use of \vfill depends on what kind of text is
+% on the last page and whether or not the columns
+% are being equalized.
+
+%\vfill
+
+% Can be used to pull up biographies so that the bottom of the last one
+% is flush with the other column.
+%\enlargethispage{-5in}
+
+
+
+% that's all folks
+\end{document}
+
+
