@@ -422,7 +422,7 @@ Since \eqref{NewPDE} is a kinetic Fokker-Planck PDE with isotropic degenerate di
 \includegraphics[width=.7\linewidth]{BlockDiagm.pdf}
 \caption{\small{Schematic of the proposed proximal algorithm for propagating the joint state PDF as probability weighted scattered point cloud $\{\tilde{\bm{x}}_{k}^{i},\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$. The states $\{\tilde{\bm{x}}_{k}^{i}\}_{i=1}^{N}$ are updated by the Euler-Maruyama scheme applied to (\ref{ItoSDEvectorlevel}); the corresponding probability weights $\{\tilde{\varrho}_{k}^{i}\}_{i=1}^{N}$ are updated via discrete version of the proximal recursion (\ref{KineticProx}) as detailed in Sec. \ref{sec:ProxAlgo}.}}
 \label{fig:BlockDiagm}
-\vspace*{-0.1in}
+\vspace*{-0.2in}
 \end{figure}
 
 
@@ -538,7 +538,7 @@ and $\{\tilde{\varrho}_{k-1}^{i}\}_{i=1}^{N}$ as inputs, and outputs the proxima
 The Algorithm \ref{algo:KineticProx} also needs input parameters $h,\varepsilon,N,\delta,L$. Specifically, $h$ is the time-step size, $\varepsilon$ is an entropic regularization weight internal to the \textproc{Prox} algorithm, and $N$ is the number of samples. The parameters $\delta$ and $L$ codify the numerical tolerance and maximum number of iterations, respectively, for the while loop in Algorithm \ref{algo:KineticProx}. Its convergence guarantees can be found in \cite[Sec. III.C]{caluya2019TAC}.
 
 \begin{remark}\label{remark:timevaryingEffectivePowerInput}
-The proposed computational framework can be applied as is when $P_{i}^{\rm{mech}}, P_{i}^{\rm{load}}$, and thus $P_{i}$ in \eqref{defPi}, are bounded time-varying functions. {\red{This can be the case, for instance, when ...}} 	
+The proposed computational framework is also applicable when $P_{i}^{\rm{mech}}, P_{i}^{\rm{load}}$, and thus $P_{i}$ in \eqref{defPi}, are bounded time-varying functions. This can be the case, for instance, with rapid fluctuations from renewables in the short term.
 \end{remark}
 
 
@@ -585,10 +585,10 @@ To illustrate the proposed computational framework, we next provide two numerica
 
 
 
-\begin{figure}[t]
+\begin{figure}[htpb]
 \centering
 \includegraphics[width=0.95\linewidth]{ComputationalTimeSyntheticIEEE14busCase1and2combined.png}
-\caption{\small{The computational time for propagating the transient joint state PDFs over $\mathbb{T}^{5}\times\mathbb{R}^{5}$ for the simulation set up in Sec. \ref{subsec:NumSimIEEEBus}.}}
+\caption{\small{The computational times for propagating the transient joint state PDFs over $\mathbb{T}^{5}\times\mathbb{R}^{5}$ for the simulation set up in Sec. \ref{subsec:NumSimIEEEBus}.}}
 \vspace*{-0.1in}
 \label{fig:CompTimeIEEE14bus}
 \end{figure}
@@ -601,15 +601,15 @@ library ANDES \cite{cui2021andes}.
 
 Our numerical simulations for the IEEE 14 bus system consider the following two cases:
 
-\noindent\textbf{Case I.} {\red{Nominal case where ...}}
+\noindent\textbf{Case I.} \textbf{Nominal case} where the $P_{i}^{\text{mech}}$ and $P_{i}^{\text{load}}$ are from the steady state power flow solutions without the process noise, and assuming to remain constant over the simulation time horizon. The transient stochastic simulations (i.e., with process noise) are then performed using the proposed framework.
 
-\noindent\textbf{Case II.} {\red{post-contingency simulation after the failure of line 13 (see Fig. \ref{fig:Motivating}).}}
+\noindent\textbf{Case II.} \textbf{Post-contingency case} where the line 13 (see Fig. \ref{fig:Motivating}) fails at time $t=0$, and starting with the parameters and initial conditions of \textbf{Case I}, we simulate the post-contingency stochastic state evolution with process noise. %In other words, \textbf{Case II} starts  and tracks the stochastic states towards a post-contingency equilibrium.
 
 %\noindent\textbf{Case III.}	load data are time-varying ...
 
  
 
-For all the cases mentioned above, we used the randomly generated noise coefficients $\sigma_{i}\in [1,5]$ as
+For both the cases mentioned above, we used the randomly generated noise coefficients $\sigma_{i}\in [1,5]$ as
 \[(\sigma_{1},\hdots,\sigma_5) = \left(2.4628, 4.9266, 4.8724, 1.4215, 3.8681\right).\]
 
 To account the pertinent geometry of $\mathbb{T}^{n}\times\mathbb{R}^{n}$, we take the initial joint PDF as
@@ -638,7 +638,7 @@ Fig. \ref{fig:IEEE14marginalsCase0} and Fig. \ref{fig:IEEE14marginalsCase1} show
 
  %Notice that in Fig. \ref{fig:IEEE14marginals}, the horizontal axes of the subfigures have periodic boundary conditions, i.e., $(\theta_{i},\omega_{i})\in\mathbb{T}\times\mathbb{R}$ (cylinder).
 
-Fig. \ref{fig:IEEE14omegamarginalsCase12} shows the corresponding univariate $\omega_{i}$-marginal PDFs. In particular, Fig. \ref{fig:IEEE14omegamarginalsCase12}(c) helps compare the $\omega_{4}$ marginal evolution for bus 6 in the nominal (Case I) and post-fault (Case II) scenarios. Since Case II considers the failure of line 13, from Fig. \ref{fig:Motivating} we intuitively expect that the transient effects of this fault will be prominent for bus 6 (generator 4). Indeed, Fig. \ref{fig:IEEE14omegamarginalsCase12}(c) shows that although the $\omega_{4}$ marginals in both Case I and II, at all times have highest probability around $0$ rad/s, the post-fault marginals show larger spread or dispersion of the probability mass, as expected. {\red{That the generator 4 states in Case II have larger uncertainties than in Case I, is also visible in the bivariate marginal plots if we compare the fourth row in Fig. \ref{fig:IEEE14marginalsCase0} with the same in Fig. \ref{fig:IEEE14marginalsCase1}.}} 
+Fig. \ref{fig:IEEE14omegamarginalsCase12} shows the corresponding univariate $\omega_{i}$-marginal PDFs. In particular, Fig. \ref{fig:IEEE14omegamarginalsCase12}(c) helps compare the $\omega_{4}$ marginal evolution for bus 6 in the nominal (Case I) and post-fault (Case II) scenarios. Since Case II considers the failure of line 13, from Fig. \ref{fig:Motivating} we intuitively expect that the transient effects of this fault will be prominent for bus 6 (generator 4). Indeed, Fig. \ref{fig:IEEE14omegamarginalsCase12}(c) shows that although the $\omega_{4}$ marginals in both Case I and II, at all times have highest probability around $0$ rad/s, the post-fault marginals show larger spread or dispersion of the probability mass, as expected. That the generator 4 states in Case II have larger uncertainties than in Case I, is also visible in the bivariate marginal plots if we compare the fourth row in Fig. \ref{fig:IEEE14marginalsCase0} with the same in Fig. \ref{fig:IEEE14marginalsCase1}.
 
 
 
@@ -678,7 +678,7 @@ coupling coefficient & $k_{ij}\begin{cases}
 \end{tabular}
 \caption{Parameters used for the numerical simulation in Sec. \ref{subsec:NumSimSynthetic}. The indices $i,j\in\{1,\hdots,n\}$ where the number of generators $n=50$ in Sec. \ref{subsec:NumSimSynthetic}.}
 \label{table:ParamUncertaintiesSynthetic}
-\vspace*{-0.1in}
+\vspace*{-0.35in}
 \end{table}
 
 \subsection{Synthetic Test System}\label{subsec:NumSimSynthetic}
@@ -707,7 +707,7 @@ and following \cite[Sec. 5]{dorfler2012synchronization}, randomly generate the p
 \centering
 \includegraphics[width=0.95\linewidth]{RelativeErrorMeanMCVersusProxSynthetic50Gen.png}
 \caption{\small{The relative error between the empirical mean (i.e., Monte Carlo estimate) $\bm{\mu}_{k}^{\text{MC}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$, and the mean $\bm{\mu}_{k}^{\text{Prox}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$ obtained using the proximal updates of the joint state PDFs, for the simulation set up in Sec. \ref{subsec:NumSimSynthetic}.}}
-\vspace*{-0.1in}
+\vspace*{-0.2in}
 \label{fig:RelErrSynthetic}
 \end{figure}
 
@@ -723,7 +723,7 @@ To depict the numerical accuracy, Fig. \ref{fig:RelErrSynthetic} plots the (time
 
 
 \section{Conclusion}\label{sec:conclusion}
-We proposed a nonparametric algorithm to propagate the joint state PDFs subject to networked power system dynamics with stochastic initial conditions, parameters and process noise. Our development is built on recent advances in generalized gradient flows on the space of PDFs, and new analytical results specific to the power system's stochastic dynamics that are presented in this paper. The novelty of the proposed proximal algorithm is that it does not approximate the dynamical or statistical nonlinearities. Instead, the algorithm allows gridless computation by actually exploiting the structure of the PDE governing the evolution of the joint state PDF that is induced by the underlying nonlinear sample path dynamics of a networked power system. Numerical case studies reveal that the proposed computational framework can be a scalable way to propagate stochastic uncertainties in realistic power networks.
+We proposed a nonparametric algorithm to propagate the joint state PDFs subject to networked power system dynamics with stochastic initial conditions, parameters and process noise. Our development is built on recent advances in generalized gradient flows on the space of PDFs, and new analytical results specific to the power system's stochastic dynamics that are presented in this paper. The novelty of the proposed proximal algorithm is that it does not approximate the dynamical or statistical nonlinearities. Instead, the algorithm allows gridless computation by actually exploiting the structure of the PDE governing the evolution of the joint state PDF that is induced by the underlying nonlinear sample path dynamics of a networked power system. Numerical case studies reveal that the computational framework can be a scalable way to propagate stochastic uncertainties in realistic power networks.
 
 Possible future directions include generalizing the proposed method for more complex generator dynamics, and to use this framework to actively steer the uncertainties via optimal control on the space of joint PDFs. 
 
