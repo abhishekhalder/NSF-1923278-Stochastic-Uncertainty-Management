@@ -616,7 +616,7 @@ To account the pertinent geometry of $\mathbb{T}^{n}\times\mathbb{R}^{n}$, we ta
 \begin{align}
 \rho_{0}&\equiv\rho(t=0,\bm{\theta}(0),\bm{\omega}(0)) = \vartheta_{0}\left(\bm{\theta}(0)\right)\Omega_{0}\left(\bm{\omega}(0)\right)\nonumber\\
 &=\underbrace{\left(\prod_{i=1}^{n=5}\dfrac{\exp\left(\kappa_{i}\cos\left(2\theta_{i}(0)-\mu_{\theta_{i}(0)}\right)\right)}{2\pi I_{0}(\kappa_{i})}\right)}_{=:\vartheta_{0}\left(\bm{\theta}(0)\right)}\nonumber\\
-	&\qquad\times \underbrace{{\rm{Unif}}\left([-0.1,0.1]\;\text{rad/s}\right)}_{=:\Omega_{0}\left(\bm{\omega}(0)\right)},
+	&\qquad\times \underbrace{{\rm{Unif}}\left(\left([-0.1,0.1]\;\text{rad/s}\right)^{5}\right)}_{=:\Omega_{0}\left(\bm{\omega}(0)\right)},
 \label{rho0IEEE14}		
 \end{align}
 whose $\bm{\theta}$ marginal $ \vartheta_{0}\left(\bm{\theta}(0)\right)$ is a product von Mises PDF\footnote{the factor $2$ inside the cosine ensures the range $[0,2\pi)$; it can be dispensed if we instead use the range $[-\pi,\pi)$ for the angular variables, as common in the directional statistics literature \cite{mardia2009directional}.} \cite{mardia2008multivariate,mardia2014some} supported over $\mathbb{T}^{5}$ with mean angles (in rad)
@@ -630,7 +630,7 @@ In \eqref{rho0IEEE14}, $I_{0}(\cdot)$ denotes the modified Bessel function of th
 
 The mean angles \eqref{MeanAngleInitialIEEE14} were obtained from steady state AC power flow solutions. Larger $\kappa_{i}$ entails a higher concentration around the mean angle $\mu_{\theta_{i}}(0)$ (setting $\kappa_i=0$ implies that $\theta_{i}(0)$ follows uniform distribution over $[0,2\pi)$).
 
-In \eqref{rho0IEEE14}, the $\bm{\omega}$ marginal $ \Omega_{0}\left(\bm{\omega}(0)\right)$ is a uniform PDF over $[-0.1,0.1]$ rad/s. Thus, the PDF $\rho_0$ in \eqref{rho0IEEE14} is supported over $\mathbb{T}^{5}\times [-0.1,0.1]$.
+In \eqref{rho0IEEE14}, the $\bm{\omega}$ marginal $ \Omega_{0}\left(\bm{\omega}(0)\right)$ is a uniform PDF over the hypercube $\left([-0.1,0.1]\;\text{rad/s}\right)^{5}$. Thus, the PDF $\rho_0$ in \eqref{rho0IEEE14} is supported over $\mathbb{T}^{5}\times [-0.1,0.1]^{5}$.
 
 With step size $h=10^{-3}$, we discretized time $t\in[0,1]$. Using the algorithm detailed in Sec. \ref{sec:ProxAlgo}, for all the three cases, we propagated $N=1000$ random samples from \eqref{rho0IEEE14}, and evaluated at \eqref{rho0IEEE14}, to update the scattered weighted point clouds $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ over $\mathbb{T}^{5}\times\mathbb{R}^{5}$ at times $t_{k}:=kh$, $k\in\mathbb{N}$. In Algorithm \ref{algo:KineticProx}, we used the algorithmic parameters $\varepsilon=0.05$, $\delta=10^{-3}$, $L=300$.
 
