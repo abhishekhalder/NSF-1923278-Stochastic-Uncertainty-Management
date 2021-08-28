@@ -537,7 +537,6 @@ The proposed computational framework is also applicable when $P_{i}^{\rm{mech}},
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\vspace*{-0.2in}
 \section{Numerical Simulations}\label{sec:NumericalSimulations}
 To illustrate the proposed computational framework, we next provide two numerical simulation case studies. In Sec. \ref{subsec:NumSimIEEEBus}, we consider the prediction of transient stochastic states for the IEEE 14 bus system for the nominal case as well as for the case when a line failure occurs. In Sec. \ref{subsec:NumSimSynthetic}, we propagate the joint PDFs over the 100 dimensional state space of a synthetic power network with randomly generated parameters--our intent there is to highlight the scalability of the proposed method. All simulations were performed in MATLAB R2019b on an iMac with 3.4 GHz Quad-Core Intel Core i5 processor and 8 GB memory. 
 
@@ -592,7 +591,6 @@ To illustrate the proposed computational framework, we next provide two numerica
 \end{figure}
 
 
-\vspace*{-0.2in}
 \subsection{IEEE 14 Bus System}\label{subsec:NumSimIEEEBus}
 We consider the Kron-reduced dynamics \eqref{ItoSDEcomponentlevel} for the IEEE 14 bus system shown in Fig. \ref{fig:Motivating}. In this case, we have $n=5$ nodes which correspond to the buses 1, 2, 3, 6 and 8 in Fig. \ref{fig:Motivating}. We obtained the parameters of the 14-bus system from MATPOWER \cite{zimmerman2010matpower}. The calculation of Kron-reduced admittance matrix and current vector in \eqref{DefParam} followed Sec.  \ref{subsec:samplepathdynamics}; see also \cite{dorfler2012kron}. The parameters $m_{i}, \gamma_{i}$ were obtained from the open-source Python-based
 library ANDES \cite{cui2021andes}.
@@ -988,8 +986,8 @@ B.~\O{}ksendal, \emph{Stochastic Differential Equations: An Introduction with Ap
 
 % ==== Walid neural network ========
 
-\bibitem{krichene2020global}
-W. Krichene, K.F.~Caluya, and A.~Halder, ``Global Convergence of Second-order Dynamics in Two-layer Neural Networks", \emph{arXiv preprint arXiv:2007.06852}, 2020.
+%\bibitem{krichene2020global}
+%W. Krichene, K.F.~Caluya, and A.~Halder, ``Global Convergence of Second-order Dynamics in Two-layer Neural Networks", \emph{arXiv preprint arXiv:2007.06852}, 2020.
 
 % ==== M.H. Duong's prox for mixed conservative-dissipative =====
 
