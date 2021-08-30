@@ -554,7 +554,7 @@ To illustrate the proposed computational framework, we next provide two numerica
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.8\linewidth]{IEEE14BivariateMarginalComparison.pdf}
-\caption{\small{Comparison of the $(\theta_{4},\omega_{4})$ marginals for bus 6 in the nominal (Case I) and post-fault (Case II) scenarios in the IEEE 14 bus simulation described in Sec. \ref{subsec:NumSimIEEEBus}.}}
+\caption{\small{Comparison of the $(\theta_{4},\omega_{4})$ marginals for bus 6 in the nominal (\textbf{Case I}) and post-fault (\textbf{Case II}) scenarios in the IEEE 14 bus simulation described in Sec. \ref{subsec:NumSimIEEEBus}.}}
 \vspace*{-0.2in}
 \label{fig:IEEE14marginalsBivariateComparison}
 \end{figure*}
@@ -574,7 +574,7 @@ To illustrate the proposed computational framework, we next provide two numerica
 
 \begin{figure}[ht!]
 \includegraphics[width=0.85\linewidth]{Case0Case1Combined_Gen4_OmegaMarginals.png}
-\caption{\small{Comparison of the $\omega_{4}$ marginals for bus 6 in the nominal (Case I) and post-fault (Case II) scenarios in the IEEE 14 bus simulation described in Sec. \ref{subsec:NumSimIEEEBus}.}}
+\caption{\small{Comparison of the $\omega_{4}$ marginals for bus 6 in the nominal (\textbf{Case I}) and post-fault (\textbf{Case II}) scenarios in the IEEE 14 bus simulation described in Sec. \ref{subsec:NumSimIEEEBus}.}}
 \vspace*{-0.1in}
 \label{fig:IEEE14omegamarginalsCase12}
 \end{figure}
@@ -629,7 +629,7 @@ The mean angles \eqref{MeanAngleInitialIEEE14} were obtained from steady state A
 
 In \eqref{rho0IEEE14}, the $\bm{\omega}$ marginal $ \Omega_{0}\left(\bm{\omega}(0)\right)$ is a uniform PDF over the hypercube $\left([-0.1,0.1]\;\text{rad/s}\right)^{5}$. Thus, the PDF $\rho_0$ in \eqref{rho0IEEE14} is supported over $\mathbb{T}^{5}\times [-0.1,0.1]^{5}$.
 
-With step size $h=10^{-3}$, we discretized time $t\in[0,1]$. Using the algorithm detailed in Sec. \ref{sec:ProxAlgo}, for all the three cases, we propagated $N=1000$ random samples from \eqref{rho0IEEE14}, and evaluated at \eqref{rho0IEEE14}, to update the scattered weighted point clouds $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ over $\mathbb{T}^{5}\times\mathbb{R}^{5}$ at times $t_{k}:=kh$, $k\in\mathbb{N}$. In Algorithm \ref{algo:KineticProx}, we used the algorithmic parameters $\varepsilon=0.05$, $\delta=10^{-3}$, $\ell_{\max}=300$.
+With step size $h=10^{-3}$, we discretized time $t\in[0,1]$. Using the algorithm detailed in Sec. \ref{sec:ProxAlgo}, for both cases, we propagated $N=1000$ random samples from \eqref{rho0IEEE14}, and evaluated at \eqref{rho0IEEE14}, to update the scattered weighted point clouds $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ over $\mathbb{T}^{5}\times\mathbb{R}^{5}$ at times $t_{k}:=kh$, $k\in\mathbb{N}$. In Algorithm \ref{algo:KineticProx}, we used the algorithmic parameters $\varepsilon=0.05$, $\delta=10^{-3}$, $\ell_{\max}=300$.
 
 Fig. \ref{fig:IEEE14marginalsCase0} shows the time snapshots of the $(\theta_{i},\omega_{i})$ bivariate marginal PDFs for \textbf{Case I} associated with the generator $i=1,\hdots, n=5$. These marginals are computed using the corresponding weighted point clouds $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. 
 
@@ -642,7 +642,7 @@ Fig. \ref{fig:IEEE14omegamarginalsCase12} compares the $\omega_{4}$ marginal evo
 
 
 
-Fig. \ref{fig:CompTimeIEEE14bus} shows the computational times for updating $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ via the algorithm in Sec. \ref{sec:ProxAlgo} for Cases I and II.  
+Fig. \ref{fig:CompTimeIEEE14bus} shows the computational times for updating $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ via the algorithm in Sec. \ref{sec:ProxAlgo} for \textbf{Cases I} and \textbf{II}.  
 
 
 

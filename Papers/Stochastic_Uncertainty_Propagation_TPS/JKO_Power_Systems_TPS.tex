@@ -575,7 +575,7 @@ To illustrate the proposed computational framework, we next provide two numerica
    \subfigure[]{\includegraphics[width=0.322\textwidth]{Case1_OmegaMarginals.png}}
    \hspace{\fill}
    \subfigure[]{\includegraphics[width=0.309\textwidth]{Case0Case1Combined_Gen4_OmegaMarginals.png}}
-\caption{\small{For $i=1,\hdots,5$, the $\omega_{i}$ marginals (a) for Case I, and (b) for Case II, resulting from the IEEE 14 bus simulation described in Sec. \ref{subsec:NumSimIEEEBus}. (c) Comparison of the $\omega_{4}$ marginals for bus 6 in the nominal (Case I) and post-fault (Case II) scenarios.}}
+\caption{\small{For $i=1,\hdots,5$, the $\omega_{i}$ marginals (a) for \textbf{Case I}, and (b) for \textbf{Case II}, resulting from the IEEE 14 bus simulation described in Sec. \ref{subsec:NumSimIEEEBus}. (c) Comparison of the $\omega_{4}$ marginals for bus 6 in the nominal (\textbf{Case I}) and post-fault (\textbf{Case II}) scenarios.}}
 \vspace*{-0.1in}
 \label{fig:IEEE14omegamarginalsCase12}
 \end{figure*}
@@ -632,18 +632,18 @@ The mean angles \eqref{MeanAngleInitialIEEE14} were obtained from steady state A
 
 In \eqref{rho0IEEE14}, the $\bm{\omega}$ marginal $ \Omega_{0}\left(\bm{\omega}(0)\right)$ is a uniform PDF over the hypercube $\left([-0.1,0.1]\;\text{rad/s}\right)^{5}$. Thus, the PDF $\rho_0$ in \eqref{rho0IEEE14} is supported over $\mathbb{T}^{5}\times [-0.1,0.1]^{5}$.
 
-With step size $h=10^{-3}$, we discretized time $t\in[0,1]$. Using the algorithm detailed in Sec. \ref{sec:ProxAlgo}, for all the three cases, we propagated $N=1000$ random samples from \eqref{rho0IEEE14}, and evaluated at \eqref{rho0IEEE14}, to update the scattered weighted point clouds $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ over $\mathbb{T}^{5}\times\mathbb{R}^{5}$ at times $t_{k}:=kh$, $k\in\mathbb{N}$. In Algorithm \ref{algo:KineticProx}, we used the algorithmic parameters $\varepsilon=0.05$, $\delta=10^{-3}$, $\ell_{\max}=300$.
+With step size $h=10^{-3}$, we discretized time $t\in[0,1]$. Using the algorithm detailed in Sec. \ref{sec:ProxAlgo}, for both cases, we propagated $N=1000$ random samples from \eqref{rho0IEEE14}, and evaluated at \eqref{rho0IEEE14}, to update the scattered weighted point clouds $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ over $\mathbb{T}^{5}\times\mathbb{R}^{5}$ at times $t_{k}:=kh$, $k\in\mathbb{N}$. In Algorithm \ref{algo:KineticProx}, we used the algorithmic parameters $\varepsilon=0.05$, $\delta=10^{-3}$, $\ell_{\max}=300$.
 
 Fig. \ref{fig:IEEE14marginalsCase0} and Fig. \ref{fig:IEEE14marginalsCase1} show the time snapshots of the $(\theta_{i},\omega_{i})$ bivariate marginal PDFs for \textbf{Case I} and \textbf{Case II} respectively, associated with the generator $i=1,\hdots, n=5$. These marginals are computed using the corresponding weighted point clouds $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$.
 
  %Notice that in Fig. \ref{fig:IEEE14marginals}, the horizontal axes of the subfigures have periodic boundary conditions, i.e., $(\theta_{i},\omega_{i})\in\mathbb{T}\times\mathbb{R}$ (cylinder).
 
-Fig. \ref{fig:IEEE14omegamarginalsCase12} shows the corresponding univariate $\omega_{i}$-marginal PDFs. In particular, Fig. \ref{fig:IEEE14omegamarginalsCase12}(c) helps compare the $\omega_{4}$ marginal evolution for bus 6 in the nominal (Case I) and post-fault (Case II) scenarios. Since Case II considers the failure of line 13, from Fig. \ref{fig:Motivating} we intuitively expect that the transient effects of this fault will be prominent for bus 6 (generator 4). Indeed, Fig. \ref{fig:IEEE14omegamarginalsCase12}(c) shows that although the $\omega_{4}$ marginals in both Case I and II, at all times have highest probability around $0$ rad/s, the post-fault marginals show larger spread or dispersion of the probability mass, as expected. That the generator 4 states in Case II have larger uncertainties than in Case I, is also visible in the bivariate marginal plots if we compare the fourth row in Fig. \ref{fig:IEEE14marginalsCase0} with the same in Fig. \ref{fig:IEEE14marginalsCase1}.
+Fig. \ref{fig:IEEE14omegamarginalsCase12} shows the corresponding univariate $\omega_{i}$-marginal PDFs. In particular, Fig. \ref{fig:IEEE14omegamarginalsCase12}(c) helps compare the $\omega_{4}$ marginal evolution for bus 6 in the nominal (\textbf{Case I}) and post-fault (\textbf{Case II}) scenarios. Since \textbf{Case II} considers the failure of line 13, from Fig. \ref{fig:Motivating} we intuitively expect that the transient effects of this fault will be prominent for bus 6 (generator 4). Indeed, Fig. \ref{fig:IEEE14omegamarginalsCase12}(c) shows that although the $\omega_{4}$ marginals in both \textbf{Case I} and \textbf{II}, at all times have highest probability around $0$ rad/s, the post-fault marginals show larger spread or dispersion of the probability mass, as expected. That the generator 4 states in \textbf{Case II} have larger uncertainties than in \textbf{Case I}, is also visible in the bivariate marginal plots if we compare the fourth row in Fig. \ref{fig:IEEE14marginalsCase0} with the same in Fig. \ref{fig:IEEE14marginalsCase1}.
 
 
 
 
-Fig. \ref{fig:CompTimeIEEE14bus} shows the computational times needed to update $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ via the algorithm in Sec. \ref{sec:ProxAlgo}, for both Cases I and II.  
+Fig. \ref{fig:CompTimeIEEE14bus} shows the computational times needed to update $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ via the algorithm in Sec. \ref{sec:ProxAlgo}, for both \textbf{Cases I} and \textbf{II}.  
 
 
 
@@ -676,7 +676,7 @@ coupling coefficient & $k_{ij}\begin{cases}
 & \\
 \hline
 \end{tabular}
-\vspace*{0.1in}
+\vspace*{0.05in}
 \caption{Parameters used for the numerical simulation in Sec. \ref{subsec:NumSimSynthetic}. The indices $i,j\in\{1,\hdots,n\}$ where the number of generators $n=50$ in Sec. \ref{subsec:NumSimSynthetic}.}
 \label{table:ParamUncertaintiesSynthetic}
 \vspace*{-0.35in}
