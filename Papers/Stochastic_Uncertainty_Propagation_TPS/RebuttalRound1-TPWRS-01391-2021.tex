@@ -1,0 +1,338 @@
+\documentclass[12pt,onecolumn]{IEEEtran}
+\usepackage{amsmath ,amssymb,euscript ,yfonts,psfrag,latexsym,dsfont,graphicx,bbm,color,amstext,wasysym,subfig,flushend,parskip}
+\usepackage{bm,cite,soul,url}
+\usepackage{verbatim}
+\usepackage[normalem]{ulem}
+\usepackage{amsthm}
+%\usepackage{refcheck}
+%\usepackage{showkeys}
+%\usepackage{epstopdf,hyperref,pdfsync,url}
+\graphicspath{{./},{./figures/}}
+\newcommand{\mR}{{\mathbb R}}
+\newcommand{\D}{{\mathbb D}}
+\newcommand{\E}{{\mathbb E}}
+\newcommand{\mcN}{{\mathcal N}}
+\newcommand{\mcR}{{\mathcal R}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\tr}{\operatorname{trace}}
+\newcommand{\ignore}[1]{}
+\newcommand{\mike}{\color{magenta}}
+
+\newcommand{\blue}{\color{blue}}
+\newcommand{\red}{\textcolor{red}}
+
+\newcommand{\bQ}{{\bm{Q}}}
+\newcommand{\bPi}{\bm{\Pi}}
+\newcommand{\bv}{{\bm{v}}}
+\newcommand{\balpha}{{\bm{\alpha}}}
+\newcommand{\bbeta}{{\bm{\beta}}}
+\newcommand{\bq}{{\bm{q}}}
+\newcommand{\bp}{{\bm{p}}}
+\newcommand{\bbf}{{\bm{f}}}
+\newcommand{\differential}{{\mathrm{d}}}
+
+\newtheorem{claim}{Claim}
+
+\def\spacingset#1{\def\baselinestretch{#1}\small\normalsize}
+\setlength{\parskip}{10pt}
+\setlength{\parindent}{20pt}
+\spacingset{1}
+
+\definecolor{grey}{rgb}{0.6,0.6,0.6}
+\definecolor{lg}{rgb}{0.6,.6,0.6}
+\newcommand{\nib}{\noindent  {\bf Response:} }
+
+\begin{document}
+%\newcommand{\bp}{{\bm{p}}}
+\noindent
+{\large {\bf Revision of
+Manuscript Number}: IEEE-TPWRS-01391-2021, version 1\hfill \today\\[.1in]
+{\bf Journal}: IEEE Transactions on Power Systems \\[.1in]
+{\bf Author}: Abhishek Halder, Kenneth F. Caluya, Pegah Ojaghi, Xinbo Geng}\\
+
+
+
+\section*{\large \bf Response to decision:}
+
+{\noindent\blue
+The perceptive input from all reviewers and the AE are much appreciated. 
+
+Please find below itemized responses to the individual comments addressing the concerns and detailing the revisions. All the edits in the revised manuscript are marked in blue.\\
+
+\noindent
+Sincerely,\\
+The authors
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\newpage
+\spacingset{1}
+
+\section*{\large \bf Response to AE:}
+
+\noindent
+{\bf AE.1. Comments by AE}:\\
+{\em The authors are requested to revise and resubmit their paper after addressing reviewer feedback. Of particular importance is that reviewers point out the model leveraged for analysis is overly simplistic.}
+
+{\nib {\blue Thanks for this comment.
+}}
+
+
+\noindent
+{\bf AE.2. Comments by AE}:\\
+{\em Authors are also encouraged to revisit their overview of prior art.}
+
+{\nib {\blue Please see }}
+
+
+\noindent
+{\bf AE.3. Comments by AE}:\\
+{\em Presentation of technical points and results can also be improved.}
+
+{\nib {\blue Please see }}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+\spacingset{1}
+
+\section*{\large \bf Response to Reviewer \#1:}
+
+
+\noindent
+{\bf R1.1. Comment by reviewer}:\\
+{\em The original contribution of the article is not clear.  Indeed, what is original new from this article, not the summary from existing techniques?}
+
+
+{\nib {\blue This is. 
+}}
+
+
+
+\noindent
+{\bf R1.2. Comments by reviewer}:\\
+{\em The structure of the article should be highly improved. A large portion of the contexts is simply repeating the well-known power system classical model, kroon reduction, and the FPF equations.  Only from section IV, page 6, I can see some of the proposed weighted points methods.}
+
+
+{\nib{ \blue We have.}}
+
+
+\noindent
+{\bf R1.3. Comments by reviewer}:\\
+{\em I have major doubts about the model used in the article for the following reasons.\\
+(1)     The paper claim the proposed method can propagate stochastic uncertainties in realistic power networks. However, only a classical model is used, which is not realistic at all.\\
+(2)     Why do active power and reactive power from load have no randomness at all. This is too unrealistic.\\
+(3)     The diffusion term of this article is only considered in the frequency. The process noise in the rotor angle is fully ignored. This is also unreasonable.\\
+To improve your work, I highly suggested the authors follow [R1], which is missing in your literature but can help the authors better know Power system SDE.  Also, it is suggested to introduce the OU process to model the randomness in the load, which cannot be ignored in practice.\\
+R1. A systematic method to model power systems as stochastic differential-algebraic equations, F. Milano, R. Zarate-Minano, IEEE Transactions on Power Systems, 28(4), 4537-4544.}
+
+{\nib{ \blue TBD.}}
+
+
+
+\noindent
+{\bf R1.4. Comments by reviewer}:\\
+{\em There is no comparison of the proposed method compared with other state-of-the-art methods. Therefore, it is hard for the readers to judge the importance of this article.}
+
+{\nib{ \blue TBD.}}
+
+
+\noindent
+{\bf R1.5. Comments by reviewer}:\\
+{\em Contributions are over-claimed in this article:\\
+(1) The scalability of the proposed method cannot convince the readers since you are using a too simple model and ignored many important random dimensions from the loads.\\
+(2) The proposed method claims to be nonparametric, however, all the inputs are assumed to be either wiener process or uniform distribution, which are all parametric distributions.\\
+(3) If the ``nonparametric" is only referred to the output PDF, I would not think of it as a major contribution since there are a lot of existing techniques that can depict nonparametric PDF.}
+
+{\nib{ \blue TBD.}}
+
+
+\noindent
+{\bf R1.6. Comments by reviewer}:\\
+{\em The simulation time is too short to convince the readers. Only 1 second is considered here. Note that the errors can be quickly accumulated in the iteration.}
+
+{\nib{ \blue TBD.}}
+
+
+\noindent
+{\bf R1.7. Comments by reviewer}:\\
+{\em It is suggested to count the total computing time, not on each step.}
+
+{\nib{ \blue TBD.}}
+
+
+\noindent
+{\bf R1.8. Comments by reviewer}:\\
+{\em If the proposed method depends on the Kronecker product, how can it be scaled to a higher dimension?}
+
+{\nib{ \blue TBD.}}
+
+
+\noindent
+{\bf R1.9. Comments by reviewer}:\\
+{\em beta is undefined in equation (15a).}
+
+{\nib{ \blue TBD.}}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newpage
+\section*{\large \bf Response to Reviewer \#2:}
+
+\noindent
+{\bf R2.1. Comments by reviewer}:\\
+{\em Overall, the paper is well-written and theoretically sound.}
+
+{\nib \blue{Thank you for the kind and encouraging remarks.}}
+
+
+\noindent
+{\bf R2.2. Comments by reviewer}:\\
+{\em The paper's language and presentation make it seem like it is more oriented towards the applied mathematics and control communities. It is highly suggested that the authors revise the exposition of ideas and concepts, putting more emphasis on the power system so that it can be well-understood by the power system experts.}
+
+{\nib \blue{TBD.}}
+
+
+\noindent
+{\bf R2.3. Comments by reviewer}:\\
+{\em How will the proposed approach be used for the cases in which dependencies among uncertainty sources exist? An explanation and illustration would be helpful.}
+
+{\nib \blue{TBD.}}
+
+
+\noindent
+{\bf R2.4. Comments by reviewer}:\\
+{\em Incorporation of power system dynamics into the proposed uncertainty propagation framework is a bit vague. The proposed study seems not to have utilized any tool capable of simulating power system dynamics. Could the authors explain the part pertaining to the dynamic simulation in more detail?}
+
+{\nib \blue{TBD.}}
+
+
+
+\noindent
+{\bf R2.5. Comments by reviewer}:\\
+{\em With regard to the point above, this reviewer would expect to see uncertainty bounds for the system dynamic response such as the trajectory of the rotor angle. Without such information, the method's usability is difficult to gauge.}
+
+{\nib \blue{TBD.}}
+
+
+
+\noindent
+{\bf R2.6. Comments by reviewer}:\\
+{\em Instead of using a purely synthetic system, the authors are highly encouraged to choose available test cases such as the IEEE 118-bus system and a larger one, if possible.}
+
+{\nib \blue{TBD.}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+\section*{\large \bf Response to Reviewer \#3:}
+
+\noindent
+{\bf R3.1. Comments by reviewer}:\\
+{\em My main concern with this work is that all its derivations are deeply model-dependent and, unfortunately, the model that the author consider is not adequate to represent modern power systems. Moreover, second order model of synchronous machines are adequate only in a time scale of few seconds, so, even if the system were effectively including only conventional power plants, the model would be acceptable only for very short-term transients, i.e., transients for which the propagation of the noise is immaterial. In other words, the proposed model is useless.}
+
+{\nib \blue{TBD.}}
+
+
+\noindent
+{\bf R3.2. Comments by reviewer}:\\
+{\em The literature is incomplete, many recent works on SDAEs for power system applications are not mentioned.}
+
+{\nib \blue{TBD.}}
+
+
+
+\noindent
+{\bf R3.3. Comments by reviewer}:\\
+{\em There are several typos in the test (especially in the references).}
+
+{\nib \blue{TBD.}}
+
+
+\noindent
+{\bf R3.4. Comments by reviewer}:\\
+{\em Figures 5 and 6 are unreadable.}
+
+{\nib \blue{TBD.}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+\section*{\large \bf Response to Reviewer \#4:}
+
+\noindent
+{\bf R4.1. Comments by reviewer}:\\
+{\em The main contribution of this paper lies in applying results on the governing partial differential equation (PDE) for the joint PDF to avoid discretization of the state space, thereby circumventing computational challenges. The reviewer appreciates that this paper is rigorous in development and thinks it deals with an important problem.}
+
+{\nib \blue{We appreciate the positive remark.}}
+
+
+\noindent
+{\bf R4.2. Comments by reviewer}:\\
+{\em The key contribution of this paper is that the proposed method can reduce the computation burden when solving for the transient PDF. However, no comparison is provided with existing methods. The authors should provide comparisons to the exiting approaches, for example, based on finite element discretization or other numerical methods. The test example could be performed using the 5-generator system or larger systems. Besides, referring to Figs. 8 and 9, the total computation time should be reported for a longer horizon.}
+
+{\nib \blue{TBD.}}
+
+
+\noindent
+{\bf R4.3. Comments by reviewer}:\\
+{\em Regarding the presentation, the reviewer suggests making the paper more self-contained. Some discussion in this paper highly relies on the authors' previous work, which can be improved by either adding a summarization or trimming out the materials.
+
+Following the same vein, there are some unnecessary information and technical points provided in this paper that may be distracting.
+For example, on page 3, why would the authors mention the Kuramoto oscillator model?
+On page 4, is the detailed discussion regarding Wasserstein-2 metric necessary? Similarly, on page 5, the discussion about the natural energy functional and how the gradient drift case does not apply also seems too detailed.}
+
+{\nib \blue{TBD.}}
+
+
+\noindent
+{\bf R4.4. Comments by reviewer}:\\
+{\em Along with [25], there are recent developments that over-approximates the reachable set for nonlinear systems under uncertain initial conditions, parameters, and external disturbances:
+``Reach-Set Estimation for DAE Systems under Uncertainty and Disturbances Using Trajectory Sensitivity and Logarithmic Norm".}
+
+{\nib \blue{TBD.}}
+
+
+
+\noindent
+{\bf R4.5. Comments by reviewer}:\\
+{\em On page 7, the authors stated about ``To account the pertinent geometry of $\mathbb{T}^n \times \mathbb{R}^n$". What exactly does this mean? Do the authors indicate that in (28) the two groups of state values are independent? Or do the authors mean the specific choices of the product von Mises PDF and the uniform distribution? If so, what are the connections?}
+
+{\nib \blue{TBD.}}
+
+
+\noindent
+{\bf R4.6. Comments by reviewer}:\\
+{\em On page 5, is there a mistake in ``random samples from (28), and evaluated at (28)"?}
+
+{\nib \blue{TBD.}}
+
+
+\noindent
+{\bf R4.7. Comments by reviewer}:\\
+{\em As a validation, it would be good to also provide information of higher-order moments along with the mean given in Fig. 10.}
+
+{\nib \blue{TBD.}}
+
+
+\noindent
+{\bf R4.8. Comments by reviewer}:\\
+{\em There are some typos in this paper:\\
+Page 4: in therms of\\
+Page 5: in the right-hand side of the arrow in the expression following ``converges to the flow generated by (22)'', it should be plain $\rho$}
+
+{\nib \blue{TBD.}}
+
+
+
+
+\end{document}
