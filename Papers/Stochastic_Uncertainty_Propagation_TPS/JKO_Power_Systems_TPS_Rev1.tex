@@ -332,14 +332,14 @@ The algorithmic appeal of the proximal recursion \eqref{ProxRecursionInfiniteDim
 A new difficulty for our SDE \eqref{ItoSDEvectorlevel} is that we have \emph{anisotropic} degenerate diffusion, i.e., the strengths of the noise acting in the last $n$ components of \eqref{ItoSDEvectorlevel} are nonuniform since $\bm{M}^{-1}\bm{\Sigma}$ is not identity. This complicates the matter because the construction of the functional $\Phi$ in \eqref{ProxRecursionInfiniteDim} is usually motivated via free energy considerations utilizing the structure of the \emph{stationary} PDF $\rho_{\infty}(\bm{\theta},\bm{\omega})$ for \eqref{KineticFPK}. The $\rho_{\infty}$ is, in turn, guaranteed to be a unique \emph{Boltzmann distribution} of the form\footnote{here $Z$ is a normalizing constant known as the ``partition function".}
 \begin{subequations}
 \begin{align}
-\rho_{\infty}\left(\bm{\theta},\bm{\omega}\right) &= \dfrac{1}{Z}\exp\left(-\beta H\right), \\
+\rho_{\infty}\left(\bm{\theta},\bm{\omega}\right) &= \dfrac{1}{Z}\exp\left(-\beta H\right), \quad\text{for some}\;\beta > 0,\\
 H(\bm{\theta},\bm{\omega}) &:= V(\bm{\theta}) + \frac{1}{2}\langle\bm{\omega},\bm{M\omega}\rangle,	
 \end{align}	
 \label{BoltzmannPDF}
 \end{subequations}
 \emph{if and only if} the so-called \emph{Einstein relation} \cite{hernandez1989equilibrium,chen2015fast} holds:
 \begin{align}
-\bm{\Sigma}\bm{\Sigma}^{\top} = \beta^{-1}\left(\bm{\Gamma} + \bm{\Gamma}^{\top}\right) \quad\text{for some}\;\beta > 0.
+\bm{\Sigma}\bm{\Sigma}^{\top} = \beta^{-1}\left(\bm{\Gamma} + \bm{\Gamma}^{\top}\right).
 \label{EinsteinRelation}	
 \end{align}
 In our case, $\bm{\Sigma,\Gamma}$ are positive diagonal, and \eqref{EinsteinRelation} is equivalent to the proportionality constraint: $\sigma_{i}^{2} \propto \gamma_{i}$ for all $i=1,\hdots,n$.
