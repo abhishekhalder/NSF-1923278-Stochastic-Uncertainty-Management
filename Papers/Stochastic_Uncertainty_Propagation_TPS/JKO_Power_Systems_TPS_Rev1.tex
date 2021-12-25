@@ -487,7 +487,7 @@ with an entropic regularization of the variational update \eqref{KineticProx}, a
 \caption{Proposed proximal algorithm for $\tilde{\bm{\varrho}}_{k-1}\mapsto\tilde{\bm{\varrho}}_{k}$}
 \label{algo:KineticProx}
 \begin{algorithmic}[1]
-\Procedure{Prox}{$\bm{\varrho}_{k-1}, \tilde{\bm{x}}_{k-1}, \tilde{\bm{x}}_{k}, h, \varepsilon, N, \delta, \ell_{\max}$}
+\Procedure{Prox}{$\tilde{\bm{\varrho}}_{k-1}, \tilde{\bm{x}}_{k-1}, \tilde{\bm{x}}_{k}, h, \varepsilon, N, \delta, \ell_{\max}$}
 \For{$i=1$ to $N$}
 \State $\bm{\zeta}_{k-1}(i) \gets \exp\left(-\left(\bm{\eta}_{k-1}^{i}\right)^{\top}\bm{\eta}_{k-1}^{i}-1\right)$
 \For{$j=1$ to $N$}

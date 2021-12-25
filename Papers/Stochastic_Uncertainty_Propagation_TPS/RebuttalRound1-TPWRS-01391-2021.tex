@@ -166,7 +166,7 @@ R1. A systematic method to model power systems as stochastic differential-algebr
 {\bf R1.7. Comments by reviewer}:\\
 {\em It is suggested to count the total computing time, not on each step.}
 
-{\nib{ \blue TBD.}}
+{\nib{ \blue While the depiction of the computational times in Figs. 8 and 9 in the revised manuscript are somewhat unconventional, there is a reason why we choose to plot that way. At each fixed physical time $t_{k}=kh$, $k\in\mathbb{N}$, where $h$ is the fixed step-size, we perform the proximal update $\varrho_{k-1}\mapsto\varrho_{k}$ via Algorithm 1. This proximal update involves execution of a contractive fixed point recursion. The physical time $t_{k}$ is ``frozen" (zero-order-hold) during the fixed point recursions underlying this one-step proximal update. To claim that the proposed method is }}
 
 
 \noindent
@@ -180,7 +180,7 @@ R1. A systematic method to model power systems as stochastic differential-algebr
 {\bf R1.9. Comments by reviewer}:\\
 {\em beta is undefined in equation (15a).}
 
-{\nib{ \blue Thanks for the comment. The $\beta$ in (15a) is the same $\beta$ in (16), as in part of the same sentence. To avoid any confusion, in the revised manuscript, we have moved the phrase ``for some $\beta>0$" in (15a).}}
+{\nib{ \blue Thanks for the comment. The $\beta$ in (15a) is the same $\beta$ in (16), as in part of the same sentence. \ul{To avoid any confusion, in the revised manuscript, we have moved the phrase ``for some $\beta>0$" in (15a)}.}}
 
 
 
@@ -295,7 +295,11 @@ Following the same vein, there are some unnecessary information and technical po
 For example, on page 3, why would the authors mention the Kuramoto oscillator model?
 On page 4, is the detailed discussion regarding Wasserstein-2 metric necessary? Similarly, on page 5, the discussion about the natural energy functional and how the gradient drift case does not apply also seems too detailed.}
 
-{\nib \blue{TBD.}}
+{\nib \blue{TBD FOR FIRST PARA.
+
+We appreciate the reviewer's point that the sentence containing equation (6) and the mention of Kuramoto model can be removed without affecting the rest of the development. However, we prefer to keep it since it adds didactic value, and many engineers may feel comfortable by the explicit mention that (1) is simply a rewriting of (6). Furthermore, an astute reader, encountering that sentence will realize that the scope of the technical contribution of this paper is broad because the algorithmic framework developed here will be applicable to several other non-power system applications (mentioned in the two cited references in that sentence) where the second order Kuramoto model is used. Since this is just a matter of one sentence, we will prefer to keep it. We hope you approve.
+
+\ul{On the other hand, we believe the detailed discussion regarding Wasserstein gradient flow and why that standard development cannot be applied in this case, is in fact, the heart of this paper}. Please note that \ul{ours is not a recipe paper} where a numerical algorithm is proposed backed by some theory. The key contribution of this paper, from the authors' viewpoint, is to help distill out the core technical difficulty that hinders simply importing standard techniques from the optimal transport literature. We believe this clarification of what really is the technical crux of the matter--versus what are peripheral issues--should be illuminating to not just power systems researchers, but also to applied mathematicians underscoring how the standard theory and algorithms for measure-valued gradient flows need to be adapted in engineering applications.}}
 
 
 \noindent
@@ -303,7 +307,7 @@ On page 4, is the detailed discussion regarding Wasserstein-2 metric necessary? 
 {\em Along with [25], there are recent developments that over-approximates the reachable set for nonlinear systems under uncertain initial conditions, parameters, and external disturbances:
 ``Reach-Set Estimation for DAE Systems under Uncertainty and Disturbances Using Trajectory Sensitivity and Logarithmic Norm".}
 
-{\nib \blue{Thanks for providing that interesting recent reference. We have cited the same in the revised manuscript.}}
+{\nib \blue{Thanks for providing that interesting recent reference. \ul{We have cited the same in the revised manuscript}.}}
 
 
 
@@ -311,14 +315,16 @@ On page 4, is the detailed discussion regarding Wasserstein-2 metric necessary? 
 {\bf R4.5. Comments by reviewer}:\\
 {\em On page 7, the authors stated about ``To account the pertinent geometry of $\mathbb{T}^n \times \mathbb{R}^n$". What exactly does this mean? Do the authors indicate that in (28) the two groups of state values are independent? Or do the authors mean the specific choices of the product von Mises PDF and the uniform distribution? If so, what are the connections?}
 
-{\nib \blue{We simply mean that the joint PDF should be supported on $\mathbb{T}^n \times \mathbb{R}^n$, or a submanifold thereof. For instance, one cannot assume the initial joint PDF to be a $2n$ dimensional multivariate normal since that is supported over $\mathbb{R}^{2n}$, not over $\mathbb{T}^n \times \mathbb{R}^n$. It is, however, perfectly fine if some or all of the $2n$ components of the initial state vector are statistically correlated. As long as the support is $\mathbb{T}^n \times \mathbb{R}^n$, there is no issue if the angular variables are correlated with the Euclidean (i.e., angular velocity) variables.}}
+{\nib \blue{We simply mean that the joint PDF should be supported on $\mathbb{T}^n \times \mathbb{R}^n$, or a submanifold thereof. For instance, one cannot assume the initial joint PDF to be a $2n$ dimensional multivariate normal since that is supported over $\mathbb{R}^{2n}$, not over $\mathbb{T}^n \times \mathbb{R}^n$. It is, however, perfectly fine if some or all of the $2n$ components of the initial state vector are statistically correlated. As long as the support is $\mathbb{T}^n \times \mathbb{R}^n$, there is no issue if the angular variables are correlated with the Euclidean (i.e., angular velocity) variables.
+
+}}
 
 
 \noindent
 {\bf R4.6. Comments by reviewer}:\\
 {\em On page 5, is there a mistake in ``random samples from (28), and evaluated at (28)"?}
 
-{\nib \blue{That was not a typo. We meant that (28) was \ul{used in two ways}: it was used to generate initial state samples, and then the initial joint PDF values at those samples were evaluated via the functional form of (28), i.e., as in function evaluation. This is needed in our case because unlike standard Monte Carlo, we \ul{co-evolve} the state samples and joint PDF values at those state samples. \ul{To clarify this further, in the revised manuscript, we have slightly expanded that sentence}.}}
+{\nib \blue{That was not a typo. Indeed, equation (28) was \ul{used in two ways}: it was used to generate initial state samples, and then the initial joint PDF values at those samples were evaluated via the functional form of (28), i.e., as in function evaluation. This is needed in our case because unlike standard Monte Carlo, we \ul{co-evolve} the state samples and joint PDF values at those state samples. \ul{To clarify this further, in the revised manuscript, we have slightly expanded that sentence}.}}
 
 
 \noindent
