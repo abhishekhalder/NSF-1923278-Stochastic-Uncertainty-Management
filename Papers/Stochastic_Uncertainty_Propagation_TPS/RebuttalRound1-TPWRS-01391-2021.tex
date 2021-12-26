@@ -168,7 +168,7 @@ R1. A systematic method to model power systems as stochastic differential-algebr
 
 {\nib{ \blue While the depiction of the computational times in Figs. 8 and 9 in the revised manuscript are somewhat unconventional, we explain why we choose to plot that way. 
 
-At each fixed physical time $t_{k}=kh$, $k\in\mathbb{N}$, where $h$ is the fixed step-size, we perform the proximal update $\varrho_{k-1}\mapsto\varrho_{k}$ via Algorithm 1. This proximal update involves execution of a contractive fixed point recursion. The physical time $t_{k}$ is ``frozen" (zero-order-hold) during the fixed point recursions underlying this one-step proximal update. To claim that the proposed method is practical, we therefore, need to demonstrate that the computational timescale is faster than the physical timescale, i.e., computational times needed to complete the zero-order-hold fixed point recursions are orders-of-magnitude faster than $h$, the step-size of physical time. On the other hand, theoretical consistency (see the unnumbered equation after (26), before Sec. IV) requires that $h$ itself should be small. Thus, even if one has a provably convergent algorithm that can perform the one step proximal update, it is not clear if the computational time needed to do so can be much faster than $h$. If not, then the method would be statistically consistent but practically not useful. The Figs. 8 and 9 in the revised manuscript show that the computational time needed to perform the proximal updates, for all $t_{k}$, are indeed orders-of-magnitude faster than $h$.}}
+At each fixed physical time $t_{k}=kh$, $k\in\mathbb{N}$, where $h$ is the fixed step-size, we perform the proximal update $\varrho_{k-1}\mapsto\varrho_{k}$ via Algorithm 1. This proximal update involves execution of a contractive fixed point recursion. The physical time $t_{k}$ is ``frozen" (zero-order-hold) during the fixed point recursions underlying this one-step proximal update. \ul{To claim that the proposed method is practical, we therefore, need to demonstrate that the computational timescale is faster than the physical timescale, i.e., computational times needed to complete the zero-order-hold fixed point recursions are orders-of-magnitude faster than $h$, the step-size of physical time}. On the other hand, theoretical consistency (see the unnumbered equation after (26), before Sec. IV) requires that $h$ itself should be small. Thus, even if one has a provably convergent algorithm that can perform the one step proximal update, it is not clear \emph{a priori} if the computational time needed to do so can be much faster than $h$. If not, then the method would be statistically consistent but practically not useful. The Figs. 8 and 9 in the revised manuscript show that the computational time needed to perform the proximal updates, for all $t_{k}$, are indeed orders-of-magnitude faster than $h$.}}
 
 
 \noindent
@@ -210,7 +210,7 @@ At each fixed physical time $t_{k}=kh$, $k\in\mathbb{N}$, where $h$ is the fixed
 {\bf R2.3. Comments by reviewer}:\\
 {\em How will the proposed approach be used for the cases in which dependencies among uncertainty sources exist? An explanation and illustration would be helpful.}
 
-{\nib \blue{TBD.}}
+{\nib \blue{In our paper, we do not make any assumption on statistical independence of the uncertainties. \ul{In fact, all stochastic uncertainties are considered to be ``joint", i.e., statistically correlated}.}}
 
 
 \noindent
