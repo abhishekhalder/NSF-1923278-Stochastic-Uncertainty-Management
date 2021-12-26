@@ -210,14 +210,16 @@ At each fixed physical time $t_{k}=kh$, $k\in\mathbb{N}$, where $h$ is the fixed
 {\bf R2.3. Comments by reviewer}:\\
 {\em How will the proposed approach be used for the cases in which dependencies among uncertainty sources exist? An explanation and illustration would be helpful.}
 
-{\nib \blue{In our paper, we do not make any assumption on statistical independence of the uncertainties. \ul{In fact, all stochastic uncertainties are considered to be ``joint", i.e., statistically correlated}. Please note that the initial joint PDFs (28) and (30) are taken to be in that form only for the sake of concrete example simulations. Their only purpose, in the simulations reported in Sec IV, is to generate joint samples, and to evaluate the initial joint PDF values at the joint samples thus generated. If this initial scattered point cloud data is supplied to us only as a numerical table, without specifying any functional form whatsoever, nothing changes in the proposed algorithm. Similarly, the parameters in Table I could be correlated random vectors, and all we need are the \ul{joint} parametric weighted point cloud data. In fact, this is how we expect the proposed computational framework to be applied in practice.}}
+{\nib \blue{In our paper, we do not make any assumption on statistical independence of the uncertainties. \ul{In fact, all stochastic uncertainties are considered to be ``joint", i.e., statistically correlated}. Please note that the initial joint PDFs (28) and (30) are taken to be in that form for the sake of concrete example simulations. Their only purpose, in the simulations reported in Sec V, is to generate joint samples, and to evaluate the initial joint PDF values at the joint samples thus generated. If this initial scattered point cloud data is supplied to us only as a numerical table, without specifying any functional form whatsoever, nothing changes in the proposed algorithm. Similarly, the parameters in Table I could instead be correlated random vectors, and all we need are the \ul{joint} parametric weighted point cloud data. In fact, this is how we expect the proposed computational framework to be applied in practice.}}
 
 
 \noindent
 {\bf R2.4. Comments by reviewer}:\\
 {\em Incorporation of power system dynamics into the proposed uncertainty propagation framework is a bit vague. The proposed study seems not to have utilized any tool capable of simulating power system dynamics. Could the authors explain the part pertaining to the dynamic simulation in more detail?}
 
-{\nib \blue{TBD.}}
+{\nib \blue{In this paper, we are interested in propagating the joint PDF values of the states of a power system dynamic model subject to joint stochastic uncertainties. Our focus is on explicitly computing these transient joint state PDFs at the time-varying state vector samples, which amounts to co-evolving the states and the joint PDF values over time. \ul{This is different from Monte Carlo or the traditional density estimation techniques since they approximate the joint PDFs via post-processing, not as an online computation}. To the best of our knowledge, there does not exist a power system simulation tool which can do this online computation while making neither statistical nor dynamical approximation.
+
+Please note that in Sec. V, we have used MATPOWER and the Python-library ANDES (refs. [59] and [60]) for obtaining some parameters, as explained in the first paragraph of V-A. }}
 
 
 
