@@ -219,7 +219,7 @@ At each fixed physical time $t_{k}=kh$, $k\in\mathbb{N}$, where $h$ is the fixed
 
 {\nib \blue{In this paper, we are interested in propagating the joint PDF values of the states of a power system dynamic model subject to joint stochastic uncertainties. Our focus is on explicitly computing these transient joint state PDFs at the time-varying state vector samples, which amounts to co-evolving the states and the joint PDF values over time. \ul{This is different from Monte Carlo or the traditional density estimation techniques since they approximate the joint PDFs via post-processing, not as an online computation}. To the best of our knowledge, there does not exist a power system simulation tool which can do this online computation while making neither statistical nor dynamical approximation.
 
-Please note that in Sec. V, we have used MATPOWER and the Python-library ANDES (with inline citation of refs. [59] and [60] therein) for obtaining some simulation parameters, as explained in the first paragraph of V-A.}}
+Please note that in Sec. V, we have used MATPOWER and the Python-library ANDES (with inline citation of refs. [61] and [62] therein) for obtaining some simulation parameters, as explained in the first paragraph of V-A.}}
 
 
 
@@ -247,14 +247,14 @@ Please note that in Sec. V, we have used MATPOWER and the Python-library ANDES (
 {\bf R3.1. Comments by reviewer}:\\
 {\em My main concern with this work is that all its derivations are deeply model-dependent and, unfortunately, the model that the author consider is not adequate to represent modern power systems. Moreover, second order model of synchronous machines are adequate only in a time scale of few seconds, so, even if the system were effectively including only conventional power plants, the model would be acceptable only for very short-term transients, i.e., transients for which the propagation of the noise is immaterial. In other words, the proposed model is useless.}
 
-{\nib \blue{TBD.}}
+{\nib \blue{The reviewer's point is well taken. TBD.}}
 
 
 \noindent
 {\bf R3.2. Comments by reviewer}:\\
 {\em The literature is incomplete, many recent works on SDAEs for power system applications are not mentioned.}
 
-{\nib \blue{TBD.}}
+{\nib \blue{We appreciate the comment. As per the reviewer's suggestion, in the revised manuscript, we have included a sentence (marked blue) in Sec. I.1, second paragraph (last sentence) mentioning the usage of SDAEs in power system dynamic simulation. That sentence in the revised manuscript contains two newly added references: [22] and [23], both on simulating SDAE sample paths.}}
 
 
 
@@ -262,7 +262,7 @@ Please note that in Sec. V, we have used MATPOWER and the Python-library ANDES (
 {\bf R3.3. Comments by reviewer}:\\
 {\em There are several typos in the test (especially in the references).}
 
-{\nib \blue{TBD.}}
+{\nib \blue{TBD. We corrected the two typos pointed out in comment \textbf{R4.8} in this rebuttal document.}}
 
 
 \noindent
