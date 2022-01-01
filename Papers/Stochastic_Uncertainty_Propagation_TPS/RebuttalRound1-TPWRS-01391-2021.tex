@@ -274,7 +274,22 @@ Please note that in Sec. V, we have used MATPOWER and the Python-library ANDES (
 {\bf R3.4. Comments by reviewer}:\\
 {\em Figures 5 and 6 are unreadable.}
 
-{\nib \blue{In the previous version, the strict 10 page limit enforced small figure sizes. In the revised manuscript, Figures 5 and 6 are made larger. Also, the Fig. 6 in the revised manuscript shows the transient $(\theta_i,\omega_i)$ bivariate marginals for \ul{all the five generators in Case II}; the previous version showed the same only for the generator 4 (bus 6).}}
+{\nib \blue{Thanks for this comment. In the previous version, the strict 10 page limit enforced small figure sizes. In the revised manuscript, \ul{Figures 5 and 6 are made larger}. Also, the Fig. 6 in the revised manuscript shows the transient $(\theta_i,\omega_i)$ bivariate marginals for \ul{all the five generators in Case II}; the previous version showed the same only for the generator 4 (bus 6). We believe these changes have improved clarity.
+
+Regarding the style of plots, we had considered plotting the bivariate marginals as planar contour plots (as in Fig. 1 in this rebuttal document) \ul{but decided against it because of the following two reasons}. 
+
+\emph{First}, \ul{in our opinion, this kind of plot is scientifically misleading as they hide the fact that these bivariate marginal PDFs are not really supported on the plane, or the subsets thereof, but instead have cylindrical supports}. Our message that the proposed method explicitly accounts this manifold geometry in the computation, would be missed had we chosen to make the plots as per populist cognitive bias on behalf of the readers. That the planar plots evoke a sense of familiarity cannot be a scientific argument in favor of it. 
+
+\emph{Second}, \ul{the planar contour marginal plots require additional mental efforts from the readers to correctly parse the statistical information conveyed}. For instance, consider the fourth column, second row subplot in Fig. 1 in this rebuttal document. It is upon the reader to parse that the two high probability regions on the left and right of that subplot are actually referring to the same angular high probability region around $\theta_{2}=0$, thanks to the periodic boundary condition on the angular variable. Our philosophy of technical communication is that the onus is on the authors, not on the readers, to present the scientific information as correctly as possible. And yes, we are aware that many papers in the power system literature make plots in the rectangular domain ignoring the manifold nature of the support, which in our experience, continue to add pain to the graduate students and beginning researchers trying to understand the statistical meaning conveyed in those plots. We prefer ours  not be another paper contributing to the accrual of such.}}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.99\linewidth]{IEEE14marginals.png}
+\caption{\small{Example $(\theta_i,\omega_i)$ bivariate marginals, for the IEEE 14 bus system's generators $i=1,\hdots, 5$, shown as planar contour plots. The columns correspond to time snapshots; the rows correspond to the five generators. The colorbar corresponds to the value of the bivariate marginals. The simulation set up is described in Sec. V-A of the manuscript.}}
+\vspace*{-0.1in}
+\label{fig:PlanarContourBivariateMarginals}
+\end{figure}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
