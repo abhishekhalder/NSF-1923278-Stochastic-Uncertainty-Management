@@ -76,11 +76,13 @@ The authors
 {\bf AE.1. Comments by AE}:\\
 {\em The authors are requested to revise and resubmit their paper after addressing reviewer feedback. Of particular importance is that reviewers point out the model leveraged for analysis is overly simplistic.}
 
-{\nib {\blue Thanks for this comment.
+{\nib {\blue We are indebted to the AE and the reviewers for their help to improve the manuscript.
 
 In addition to the itemized responses to the reviewers' comments and the corresponding revisions marked in blue in the manuscript, we have made the \ul{following additional fixes and improvements} (also marked in blue in the revised manuscript):\\
 (i) In equation (8), we corrected a typo in its right hand side: the second summand runs over pairs $(i,j)$ such that $i<j$.\\
-(ii)  
+(ii) 
+
+{\red{Regarding the usage of simple model, please see our response to comment \textbf{R3.1} and ?? In summary, the current state-of-the-art in power system literature for this problem is ref. [45] with second order dynamics + single machine infinite bus ($n=1$ in our manuscript's notation). Given this context, our manuscript enables a new kind of computation that can handle moderately large $n$ with second order sample path dynamics. This computation is online and approximates neither the statistics nor the dynamics.  \ul{We clarify two important points here}:\\(i) The proposed proximal recursion framework on the space of probability measures is not conceptually limited by the second order dynamics, and we expect follow up research to design custom proximal recursions for higher order synchronous machine models. In this sense, the present paper should be seen as the stepping stone laying the foundation for handling more complex dynamical models. The authors have been completely up front by explicitly mentioning this in the Conclusions section. We have also reiterated the same in this rebuttal.\\(ii) Deriving proximal recursion requires understanding the generalized gradient flow structure over probability measures. Our research disposition is that one cannot bypass understanding the generalized gradient flow structure for the simpler second order sample path dynamics before attempting the same for more complex sample path models. In fact, a significant contribution of our article, in the authors' opinion, is that it distills out what exactly is technically challenging and what are the peripheral issues.}} 
 }}
 
 
@@ -122,7 +124,9 @@ In addition to the itemized responses to the reviewers' comments and the corresp
 {\em The original contribution of the article is not clear.  Indeed, what is original new from this article, not the summary from existing techniques?}
 
 
-{\nib {\blue This is. 
+{\nib {\blue The original contribution of this article is to design an algorithm for \emph{online nonparametric} computation of the joint state PDFs subject to stochastic uncertainties (initial conditions, parameters, process noise and combinations thereof) in power system dynamics. 
+
+The qualifier ``online" means that it is not a variant of Monte Carlo where samples are first propagated \ul{and then} a function approximation is performed offline to estimate the joint state PDF at a snapshot. The qualifier ``nonparametric" means that neither the statistics nor the dynamics are approximated \emph{a priori}. This is novel because to the best of the author's knowledge, there does not exist a power systems paper which can accomplish the same. The state-of-the-art in power system literature is discussed in Sec I.1. More importantly, Sec. I.2 details why the state-of-the-art is what it is. \ul{We specifically explain the contribution of this article in Sec. I.3 titled ``Contributions of this paper".}
 }}
 
 
@@ -132,7 +136,7 @@ In addition to the itemized responses to the reviewers' comments and the corresp
 {\em The structure of the article should be highly improved. A large portion of the contexts is simply repeating the well-known power system classical model, kroon reduction, and the FPF equations.  Only from section IV, page 6, I can see some of the proposed weighted points methods.}
 
 
-{\nib{ \blue We have.}}
+{\nib{ \blue We thank the reviewer for this comment. This paper is \emph{not} about novel implementation of an existing idea; the idea itself is new and consequently, needs to be contextualized and developed in the paper. \ul{The discussion toward the end of Sec. II and that in Sec III are, in our opinion, more fundamental contribution than the implementation in Sec. IV. Those parts of the paper really mark the innovation since they explain why someone, even if conversant in infinite dimensional gradient flow literature, cannot directly apply existing techniques to this problem. Then Sec. III-C and III-D explain how to circumvent the specific difficulties arising in this problem. A reader jumping to Sec. IV assuming that everything before that is known, is mistaken}. Notice that we clearly laid out the navigational chart of this paper in the paragraph right before Sec. II starts.}}
 
 
 \noindent
@@ -233,7 +237,7 @@ We expect a significant share of the readers of this work to be power system eng
 
 {\nib \blue{In this paper, we are interested in propagating the joint PDF values of the states of a power system dynamic model subject to joint stochastic uncertainties. Our focus is on explicitly computing these transient joint state PDFs at the time-varying state vector samples, which amounts to co-evolving the states and the joint PDF values over time. \ul{This is different from Monte Carlo or the traditional density estimation techniques since they approximate the joint PDFs via post-processing, not as an online computation}. To the best of our knowledge, there does not exist a power system simulation tool which can do this online computation while making neither statistical nor dynamical approximation.
 
-Please note that in Sec. V, we have used MATPOWER and the Python-library ANDES (with inline citation of refs. [61] and [62] therein) for obtaining some simulation parameters, as explained in the first paragraph of V-A.}}
+Please note that in Sec. V, we have used MATPOWER and the Python-library ANDES (with inline citation of refs. [62] and [63] therein) for obtaining some simulation parameters, as explained in the first paragraph of V-A.}}
 
 
 
@@ -265,7 +269,7 @@ Please note that in Sec. V, we have used MATPOWER and the Python-library ANDES (
 
 \ul{At the same time, it is important to understand how exactly this paper is making a significant stride w.r.t. the current state-of-the-art even with the second order dynamics}. The last paragraph of our Sec. II-B clearly asserts that the state-of-the-art in directly computing the joint PDF remains the ref. [45] published in this journal in 2013, which considered the second order dynamics for the single machine infinite bus case via finite element discretization. In the same paragraph, we also cited two 2018 references [16, 17] published again in this journal, which did not directly propagate the state PDFs and instead computed some proxy for the same. \ul{So the key  question becomes: if the power system literature has already acknowledged the importance of solving this problem, why is there no progress since [45] for even moderate $n$ and even assuming seemingly simple second order models? What exactly is the fundamental impediment standing in the way of nonparametric computation of the joint state PDF subject to the power system dynamics}? Our Sec. I.2 clearly lists the challenges for the same. The crux is that addressing this challenge is not a matter of innovating on a better discretization scheme or innovating on computing architecture. \ul{See specifically the last two sentences of our Sec. II-B}. \ul{The present paper is breaking the stalemate by fundamentally and rigorously innovating on what it really means to solve the underlying PDE, albeit subject to the second order dynamics}. As we have stated up front, we expect follow up research to extend the proposed approach for higher order models but we cannot have progress with a complex model unless we first demonstrate how to tackle the simpler second order case -- a case that the existing literature cannot tackle for nonparametric online PDF computation.
 
-\ul{Last but not the least, we find the reviewer's assertion ``In other words, the proposed model is useless" vacuous for the following reasons}.
+\ul{Last but not the least, we find the reviewer's assertion ``In other words, the proposed model is useless" moot for the following reasons}.
 
 (i) We \ul{do not propose} the second order model. We use the second order SDE that albeit simple, is widely used in power system dynamic simulation, as the sample path dynamics. In this paper, we are not interested in simulating sample paths. Our interest is in nonparametrically computing the transient joint PDFs subject to the given sample path dynamics in the form of It\^{o} SDE. \ul{Our usage of this particular sample path dynamics does not preempt the possibility of designing a variant of the proposed proximal recursion for performing computation of the same nature when the given It\^{o} SDE is of higher order. Indeed, this is what we alluded to in the last sentence of the Conclusions section}.
 
