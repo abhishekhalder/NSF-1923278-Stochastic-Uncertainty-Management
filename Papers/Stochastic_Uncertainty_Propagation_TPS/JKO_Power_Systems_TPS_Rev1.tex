@@ -646,7 +646,10 @@ Fig. \ref{fig:IEEE14omegamarginalsCase12} shows the corresponding univariate $\o
 
 
 
-Fig. \ref{fig:CompTimeIEEE14bus} shows the computational times needed to update $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ via the algorithm in Sec. \ref{sec:ProxAlgo}, for both \textbf{Cases I} and \textbf{II}.  
+Fig. \ref{fig:CompTimeIEEE14bus} shows the computational times needed to update $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ via the algorithm in Sec. \ref{sec:ProxAlgo}, for both \textbf{Cases I} and \textbf{II}. {\blue{While the depiction of the computational times in Fig. \ref{fig:CompTimeIEEE14bus} appears unconventional, we next explain why that is meaningful in our framework.
+
+At each fixed physical time $t_{k}=kh$, $k\in\mathbb{N}$, where $h$ is the fixed step-size, we perform the proximal update $\varrho_{k-1}\mapsto\varrho_{k}$ via Algorithm 1. This proximal update has no analytical solution and instead requires execution of a contractive fixed point recursion. The physical time $t_{k}$ is ``frozen" (zero-order-hold) during the fixed point recursions underlying this one-step proximal update. To claim that the proposed method is practical, we therefore, need to demonstrate that the computational timescale is faster than the physical timescale, i.e., computational times needed to complete the zero-order-hold fixed point recursions are orders-of-magnitude faster than $h$, the step-size of physical time. On the other hand, theoretical consistency (see the last paragraph of Sec. \ref{subsec:ProxUpdate}) requires that $h$ itself should be small. Thus, even if one has a provably convergent algorithm that can perform the one step proximal update, it is not clear \emph{a priori} if the computational time needed to do so can be much faster than $h$. If not, then the method would be statistically consistent but practically not useful. The Fig \ref{fig:CompTimeIEEE14bus} shows that the computational time needed to perform the proximal updates, for all $t_{k}$, are indeed orders-of-magnitude faster than $h$.
+}}  
 
 
 
