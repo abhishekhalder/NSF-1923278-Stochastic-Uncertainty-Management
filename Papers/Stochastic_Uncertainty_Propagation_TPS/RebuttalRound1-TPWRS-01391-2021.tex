@@ -196,7 +196,7 @@ This reviewer may also have misunderstood in thinking that a model that has addi
 {\bf R1.6. Comments by reviewer}:\\
 {\em The simulation time is too short to convince the readers. Only 1 second is considered here. Note that the errors can be quickly accumulated in the iteration.}
 
-{\nib{ \blue Please note that the convergence guarantee given by equation (14) in the revised manuscript is pointwise in time, i.e., for each $k\in\mathbb{N}$. Unlike traditional numerical methods, there is no concept of {\red{TBD.}}}}
+{\nib{ \blue {\red{TBD.}}}}
 
 
 \noindent
@@ -242,9 +242,9 @@ At each fixed physical time $t_{k}=kh$, $k\in\mathbb{N}$, where $h$ is the fixed
 
 {\nib \blue{We appreciate the comment. \ul{In the revised manuscript, we have made some changes toward this direction. This includes slightly expanded overview of the related power system literature (see the two sentences added in Sec. I.1, second paragraph with two new references [22], [23]), citing recent reference [28] in Sec. I.1, third paragraph. Please note that the literature review in Sec. I.1 is completely based on the power system literature}.
 
-Having said that, we believe our technical contribution is fundamentally interdisciplinary in the sense it is not mere translational research. In other words, we are not simply importing ideas from a different domain and applying them to a power system problem. Instead, we make novel contributions at the (possibly unanticipated) intersection of two areas: measure-valued gradient flows and power system dynamics. The presentation of the paper reflects the same, perhaps rightfully so. Notice in particular that our presentation is bottom-up: we start from power system literature review and mention that the problem addressed in our paper was already recognized as a technical challenge in that literature. We move onto the theoretical ideas and tools much later in the manuscript, as the build up demands.
+Having said that, we believe our technical contribution is indeed interdisciplinary in the sense it is not mere translational research. In other words, we are not simply importing ideas from a different domain and applying them to a power system problem. Instead, we make novel contributions at the (possibly unanticipated) intersection of two areas: measure-valued gradient flows and power system dynamics. The presentation of the paper reflects the same, perhaps rightfully so. Notice in particular that our presentation is bottom-up: we start from power system literature review and mention that the problem addressed in our paper was already recognized as a technical challenge in that literature. We move onto the theoretical ideas and tools much later in the manuscript, as the build up demands.
 
-We expect a significant share of the readers of this work to be power system engineers, but not exclusively so since this contribution will also be of interest to the researchers in control, optimization and applied mathematics. We do not believe this issue is exceptional for our paper since several high impact papers in the Trans. Power Systems were indeed at the intersection of these areas, and are not only well-read by the researchers from either side but these works have positively contributed toward increasing interdisciplinary research collaboration.}}
+We expect a significant share of the readers of this work to be power system engineers, but not exclusively so since this contribution will also be of interest to the researchers in control, optimization and applied mathematics. We do not believe this issue is exceptional for our paper since several high impact papers in the IEEE Trans. Power Systems were indeed at the intersection of these areas, and are not only well-read by the researchers from either side but these works have positively contributed toward increasing interdisciplinary research collaboration.}}
 
 
 \noindent
@@ -268,7 +268,7 @@ Please note that in Sec. V, we have used MATPOWER and the Python-library ANDES (
 {\bf R2.5. Comments by reviewer}:\\
 {\em With regard to the point above, this reviewer would expect to see uncertainty bounds for the system dynamic response such as the trajectory of the rotor angle. Without such information, the method's usability is difficult to gauge.}
 
-{\nib \blue{TBD.}}
+{\nib \blue{ {\red{TBD.}}}}
 
 
 
@@ -276,7 +276,7 @@ Please note that in Sec. V, we have used MATPOWER and the Python-library ANDES (
 {\bf R2.6. Comments by reviewer}:\\
 {\em Instead of using a purely synthetic system, the authors are highly encouraged to choose available test cases such as the IEEE 118-bus system and a larger one, if possible.}
 
-{\nib \blue{TBD.}}
+{\nib \blue{Please note that the synthetic system in Sec. V-B is actually simulating a higher dimensional system than the IEEE 118-bus system where the 19 generators would have resulted in the transient joint PDFs with 38 dimensional supports. In comparison, the synthetic system is evolving joint state PDFs having 100 dimensional supports, i.e., in $\mathbb{T}^{50}\times\mathbb{R}^{50}$. Our only intention behind simulating the synthetic system was to show that the computation can handle large dimensional joint state PDF supports. We also point out that the parameter ranges reported in Table I are consistent with the existing literature: refs. [25, Sec. 5], [20], [56], [57]. We hope the reviewer agrees that this simulation is adequate for the intended purpose.}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -290,13 +290,13 @@ Please note that in Sec. V, we have used MATPOWER and the Python-library ANDES (
 
 {\nib \blue{The reviewer's point is well taken in the sense the second order model may not be adequate to capture all the complexities of modern power systems, and further research is needed to design/extend nonparametric joint PDF propagation methods such as the one we propose with higher order generator dynamics. \ul{Please note that the last sentence of our Conclusion section explicitly stated so}.
 
-\ul{At the same time, it is important to understand how exactly this paper is making a significant stride w.r.t. the current state-of-the-art even with the second order dynamics}. The last paragraph of our Sec. II-B clearly asserts that the state-of-the-art in directly computing the joint PDF remains the ref. [45] published in this journal in 2013, which considered the second order dynamics for the single machine infinite bus case via finite element discretization. In the same paragraph, we also cited two 2018 references [16, 17] published again in this journal, which did not directly propagate the state PDFs and instead computed some proxy for the same. \ul{So the key  question becomes: if the power system literature has already acknowledged the importance of solving this problem, why is there no progress since [45] for even moderate $n$ and even assuming seemingly simple second order models? What exactly is the fundamental impediment standing in the way of nonparametric computation of the joint state PDF subject to the power system dynamics}? Our Sec. I.2 clearly lists the challenges for the same. The crux is that addressing this challenge is not a matter of innovating on a better discretization scheme or innovating on computing architecture. \ul{See specifically the last two sentences of our Sec. II-B}. \ul{The present paper is breaking the stalemate by fundamentally and rigorously innovating on what it really means to solve the underlying PDE, albeit subject to the second order dynamics}. As we have stated up front, we expect follow up research to extend the proposed approach for higher order models but we cannot have progress with a complex model unless we first demonstrate how to tackle the simpler second order case -- a case that the existing literature cannot tackle for nonparametric online PDF computation.
+\ul{At the same time, it is important to understand how exactly this paper is making a significant stride w.r.t. the current state-of-the-art even with the second order dynamics}. The last paragraph of our Sec. II-B clearly asserts that the state-of-the-art in directly computing the joint PDF remains the ref. [45] published in this journal in 2013, which considered the second order dynamics for the single machine infinite bus case via finite element discretization. In the same paragraph, we also cited two 2018 references [16, 17] published again in this journal, which did not directly propagate the state PDFs and instead computed some proxy for the same. \ul{So the key  question becomes: if the power system literature has already acknowledged the importance of solving this problem, why is there no progress since [45] for even moderate $n$ and even assuming seemingly simple second order models? What exactly is the fundamental impediment standing in the way of nonparametric computation of the joint state PDF subject to the power system dynamics}? Our Sec. I.2 clearly lists the challenges for the same. The crux is that addressing this challenge is not a matter of innovating on a better discretization scheme or innovating on computing architecture. \ul{See specifically the last two sentences of our Sec. II-B}. \ul{The present paper is breaking the stalemate by mathematically innovating on what it really means to solve the underlying PDE, albeit subject to the second order dynamics}. As we have stated up front, we expect follow up research to extend the proposed approach for higher order models but we cannot have progress with a complex model unless we first demonstrate how to tackle the simpler second order case -- a case that the existing literature cannot tackle for nonparametric online PDF computation.
 
 \ul{Last but not the least, we find the reviewer's assertion ``In other words, the proposed model is useless" moot for the following reasons}.
 
-(i) We \ul{do not propose} the second order model. We use the second order SDE that albeit simple, is widely used in power system dynamic simulation, as the sample path dynamics. In this paper, we are not interested in simulating sample paths. Our interest is in nonparametrically computing the transient joint PDFs subject to the given sample path dynamics in the form of It\^{o} SDE. \ul{Our usage of this particular sample path dynamics does not preempt the possibility of designing a variant of the proposed proximal recursion for performing computation of the same nature when the given It\^{o} SDE is of higher order. Indeed, this is what we alluded to in the last sentence of the Conclusions section}.
+(i) We \ul{do not propose} the second order model. We use the second order SDE that albeit simple, is widely used in power system dynamic simulation, as the sample path dynamics. In this paper, we are not interested in simulating sample paths via variants of Monte Carlo. Our interest is in nonparametrically computing the transient joint PDFs subject to the given sample path dynamics in the form of It\^{o} SDE. \ul{Our usage of this particular sample path dynamics does not preempt the possibility of designing a variant of the proposed proximal recursion for performing computation of the same nature when the given It\^{o} SDE is of higher order. Indeed, this is what we alluded to in the last sentence of the Conclusions section}.
 
-(ii) \ul{What we propose is not a model}. Transcribing the Fokker-Planck operator into a generalized gradient flow, and thereby deriving the corresponding proximal recursion, is a purely mathematical construct. There are no modeling assumptions made in that derivation. \ul{Our contribution in this paper is to initiate and showcase this new way of solving the transient Fokker-Planck PDE subject to a simple but popular power system dynamic model}. Extending this framework to higher order sample path dynamics is mentioned as future work, and is beyond the scope of this particular paper.  
+(ii) \ul{What we propose is not a model}. Transcribing the kinetic Fokker-Planck operator into a generalized gradient flow, and thereby deriving the corresponding proximal recursion, is a purely mathematical construct. There are no modeling assumptions made in that derivation. \ul{Our contribution in this paper is to initiate and showcase this new way of computing the transient solutions of the kinetic Fokker-Planck PDE arising from a simple but popular power system dynamic model}. Extending this framework to higher order sample path dynamics is mentioned as future work, and is beyond the scope of this particular paper.  
 
 }}
 
@@ -354,7 +354,7 @@ Regarding the style of plots, we had considered plotting the bivariate marginals
 {\bf R4.2. Comments by reviewer}:\\
 {\em The key contribution of this paper is that the proposed method can reduce the computation burden when solving for the transient PDF. However, no comparison is provided with existing methods. The authors should provide comparisons to the exiting approaches, for example, based on finite element discretization or other numerical methods. The test example could be performed using the 5-generator system or larger systems. Besides, referring to Figs. 8 and 9, the total computation time should be reported for a longer horizon.}
 
-{\nib \blue{TBD.}}
+{\nib \blue{ {\red{TBD.}}}}
 
 
 \noindent
@@ -369,7 +369,7 @@ On page 4, is the detailed discussion regarding Wasserstein-2 metric necessary? 
 
 We appreciate the reviewer's point that the sentence containing equation (6) and the mention of Kuramoto model can be removed without affecting the rest of the development. However, we prefer to keep it since it adds didactic value, and many engineers may feel comfortable by the explicit mention that (1) is simply a rewriting of (6). Furthermore, an astute reader, encountering that sentence will realize that the scope of the technical contribution of this paper is broad because the algorithmic framework developed here will be applicable to several other non-power system applications (mentioned in the two cited references in that sentence) where the second order Kuramoto model is used. Since this is just a matter of one sentence, we will prefer to keep it. We hope you approve.
 
-\ul{On the other hand, the detailed discussion regarding Wasserstein gradient flow and why that standard development cannot be applied in this case, is in fact, the heart of this paper}. Please note that \ul{ours is not a recipe paper} where a numerical algorithm is proposed backed by some theory and simulations. \ul{The key contribution of this paper, from the authors' viewpoint, is to help distill out the core technical difficulty that hinders simply importing standard techniques from the optimal transport literature}. We believe this clarification of what really is the technical crux of the matter--versus what are peripheral issues--should be illuminating to not just power systems researchers, but also to applied mathematicians underscoring how the standard theory and algorithms for measure-valued gradient flows need to be adapted in engineering applications.}}
+\ul{On the other hand, the detailed discussion regarding Wasserstein gradient flow and why that standard development cannot be applied in this case, is in fact, the heart of this paper}. Please note that this is far from a recipe paper where a numerical algorithm is proposed backed by some theory and simulations. \ul{The key contribution of this paper, instead, is to help distill out the core technical difficulty that hinders simply importing standard techniques from the optimal transport literature}. We believe this clarification of what really is the technical crux of the matter--versus what are peripheral issues--should be illuminating to not just power systems researchers, but also to applied mathematicians underscoring how the standard theory and algorithms for measure-valued gradient flows need to be adapted in engineering applications.}}
 
 
 \noindent
@@ -401,7 +401,7 @@ We appreciate the reviewer's point that the sentence containing equation (6) and
 {\bf R4.7. Comments by reviewer}:\\
 {\em As a validation, it would be good to also provide information of higher-order moments along with the mean given in Fig. 10.}
 
-{\nib \blue{TBD.}}
+{\nib \blue{ {\red{TBD.}}}}
 
 
 \noindent
