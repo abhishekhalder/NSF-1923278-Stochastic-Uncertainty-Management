@@ -556,7 +556,7 @@ To illustrate the proposed computational framework, we next provide two numerica
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.9\linewidth]{IEEE14marginalsCase0.png}
-\caption{\small{Time evolution of the $(\theta_{i},\omega_{i})$ bivariate marginal PDFs of the generator $i=1,\hdots,5$, for the Kron-reduced IEEE 14 bus simulation setup \textbf{Case I} described in Sec. \ref{subsec:NumSimIEEEBus}. The $5$ rows above correspond to the $5$ generator nodes; these are buses 1, 2, 3, 6 and 8 in Fig. \ref{fig:Motivating}. The columns correspond to the time snapshots. The colorbar at the bottom shows the marginal PDF values. The $\theta_i$ are in rad, the $\omega_i$ are in rad/s.}}
+\caption{\small{Time evolution of the $(\theta_{i},\omega_{i})$ bivariate marginal PDFs of the generator $i=1,\hdots,5$, for the Kron-reduced IEEE 14 bus simulation setup \textbf{Case I} described in Sec. \ref{subsec:NumSimIEEEBus}. The five rows above correspond to the five generator nodes; these are buses 1, 2, 3, 6 and 8 in Fig. \ref{fig:Motivating}. The columns correspond to the time snapshots. The colorbar at the bottom shows the marginal PDF values. The $\theta_i$ are in rad, the $\omega_i$ are in rad/s.}}
 \vspace*{-0.1in}
 \label{fig:IEEE14marginalsCase0}
 \end{figure*}
@@ -565,7 +565,7 @@ To illustrate the proposed computational framework, we next provide two numerica
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.9\linewidth]{IEEE14marginalsCase1.png}
-\caption{\small{Time evolution of the $(\theta_{i},\omega_{i})$ bivariate marginal PDFs of the generator $i=1,\hdots,5$, for the Kron-reduced IEEE 14 bus simulation setup \textbf{Case II} described in Sec. \ref{subsec:NumSimIEEEBus}. The $5$ rows above correspond to the $5$ generator nodes; these are buses 1, 2, 3, 6 and 8 in Fig. \ref{fig:Motivating}. The columns correspond to the time snapshots. The colorbar at the bottom shows the marginal PDF values. The $\theta_i$ are in rad, the $\omega_i$ are in rad/s.}}
+\caption{\small{Time evolution of the $(\theta_{i},\omega_{i})$ bivariate marginal PDFs of the generator $i=1,\hdots,5$, for the Kron-reduced IEEE 14 bus simulation setup \textbf{Case II} described in Sec. \ref{subsec:NumSimIEEEBus}. The five rows above correspond to the five generator nodes; these are buses 1, 2, 3, 6 and 8 in Fig. \ref{fig:Motivating}. The columns correspond to the time snapshots. The colorbar at the bottom shows the marginal PDF values. The $\theta_i$ are in rad, the $\omega_i$ are in rad/s.}}
 \vspace*{-0.1in}
 \label{fig:IEEE14marginalsCase1}
 \end{figure*}
@@ -641,7 +641,7 @@ Fig. \ref{fig:IEEE14marginalsCase0} and Fig. \ref{fig:IEEE14marginalsCase1} show
 
  %Notice that in Fig. \ref{fig:IEEE14marginals}, the horizontal axes of the subfigures have periodic boundary conditions, i.e., $(\theta_{i},\omega_{i})\in\mathbb{T}\times\mathbb{R}$ (cylinder).
 
-Fig. \ref{fig:IEEE14omegamarginalsCase12} shows the corresponding univariate $\omega_{i}$-marginal PDFs. In particular, Fig. \ref{fig:IEEE14omegamarginalsCase12}(c) helps compare the $\omega_{4}$ marginal evolution for bus 6 in the nominal (\textbf{Case I}) and post-fault (\textbf{Case II}) scenarios. Since \textbf{Case II} considers the failure of line 13, from Fig. \ref{fig:Motivating} we intuitively expect that the transient effects of this fault will be prominent for bus 6 (generator 4). Indeed, Fig. \ref{fig:IEEE14omegamarginalsCase12}(c) shows that although the $\omega_{4}$ marginals in both \textbf{Case I} and \textbf{II}, at all times have highest probability around $0$ rad/s, the post-fault marginals show larger spread or dispersion of the probability mass, as expected. That the generator 4 states in \textbf{Case II} have larger uncertainties than in \textbf{Case I}, is also visible in the bivariate marginal plots if we compare the fourth row in Fig. \ref{fig:IEEE14marginalsCase0} with the same in Fig. \ref{fig:IEEE14marginalsCase1}.
+Fig. \ref{fig:IEEE14omegamarginalsCase12} shows the corresponding univariate $\omega_{i}$-marginal PDFs. In particular, Fig. \ref{fig:IEEE14omegamarginalsCase12}(c) helps compare the $\omega_{4}$ marginal evolution for bus 6 in the nominal (\textbf{Case I}) and post-fault (\textbf{Case II}) scenarios. Since \textbf{Case II} considers the failure of line 13, from Fig. \ref{fig:Motivating} we intuitively expect that the transient effects of this fault will be prominent for bus 6 (generator 4). Indeed, Fig. \ref{fig:IEEE14omegamarginalsCase12}(c) shows that although the $\omega_{4}$ marginals in both \textbf{Case I} and \textbf{II}, at all times have the highest probability around $0$ rad/s, the post-fault marginals show larger spread or dispersion of the probability mass, as expected. That the generator 4 states in \textbf{Case II} have larger uncertainties than in \textbf{Case I}, is also visible in the bivariate marginal plots if we compare the fourth row in Fig. \ref{fig:IEEE14marginalsCase0} with the same in Fig. \ref{fig:IEEE14marginalsCase1}.
 
 
 
@@ -722,7 +722,7 @@ With $N=2000$ random samples from the initial joint PDF \eqref{rho0synthetic}, a
 
 Fig. \ref{fig:CompTimeSynthetic} highlights that for computing high dimensional transient joint state PDFs as in here, the proposed variational framework enjoys remarkably fast computational time. Notice that constructing histograms or other conventional density estimators for the joint state PDF by making a grid over the 100 dimensional state space, is computationally prohibitive in a general purpose computer. 
 
-To depict the numerical accuracy, Fig. \ref{fig:RelErrSynthetic} plots the (time-varying) relative error between the empirical (i.e., Monte Carlo estimate) mean vector $\bm{\mu}_{k}^{\text{MC}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$, and the ``proximal mean" vector $\bm{\mu}_{k}^{\text{Prox}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$. The latter was computed using the proximal updates $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. Fig. \ref{fig:RelErrSynthetic} shows that the time varying statistics from these two computation match very well at all times.
+To depict the numerical accuracy, Fig. \ref{fig:RelErrSynthetic} plots the (time-varying) relative error between the empirical (i.e., Monte Carlo estimate) mean vector $\bm{\mu}_{k}^{\text{MC}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$, and the ``proximal mean" vector $\bm{\mu}_{k}^{\text{Prox}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$. The latter was computed using the proximal updates $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. Fig. \ref{fig:RelErrSynthetic} shows that the time-varying statistics from these two computation match very well at all times.
 
 
 
