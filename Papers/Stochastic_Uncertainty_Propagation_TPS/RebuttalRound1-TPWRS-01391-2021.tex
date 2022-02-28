@@ -245,7 +245,7 @@ At each fixed physical time $t_{k}=kh$, $k\in\mathbb{N}$, where $h$ is the fixed
 
 Having said that, we believe our technical contribution is indeed interdisciplinary in the sense it is not mere translational research. In other words, we are not simply importing ideas from a different domain and applying them to a power system problem. Instead, we make novel contributions at the (possibly unanticipated) intersection of two areas: measure-valued gradient flows and power system dynamics. The presentation of the paper reflects the same, perhaps rightfully so. Notice in particular that our presentation is bottom-up: we start from power system literature review and mention that the problem addressed in our paper was already recognized as a technical challenge in that literature. We move onto the theoretical ideas and tools much later in the manuscript, as the build up demands.
 
-We expect a significant share of the readers of this work to be power system engineers, but not exclusively so since this contribution will also be of interest to the researchers in control, optimization and applied mathematics. We do not believe this issue is exceptional for our paper since several high impact papers in the IEEE Trans. Power Systems were indeed at the intersection of these areas, and are not only well-read by the researchers from either side but these works have positively contributed toward increasing interdisciplinary research collaboration.}}
+We expect a significant share of the readers of this work to be power system engineers, but not exclusively so since this contribution will also be of interest to the researchers in control, optimization and applied mathematics. We do not believe this issue is exceptional for our paper since several high impact papers in the IEEE Trans. Power Systems were indeed at the intersection of these areas, and have positively contributed toward increasing interdisciplinary research collaboration.}}
 
 
 \noindent
@@ -269,7 +269,7 @@ Please note that in Sec. V, we have used MATPOWER and the Python-library ANDES (
 {\bf R2.5. Comments by reviewer}:\\
 {\em With regard to the point above, this reviewer would expect to see uncertainty bounds for the system dynamic response such as the trajectory of the rotor angle. Without such information, the method's usability is difficult to gauge.}
 
-{\nib \blue{ {\red{TBD.}}}}
+{\nib \blue{Thanks for this comment. \ul{The revised manuscript's newly incorporated Fig. 8 shows the statistical uncertainty bounds for the rotor angle sample paths for the simulation in Sec. V-A}. The inline text citing this figure in Sec. V-A is highlighted in blue.}}
 
 
 
@@ -356,7 +356,9 @@ We thus prefer to make plots that depict the variables as they are.}}
 {\bf R4.2. Comments by reviewer}:\\
 {\em The key contribution of this paper is that the proposed method can reduce the computation burden when solving for the transient PDF. However, no comparison is provided with existing methods. The authors should provide comparisons to the exiting approaches, for example, based on finite element discretization or other numerical methods. The test example could be performed using the 5-generator system or larger systems. Besides, referring to Figs. 8 and 9, the total computation time should be reported for a longer horizon.}
 
-{\nib \blue{ {\red{TBD.}}}}
+{\nib \blue{\ul{Regarding the comparison with existing methods}, we have provided comparison with Monte Carlo in the revised manuscript's Fig. 11 {\red{and another?? (in response to comment \textbf{R4.7})}}. The new Fig. 8 in the revised manuscript also shows the consistency for the rotor angle stochastic predictions w.r.t. Monte Carlo for the simulation reported in Sec. V-A, as requested by comment \textbf{R2.5}. Please note that performing finite element simulation for 5-generator system is a very tall order since the state space then is 10 dimensional, and even if we do a very coarse 10 discretizations per dimension, then such a simulation would require us to evolve a joint PDF over $10^{10}$ grid points. This requires dedicated high-performance computing architecture and an undertaking well beyond the scope of this paper. This also explains why the state-of-the-art for direct computation of transient joint PDF in power systems literature remains single-machine-infinite-bus $(n=1)$ as in the 2013 ref. [45] which indeed performed the finite element simulation with a two dimensional discretization, and mentioned the difficulty of scaling this computational approach for even moderately large sized systems.
+
+\ul{Regarding the computational time for longer horizon}, {\red{TBD}}}}
 
 
 \noindent

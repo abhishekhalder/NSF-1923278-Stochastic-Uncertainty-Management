@@ -11,6 +11,7 @@ from pylab import rcParams
 from matplotlib.patches import FancyArrowPatch
 from mpl_toolkits.mplot3d import proj3d
 from scipy.interpolate import interp1d
+from fractions import Fraction as frac
 
 #====================================================
 # Make plots beautiful
@@ -60,33 +61,33 @@ fig = plt.figure(1, figsize=fig_size)  # figsize accepts only inches.
 # Computational time plot [IEEE 14 bus 5 gen, Case I and Case II]
 # =============================================================================
 Time_Synthetic = np.loadtxt("TimeSyntheticIEEE14bus.txt")
-CompTime_Synthetic_Case1 = np.loadtxt("case0_norminal_ComptimeSytheticIEEE14bus.txt")
-CompTime_Synthetic_Case2 = np.loadtxt("case1_line_13_failure_ComptimeSytheticIEEE14bus.txt")
+# CompTime_Synthetic_Case1 = np.loadtxt("case0_norminal_ComptimeSytheticIEEE14bus.txt")
+# CompTime_Synthetic_Case2 = np.loadtxt("case1_line_13_failure_ComptimeSytheticIEEE14bus.txt")
 
-fig = plt.figure()
-ax = fig.add_subplot(1, 1, 1)
+# fig = plt.figure()
+# ax = fig.add_subplot(1, 1, 1)
 
-ax.semilogy(Time_Synthetic, CompTime_Synthetic_Case1,'-', color='b', lw=1.5, alpha=0.7,label=r"Case I")
-ax.semilogy(Time_Synthetic, CompTime_Synthetic_Case2,':', color='r', lw=1.5, alpha=0.7,label=r"Case II")
+# ax.semilogy(Time_Synthetic, CompTime_Synthetic_Case1,'-', color='b', lw=1.5, alpha=0.7,label=r"Case I")
+# ax.semilogy(Time_Synthetic, CompTime_Synthetic_Case2,':', color='r', lw=1.5, alpha=0.7,label=r"Case II")
 
-# ax.set_ylim(10**-3, 6*10**-2)
+# # ax.set_ylim(10**-3, 6*10**-2)
 
-ax.tick_params(direction='in',which='both')
-#  # axx.xaxis.tick_top()
-ax.grid(True,which="both",ls="-", color='0.75')
-# # axx2.grid(True,which="both",ls="-", color='0.75')
-ax.tick_params(axis='both', labelsize=18)
+# ax.tick_params(direction='in',which='both')
+# #  # axx.xaxis.tick_top()
+# ax.grid(True,which="both",ls="-", color='0.75')
+# # # axx2.grid(True,which="both",ls="-", color='0.75')
+# ax.tick_params(axis='both', labelsize=18)
 
 
-ax.set_ylabel(r"Computational time [s]")
-ax.set_xlabel(r"Physical time $t=kh$ [s]")
-# # # axx.yaxis.set_label_coords(-0.125,-0.05)
+# ax.set_ylabel(r"Computational time [s]")
+# ax.set_xlabel(r"Physical time $t=kh$ [s]")
+# # # # axx.yaxis.set_label_coords(-0.125,-0.05)
 
-ax.legend(markerscale=1.5, numpoints=1,  ncol=1, bbox_to_anchor=(1.005, 1), frameon=False, prop={'size': 10.5})
-fig.set_size_inches(10.2, 6.2)
+# ax.legend(markerscale=1.5, numpoints=1,  ncol=1, bbox_to_anchor=(1.005, 1), frameon=False, prop={'size': 10.5})
+# fig.set_size_inches(10.2, 6.2)
 
-#plt.savefig('ComputationalTimeSynthetic50Gen.png', dpi=400)
-plt.savefig('ComputationalTimeSyntheticIEEE14busCase1and2combined.png', dpi=400)
+# #plt.savefig('ComputationalTimeSynthetic50Gen.png', dpi=400)
+# plt.savefig('ComputationalTimeSyntheticIEEE14busCase1and2combined.png', dpi=400)
 
 # =============================================================================
 # Computational time plot [50 gen synthetic]
@@ -720,11 +721,105 @@ plt.savefig('ComputationalTimeSyntheticIEEE14busCase1and2combined.png', dpi=400)
 
 # plt.savefig('Case0Case1Combined_Gen4_OmegaMarginals.png', dpi=300)
 
+# =============================================================================
+# Rotor angle uncertainty bound plots (IEEE 14 case study)
+# =============================================================================
+
+# Case 0
+# fCount = len(glob.glob('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/code/case0_norminal_IEEE14BusGenIdx[1-5]theta.txt'))
+# theta_files = glob.iglob('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/code/case0_norminal_IEEE14BusGenIdx[1-5]theta.txt')
+
+fCount = len(glob.glob('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/code/case1_line_13_failure_IEEE14BusGenIdx[1-5]theta.txt'))
+theta_files = glob.iglob('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/code/case1_line_13_failure_IEEE14BusGenIdx[1-5]theta.txt')
+# Mean_theta_files = glob.iglob('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/code/case1_line_13_failure_IEEE14bus_Mean[1-5]theta.txt')
+
+
+fig, axs = plt.subplots(fCount,1,sharex=True, sharey=True)
+axs = axs.ravel()
+
+# fig = plt.figure()
+# ax = fig.add_subplot(1, 1, 1)
+
+colors = ['crimson', 'y', 'g', 'b', 'k']
+
+t_vec = np.insert(Time_Synthetic,0,0.0,axis=0)
+ticklen = np.pi
+
+names=["Generator 1",
+ "Generator 2",
+ "Generator 3", 
+ "Generator 4",
+ "Generator 5"
+ ]
+
+patches=[]
+for i in range(5):
+    patches.append(mpatches.Patch(color=colors[i], label=names[i], alpha=myalphavalue))
+
+lgnd=axs[0].legend(handles=patches[0:7], bbox_to_anchor=(0.5,1.3), loc='center', frameon=False, ncol=5,columnspacing=1.0,labelspacing=0.2, handletextpad=0.2, handlelength=1,fancybox=False, shadow=False)
+
+def pi_axis_formatter(val, pos, denomlim=10, pi=r'\pi'):
+    """
+    format label properly
+    for example: 0.6666 pi --> 2π/3
+               : 0      pi --> 0
+               : 0.50   pi --> π/2  
+    """
+    minus = "-" if val < 0 else ""
+    val = abs(val)
+    ratio = frac(val/np.pi).limit_denominator(denomlim)
+    n, d = ratio.numerator, ratio.denominator
+    
+    fmt2 = "%s" % d 
+    if n == 0:
+        fmt1 = "0"
+    elif n == 1:
+        fmt1 = pi
+    else:
+        fmt1 = r"%s%s" % (n,pi)
+        
+    fmtstring = "$" + minus + (fmt1 if d == 1 else r"{%s}/{%s}" % (fmt1, fmt2)) + "$"
+    
+    return fmtstring
+
+numel_t = size(arange(0,1001,30))
+
+for fID in range(fCount):
+    theta_now = np.loadtxt(next(theta_files))
+    # Mean_theta_now = np.loadtxt(next(Mean_theta_files))
+    boxplot_dict = axs[fID].boxplot(theta_now[:,0:1001:30], showfliers=False, patch_artist=True,
+            boxprops=dict(facecolor=colors[fID], color=colors[fID]),
+            capprops=dict(color=colors[fID]),
+            whiskerprops=dict(color=colors[fID]),
+            flierprops=dict(color=colors[fID], markeredgecolor=colors[fID]),
+            medianprops=dict(linestyle='none'))
+    for b in boxplot_dict['boxes']:
+        b.set_alpha(myalphavalue)
+    axs[fID].plot(1+(numel_t-1)*t_vec,theta_now.mean(axis=0),'-', color=colors[fID], lw=1.2) 
+    # axs[fID].plot(1+(numel_t-1)*t_vec,Mean_theta_now,':', color=colors[fID], lw=1.2)   
+    axs[fID].set_ylim(-0.2, 6.5)
+    axs[fID].tick_params(direction='in',which='both')
+    axs[fID].yaxis.set_major_formatter(FuncFormatter(pi_axis_formatter))
+    axs[fID].yaxis.set_major_locator(MultipleLocator(base=ticklen))
+    axs[fID].tick_params(axis='both', labelsize=18)
+    axs[fID].set_ylabel(r"$\theta$" f"$_{fID+1}$ [rad]")
+    axs[fID].set_xticks([0, numel_t])
+    axs[fID].set_xticklabels([0, 1])
+    axs[fID].axis('tight')
+
+axs[fID].set_xlabel(r"Time $t$ [s]")
+
+# # ax.grid(True,which="both",ls="-", color='0.75')
+# # # axx2.grid(True,which="both",ls="-", color='0.75')
 
 
 
 
+# # # axx.legend(markerscale=1.5, numpoints=1,  ncol=1, bbox_to_anchor=(1.005, 1), frameon=False, prop={'size': 10.5})
+fig.set_size_inches(10.2, 6.2)
 
+#plt.savefig('IEEE14_Case0_RotorAngles.png', dpi=300)
+plt.savefig('IEEE14_Case1_RotorAngles.png', dpi=300)
 
 
 

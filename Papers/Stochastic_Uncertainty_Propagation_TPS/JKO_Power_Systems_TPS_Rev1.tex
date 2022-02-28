@@ -597,6 +597,15 @@ To illustrate the proposed computational framework, we next provide two numerica
 \end{figure*}
 
 
+\begin{figure*}[ht!]
+   \subfigure[Case I]{\includegraphics[width=0.49\textwidth]{IEEE14_Case0_RotorAngles.png}}
+   \hspace{\fill}
+   \subfigure[Case II]{\includegraphics[width=0.49\textwidth]{IEEE14_Case1_RotorAngles.png}}
+\caption{\small{Boxplots for the rotor angles $\theta_{i}(t)$, $i=1,\hdots,5$, for the IEEE 14 bus system simulation in Sec. \ref{subsec:NumSimIEEEBus} in the (a) nominal \textbf{Case I}, and in the post-fault \textbf{Case II} scenarios, respectively. As usual, the boxes show the respective interquartile ranges, and the whiskers show the respective minimum and maximum values. In each box plot, we have superimposed  the respective \emph{mean} rotor angle sample path.}}
+\vspace*{-0.1in}
+\label{fig:IEEE14theta}
+\end{figure*}
+
 
 
 
@@ -654,7 +663,7 @@ Fig. \ref{fig:IEEE14marginalsCase0} and Fig. \ref{fig:IEEE14marginalsCase1} show
 
  %Notice that in Fig. \ref{fig:IEEE14marginals}, the horizontal axes of the subfigures have periodic boundary conditions, i.e., $(\theta_{i},\omega_{i})\in\mathbb{T}\times\mathbb{R}$ (cylinder).
 
-Fig. \ref{fig:IEEE14omegamarginalsCase12} shows the corresponding univariate $\omega_{i}$-marginal PDFs. In particular, Fig. \ref{fig:IEEE14omegamarginalsCase12}(c) helps compare the $\omega_{4}$ marginal evolution for bus 6 in the nominal (\textbf{Case I}) and post-fault (\textbf{Case II}) scenarios. Since \textbf{Case II} considers the failure of line 13, from Fig. \ref{fig:Motivating} we intuitively expect that the transient effects of this fault will be prominent for bus 6 (generator 4). Indeed, Fig. \ref{fig:IEEE14omegamarginalsCase12}(c) shows that although the $\omega_{4}$ marginals in both \textbf{Case I} and \textbf{II}, at all times have the highest probability around $0$ rad/s, the post-fault marginals show larger spread or dispersion of the probability mass, as expected. That the generator 4 states in \textbf{Case II} have larger uncertainties than in \textbf{Case I}, is also visible in the bivariate marginal plots if we compare the fourth row in Fig. \ref{fig:IEEE14marginalsCase0} with the same in Fig. \ref{fig:IEEE14marginalsCase1}.
+Fig. \ref{fig:IEEE14omegamarginalsCase12} shows the corresponding univariate $\omega_{i}$-marginal PDFs. In particular, Fig. \ref{fig:IEEE14omegamarginalsCase12}(c) helps compare the $\omega_{4}$ marginal evolution for bus 6 in the nominal (\textbf{Case I}) and post-fault (\textbf{Case II}) scenarios. Since \textbf{Case II} considers the failure of line 13, from Fig. \ref{fig:Motivating} we intuitively expect that the transient effects of this fault will be prominent for bus 6 (generator 4). Indeed, Fig. \ref{fig:IEEE14omegamarginalsCase12}(c) shows that although the $\omega_{4}$ marginals in both \textbf{Case I} and \textbf{II}, at all times have the highest probability around $0$ rad/s, the post-fault marginals show larger spread or dispersion of the probability mass, as expected. That the generator 4 states in \textbf{Case II} have larger uncertainties than in \textbf{Case I}, is also visible in the bivariate marginal plots if we compare the fourth row in Fig. \ref{fig:IEEE14marginalsCase0} with the same in Fig. \ref{fig:IEEE14marginalsCase1}. {\blue{The statistical uncertainties in the rotor angles are shown in Fig. \ref{fig:IEEE14theta} for both \textbf{Case I} and \textbf{Case II}.}}
 
 
 
