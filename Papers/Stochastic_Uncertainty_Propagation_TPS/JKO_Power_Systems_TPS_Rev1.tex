@@ -601,7 +601,7 @@ To illustrate the proposed computational framework, we next provide two numerica
    \subfigure[Case I]{\includegraphics[width=0.49\textwidth]{IEEE14_Case0_RotorAngles.png}}
    \hspace{\fill}
    \subfigure[Case II]{\includegraphics[width=0.49\textwidth]{IEEE14_Case1_RotorAngles.png}}
-\caption{\small{Boxplots for the rotor angles $\theta_{i}(t)$, $i=1,\hdots,5$, for the IEEE 14 bus system simulation in Sec. \ref{subsec:NumSimIEEEBus} in the (a) nominal \textbf{Case I}, and in the post-fault \textbf{Case II} scenarios, respectively. As usual, the boxes show the respective interquartile ranges, and the whiskers show the respective minimum and maximum values. In each box plot, we have superimposed  the respective \emph{mean} rotor angle sample path.}}
+\caption{\small{Boxplots for the rotor angles $\theta_{i}(t)$, $i=1,\hdots,5$, for the IEEE 14 bus system simulation in Sec. \ref{subsec:NumSimIEEEBus} in the (a) nominal \textbf{Case I}, and in the (b) post-fault \textbf{Case II} scenarios, respectively. As usual, the boxes show the respective interquartile ranges, and the whiskers show the respective minimum and maximum values. In each box plot, we have superimposed  the respective \emph{mean} rotor angle sample path.}}
 \vspace*{-0.1in}
 \label{fig:IEEE14theta}
 \end{figure*}
@@ -736,15 +736,36 @@ and following \cite[Sec. 5]{dorfler2012synchronization}, randomly generate the p
 \centering
 \includegraphics[width=0.95\linewidth]{RelativeErrorMeanMCVersusProxSynthetic50Gen.png}
 \caption{\small{The relative error between the empirical mean (i.e., Monte Carlo estimate) $\bm{\mu}_{k}^{\text{MC}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$, and the mean $\bm{\mu}_{k}^{\text{Prox}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$ obtained using the proximal updates of the joint state PDFs, for the simulation set up in Sec. \ref{subsec:NumSimSynthetic}.}}
-\vspace*{-0.2in}
+\vspace*{-0.15in}
 \label{fig:RelErrSynthetic}
+\end{figure}
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.95\linewidth]{RelErrCovMCvsProxSythetic50Gen.png}
+\caption{\small{The normalized Bures-Wasserstein distance $d_{\rm{BW}}(\cdot,\cdot)$ between the empirical covariance  (i.e., Monte Carlo estimate) ${\rm{Cov}}^{\rm{MC}}\in\mathbb{R}^{100\times 100}$, and the ensemble covariance ${\rm{Cov}}^{\rm{Prox}}\in\mathbb{R}^{100\times 100}$ obtained using the proximal updates of the joint state PDFs, for the simulation set up in Sec. \ref{subsec:NumSimSynthetic}. The normalization is w.r.t. $\sqrt{{\rm{trace}}\left({\rm{Cov}}^{\rm{MC}}\right)}$.}}
+\vspace*{-0.2in}
+\label{fig:RelErrCovSynthetic}
+\end{figure}
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.95\linewidth]{WassMCvsProxSythetic50Gen.png}
+\caption{\small{The 2-Wasserstein distance between the empirical joint PDF (i.e., Monte Carlo estimate) $\rho^{\rm{MC}}$, and the proximal update $\varrho^{k}$ obtained using the proposed proximal algorithm, for the simulation set up in Sec. \ref{subsec:NumSimSynthetic}.}}
+\vspace*{-0.2in}
+\label{fig:WassJointPDFSynthetic}
 \end{figure}
 
 With $N=2000$ random samples from the initial joint PDF \eqref{rho0synthetic}, and with the aforesaid randomly generated parameters, we employed the procedure detailed in Sec. \ref{sec:ProxAlgo} for propagating $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. As in Sec. \ref{subsec:NumSimIEEEBus}, we used $h=10^{-3}$, $\varepsilon = 0.05$, $\delta = 10^{-3}$, $\ell_{\max} = 300$ in Algorithm \ref{algo:KineticProx}.
 
 Fig. \ref{fig:CompTimeSynthetic} highlights that for computing high dimensional transient joint state PDFs as in here, the proposed variational framework enjoys remarkably fast computational time. Notice that constructing histograms or other conventional density estimators for the joint state PDF by making a grid over the 100 dimensional state space, is computationally prohibitive in a general purpose computer. 
 
-To depict the numerical accuracy, Fig. \ref{fig:RelErrSynthetic} plots the (time-varying) relative error between the empirical (i.e., Monte Carlo estimate) mean vector $\bm{\mu}_{k}^{\text{MC}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$, and the ``proximal mean" vector $\bm{\mu}_{k}^{\text{Prox}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$. The latter was computed using the proximal updates $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. Fig. \ref{fig:RelErrSynthetic} shows that the time-varying statistics from these two computation match very well at all times.
+To depict the numerical accuracy, Fig. \ref{fig:RelErrSynthetic} plots the (time-varying) relative error between the empirical (i.e., Monte Carlo estimate) mean vector $\bm{\mu}_{k}^{\text{MC}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$, and the ``proximal mean" vector $\bm{\mu}_{k}^{\text{Prox}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$. The latter was computed using the proximal updates $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. {\blue{Likewise, Fig. \ref{fig:RelErrCovSynthetic} plots the time-varying normalized Bures-Wasserstein distance $d_{\rm{BW}}(\cdot,\cdot)$ between the empirical covariance matrix (i.e., Monte Carlo estimate) ${\rm{Cov}}^{\rm{MC}}\in\mathbb{R}^{100\times 100}$, and the ensemble covariance matrix ${\rm{Cov}}^{\rm{Prox}}\in\mathbb{R}^{100\times 100}$ obtained using the proximal updates. The unnormalized Bures-Wasserstein distance \cite{bhatia2019bures} given by 
+\begin{align*}
+&d_{\rm{BW}}(\rm{Cov}^{\rm{MC}},\rm{Cov}^{\rm{Prox}}) := \left[\operatorname{trace}\left(\rm{Cov}^{\rm{MC}}+\rm{Cov}^{\rm{Prox}}\right)\right.\\
+&\qquad\qquad \left.-2\operatorname{trace}\left(\left(\sqrt{\rm{Cov}^{\rm{MC}}}\:\rm{Cov}^{\rm{Prox}}\:\sqrt{\rm{Cov}^{\rm{MC}}}\right)^{\frac{1}{2}}\right)\right]^{\frac{1}{2}},	
+\end{align*}
+is a metric on the cone of symmetric positive definite matrices such as the covariance matrices, and can be seen as an absolute error between the covariances. Thus, Fig. \ref{fig:RelErrCovSynthetic} can be viewed as a relative error curve between the covariances. In summary, Figs. \ref{fig:RelErrSynthetic} and \ref{fig:RelErrCovSynthetic} show that the time-varying statistics between the Monte Carlo and the proposed proximal computation remain close at all times.}}
+
+{\blue{Since it is not possible to \emph{a priori} determine the dimension of the sufficient statistic of the transient joint state PDFs, Fig. \ref{fig:WassJointPDFSynthetic} shows the 2-Wasserstein metric between the empirical joint PDF (i.e., Monte Carlo estimate) $\rho^{\rm{MC}}$, and the proximal update $\varrho^{k}$. In other words, Fig. \ref{fig:WassJointPDFSynthetic} can be viewed as a nonparametric absolute error curve between $\rho^{\rm{MC}}$ and $\varrho^{k}$. Each snapshot value in Fig. \ref{fig:WassJointPDFSynthetic} is computed by solving the well-known optimal transport linear program (see e.g., \cite[Sec. 4.2-4.3]{halder2014probabilistic}, \cite[Ch. 3]{peyre2019computational}) using the corresponding time-varying weighted point clouds.}}
 
 
 
@@ -1070,7 +1091,22 @@ K.V.~Mardia, and P.E.~Jupp, \emph{Directional Statistics}, Wiley, 1st edition, 1
 R.D.~Zimmerman, C.E.~Murillo-S{\'a}nchez, and R.J. Thomas, ``MATPOWER: Steady-state Operations, Planning, and Analysis Tools for Power Systems Research and Education'', \emph{IEEE Transactions on Power Systems},  Vol. 26, No. 1, pp. 12--19, 2010.
 
 \bibitem{cui2021andes}
-H.~Cui, F.~Li, and K.~Tomsovic, ``Hybrid Symbolic-Numeric Framework for Power System Modeling and Analysis,'' \emph{IEEE Transactions on Power Systems}, vol. 36, no. 2, pp. 1373-1384, 2021.
+H.~Cui, F.~Li, and K.~Tomsovic, ``Hybrid Symbolic-Numeric Framework for Power System Modeling and Analysis'', \emph{IEEE Transactions on Power Systems}, Vol. 36, No. 2, pp. 1373-1384, 2021.
+
+% == Bures-Wasserstein ====
+
+{\blue{\bibitem{bhatia2019bures}
+R.~Bhatia, T.~Jain, and Y.~Lim, ``On the Bures--Wasserstein Distance between Positive Definite Matrices", \emph{Expositiones Mathematicae}, Vol. 37, No. 2, pp. 165--191, 2019.
+
+\bibitem{halder2014probabilistic}
+A.~Halder, and R.~Bhattacharya, ``Probabilistic Model Validation for Uncertain Nonlinear Systems", \emph{Automatica}, Vol. 50, No. 8, pp. 2038--2050, 2014.
+
+\bibitem{peyre2019computational}
+G.~Peyr{\'e}, and M.~Cuturi, ``Computational Optimal Transport: With Applications to Data Science", \emph{Foundations and Trends{\textregistered} in Machine Learning}, Vol. 11, No. 5-6, pp. 355--607, 2019.
+
+
+}}
+
 	
 \end{thebibliography}
 

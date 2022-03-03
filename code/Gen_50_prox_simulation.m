@@ -1,4 +1,4 @@
-cclose all; clear; clc;
+close all; clear; clc;
 %% Parameters
 beta = 2; % inverse temperature
 % golbal parameters 
@@ -30,7 +30,7 @@ K = K - diag(diag(K)); % zero the diagonal entries
 theta0_a = 0 ; theta0_b = 2*pi; omega0_a = -.1 ; omega0_b = .1;
 
 % parameters for proximal recursion
-nSample = 2000;                      % number of samples                                                           
+nSample = 1000;                      % number of samples                                                           
 epsilon = 0.5;                      % regularizing coefficient                                      
 h = 1e-3;                         % time step
 numSteps= 1000;                    % number of steps k, in discretization t=kh
@@ -94,6 +94,9 @@ mean_prox_omega(1,:) = sum(omega_upd(:,:,1).*rho_theta_omega_upd(:,1))/sum(rho_t
     
 mean_prox_theta(1,:) = weighted_angle_mean(theta_upd(:,:,1),rho_theta_omega_upd(:,1));
 
+numRun = 100;
+
+for r=1:numRun
 tic;
 for j=1:numSteps 
     
@@ -105,8 +108,10 @@ for j=1:numSteps
     theta_upd(:,:,j+1) = wrapTo2Pi((psi_upper_diag\xi_eta_upd(:,1:num_Oscillator,j+1)')');
     
     omega_upd(:,:,j+1) = (psi_lower_diag\xi_eta_upd(:,num_Oscillator+1:dim,j+1)')';
-        
-  %proximal update for joint PDF
+    
+    theta_omega_upd(:,:,j+1) = [theta_upd(:,:,j+1), omega_upd(:,:,j+1)];
+
+   % proximal update for joint PDF
    [rho_xi_eta_upd(:,j+1),comptime(j),niter(j)] = FixedPointIteration(beta,epsilon,h,rho_xi_eta_upd(:,j),xi_eta_upd(:,:,j),xi_eta_upd(:,:,j+1),PowerFraction(beta,xi_eta_upd(:,num_Oscillator+1:dim,j)),GradU,dim);  
     
    rho_theta_omega_upd(:,j+1) = rho_xi_eta_upd(:,j+1)*(prod(m./sigma));
@@ -115,94 +120,124 @@ for j=1:numSteps
     
    mean_prox_theta(j+1,:) = weighted_angle_mean(theta_upd(:,:,j+1),rho_theta_omega_upd(:,j+1));
 end
-toc
+toc;
 
 %% MC and proximal mean vectors
-mean_mc_omega  = mean(squeeze(omega_upd));
+% mean_mc_omega  = mean(squeeze(omega_upd));
+% 
+% mean_mc_theta = weighted_angle_mean(theta_upd,ones(nSample,1)/nSample);
+% mean_mc_omega = squeeze(mean_mc_omega);
+% mean_mc_theta = squeeze(mean_mc_theta);
+% 
+% mean_mc = [mean_mc_theta;mean_mc_omega];
+% mean_prox = [mean_prox_theta';mean_prox_omega'];
+% 
+% norm_diff_mean_mc_vs_prox = sqrt(sum((mean_mc - mean_prox).^2,1))./sqrt(sum(mean_mc.^2,1));
 
-mean_mc_theta = weighted_angle_mean(theta_upd,ones(nSample,1)/nSample);
-mean_mc_omega = squeeze(mean_mc_omega);
-mean_mc_theta = squeeze(mean_mc_theta);
+%% MC and proximal covariance
 
-mean_mc = [mean_mc_theta;mean_mc_omega];
-mean_prox = [mean_prox_theta';mean_prox_omega'];
-
-norm_diff_mean_mc_vs_prox = sqrt(sum((mean_mc - mean_prox).^2,1))./sqrt(sum(mean_mc.^2,1));
+% cov = cell(numSteps,1);
+% 
+% for j = 1:numSteps
+%     cov{j}.mc = (1/(nSample-1))*((theta_omega_upd(:,:,j))' - mean_mc(:,j)*ones(1,nSample))*((theta_omega_upd(:,:,j))' - mean_mc(:,j)*ones(1,nSample))';
+%     cov{j}.prox = (1/nSample)*((theta_omega_upd(:,:,j))' - mean_prox(:,j)*ones(1,nSample))*((theta_omega_upd(:,:,j))' - mean_prox(:,j)*ones(1,nSample))';
+% 
+%     dist_BuresWass(j) = sqrt(trace(cov{j}.mc + cov{j}.prox) - 2*trace(sqrtm((sqrtm(cov{j}.mc)*cov{j}.prox*(sqrtm(cov{j}.mc))))));
+% 
+%     RelErr_BuresWass(j) = abs(dist_BuresWass(j)/(sqrt(trace(cov{j}.mc))));
+% end
+% 
+% dist_BuresWass = (abs(dist_BuresWass))';
+% RelErr_BuresWass = RelErr_BuresWass';
 
 %% Wasserstein distance between MC and proximal joint PDFs
 
-% %W_squared = zeros(numSteps,1); % pre-allocate
-% gam = 0.5; % entropic regularization weight
-% for j=1:10:40
-%     disp(['Now doing time-step ' num2str(j)])
-%     W_squared(j) = Wasserstein(theta_omega_upd(:,:,j+1),theta_omega_upd(:,:,j+1),rho_theta_omega_upd(:,j+1),ones(nSample,1)/nSample);
-%     % W_gam_squared(j) = EntropyRegularizedWasserstein(theta_omega_upd(:,:,j+1),theta_omega_upd(:,:,j+1),rho_theta_omega_upd(:,j+1),ones(nSample,1)/nSample,gam);
+% W_squared = zeros(numSteps,1); % pre-allocate
+% % gam = 0.5; % entropic regularization weight
+% for j=1:numSteps
+%      disp(['Now doing time-step ' num2str(j)])
+%      W_squared(j) = Wasserstein(theta_omega_upd(:,:,j+1),theta_omega_upd(:,:,j+1),rho_theta_omega_upd(:,j+1),ones(nSample,1)/nSample);
+% %       W_gam_squared(j) = EntropyRegularizedWasserstein(theta_omega_upd(:,:,j+1),theta_omega_upd(:,:,j+1),rho_theta_omega_upd(:,j+1),ones(nSample,1)/nSample,gam);
 % end
+% W = sqrt(abs(nonzeros(W_squared)));
 
 %% plots
 set(groot,'defaultAxesTickLabelInterpreter','latex');  
 set(groot,'defaulttextinterpreter','latex');
 set(groot,'defaultLegendInterpreter','latex');
 
-figure(1)
-semilogy(t_vec, comptime, 'LineWidth', 2)
-set(gca,'FontSize',30)
-xlabel('Physical time $t=kh$ [s]','FontSize',30)
-ylabel('Computational time [s]','FontSize',30)
-ylim([1e-3 1.2e-2])
-YTick = [2e-3 8e-3 2e-2];
-YTickLabels = cellstr(num2str(round(log10(YTick(:))), '10^%d'));
-grid on
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-fs  = 15;
-for i=1:dim
-    if i<=num_Oscillator
-      figure(2);
-      subplot(1,num_Oscillator,i)
-      plot(mean_mc(i,1:end),'Linewidth',2)
-    
-      hold on
-      plot(mean_prox(i,1:end),'--k','Linewidth',2)
-
-      xlabel('$t$','fontsize',fs,'interpreter','latex')
-      ylabel(sprintf('$\\theta_{%d}$', i),'fontsize',fs, 'Interpreter','latex','rotation',0);
-      axis tight
-    
-    else 
-     figure(3);
-     subplot(1,num_Oscillator,i-num_Oscillator)   
-     plot(mean_mc(i,1:end),'Linewidth',2)
-    
-     hold on
-    
-     plot(mean_prox(i,1:end),'--k','Linewidth',2)
-     xlabel('$t$','fontsize',fs,'interpreter','latex')
-     ylabel(sprintf('$\\omega_{%d}$', i-num_Oscillator),'fontsize',fs, 'Interpreter','latex','rotation',0);
-     axis tight
-    end 
-end
-legend('Mean MC','Mean Proximal')
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-figure(4)
-semilogy(t_vec(4:end), norm_diff_mean_mc_vs_prox(5:end),'-k','Linewidth',2)
-set(gca,'FontSize',30)
-xlabel('Physical time $t=kh$ [s]','FontSize',30)
-ylabel('Realtive error $\frac{\|\mu_{\rm{MC}}-\mu_{\rm{Prox}}\|_{2}}{\|\mu_{\rm{MC}}\|_{2}}$','FontSize',30,'interpreter','latex')
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% figure(5)
-% semilogy(t_vec, sqrt(W_gam_squared),'-k','Linewidth',2)
+% figure(1)
+% semilogy(t_vec, comptime, 'LineWidth', 2)
 % set(gca,'FontSize',30)
 % xlabel('Physical time $t=kh$ [s]','FontSize',30)
-% ylabel('2-Wasserstein distance $\frac{\|\mu_{\rm{MC}}-\mu_{\rm{Prox}}\|_{2}}{\|\mu_{\rm{MC}}\|_{2}}$','FontSize',30,'interpreter','latex')
+% ylabel('Computational time [s]','FontSize',30)
+% ylim([1e-3 1.2e-2])
+% YTick = [2e-3 8e-3 2e-2];
+% YTickLabels = cellstr(num2str(round(log10(YTick(:))), '10^%d'));
+% grid on
 
-%% save simulation data
-textfilename = 'TimeSynthetic50Gen.txt';
-dlmwrite(textfilename, t_vec,'delimiter','\t','precision','%.64f');
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-textfilename = 'ComptimeSythetic50Gen.txt';
-dlmwrite(textfilename, comptime,'delimiter','\t','precision','%.64f');
+% fs  = 15;
+% for i=1:dim
+%     if i<=num_Oscillator
+%       figure(2);
+%       subplot(1,num_Oscillator,i)
+%       plot(mean_mc(i,1:end),'Linewidth',2)
+%     
+%       hold on
+%       plot(mean_prox(i,1:end),'--k','Linewidth',2)
+% 
+%       xlabel('$t$','fontsize',fs,'interpreter','latex')
+%       ylabel(sprintf('$\\theta_{%d}$', i),'fontsize',fs, 'Interpreter','latex','rotation',0);
+%       axis tight
+%     
+%     else 
+%      figure(3);
+%      subplot(1,num_Oscillator,i-num_Oscillator)   
+%      plot(mean_mc(i,1:end),'Linewidth',2)
+%     
+%      hold on
+%     
+%      plot(mean_prox(i,1:end),'--k','Linewidth',2)
+%      xlabel('$t$','fontsize',fs,'interpreter','latex')
+%      ylabel(sprintf('$\\omega_{%d}$', i-num_Oscillator),'fontsize',fs, 'Interpreter','latex','rotation',0);
+%      axis tight
+%     end 
+% end
+% legend('Mean MC','Mean Proximal')
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% figure(4)
+% semilogy(t_vec(4:end), norm_diff_mean_mc_vs_prox(5:end),'-k','Linewidth',2)
+% set(gca,'FontSize',30)
+% xlabel('Physical time $t=kh$ [s]','FontSize',30)
+% ylabel('Realtive error $\frac{\|\mu_{\rm{MC}}-\mu_{\rm{Prox}}\|_{2}}{\|\mu_{\rm{MC}}\|_{2}}$','FontSize',30,'interpreter','latex')
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% figure(5)
+% % %semilogy(sqrt(W_gam_squared),'-k','Linewidth',2)
+% plot(W,'-ok','Linewidth',2)
+% set(gca,'FontSize',30)
+% xlabel('Physical time $t=kh$ [s]','FontSize',30)
+% ylabel('2-Wasserstein distance $W_{2}(\rho_{\rm{MC}},\rho_{\rm{Prox}})$','FontSize',30,'interpreter','latex')
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% figure(6)
+% plot(RelErr_BuresWass,'-ok','Linewidth',2)
+% set(gca,'FontSize',30)
+% xlabel('Physical time $t=kh$ [s]','FontSize',30)
+% ylabel('Bures-Wasserstein distance $d_{{\rm{BW}}}(\Sigma_{\rm{MC}},\Sigma_{\rm{Prox}})$','FontSize',30,'interpreter','latex')
 
-textfilename = 'RelErrMeanVectorMCvsProxSythetic50Gen.txt';
-dlmwrite(textfilename, norm_diff_mean_mc_vs_prox,'delimiter','\t','precision','%.64f');
+% %% save simulation data
+% textfilename = 'TimeSynthetic50Gen.txt';
+% dlmwrite(textfilename, t_vec,'delimiter','\t','precision','%.64f');
+% 
+% textfilename = 'ComptimeSythetic50Gen.txt';
+% dlmwrite(textfilename, comptime,'delimiter','\t','precision','%.64f');
+% 
+% textfilename = 'RelErrMeanVectorMCvsProxSythetic50Gen.txt';
+% dlmwrite(textfilename, norm_diff_mean_mc_vs_prox,'delimiter','\t','precision','%.64f');
+% 
+% textfilename = 'RelErrCovMCvsProxSythetic50Gen.txt';
+% dlmwrite(textfilename, RelErr_BuresWass','delimiter','\t','precision','%.64f');
+% 
+% textfilename = 'WassBetweenMCvsProxSythetic50Gen.txt';
+% dlmwrite(textfilename, W,'delimiter','\t','precision','%.64f');
