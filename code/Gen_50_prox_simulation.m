@@ -30,10 +30,11 @@ K = K - diag(diag(K)); % zero the diagonal entries
 theta0_a = 0 ; theta0_b = 2*pi; omega0_a = -.1 ; omega0_b = .1;
 
 % parameters for proximal recursion
-nSample = 1000;                      % number of samples                                                           
+nSample = 2000;                      % number of samples                                                           
 epsilon = 0.5;                      % regularizing coefficient                                      
 h = 1e-3;                         % time step
-numSteps= 1000;                    % number of steps k, in discretization t=kh
+tfinal = 1;                        % final time
+numSteps= tfinal/h;                    % number of steps k, in discretization t=kh
 cc = 1e7;
 t_vec = h*(1:1:numSteps);
 %% propagate joint PDF
@@ -95,8 +96,10 @@ mean_prox_omega(1,:) = sum(omega_upd(:,:,1).*rho_theta_omega_upd(:,1))/sum(rho_t
 mean_prox_theta(1,:) = weighted_angle_mean(theta_upd(:,:,1),rho_theta_omega_upd(:,1));
 
 numRun = 100;
+toc_50gen = zeros(numRun,1);
 
 for r=1:numRun
+disp(['Now doing run ' num2str(r)])
 tic;
 for j=1:numSteps 
     
@@ -112,16 +115,17 @@ for j=1:numSteps
     theta_omega_upd(:,:,j+1) = [theta_upd(:,:,j+1), omega_upd(:,:,j+1)];
 
    % proximal update for joint PDF
-   [rho_xi_eta_upd(:,j+1),comptime(j),niter(j)] = FixedPointIteration(beta,epsilon,h,rho_xi_eta_upd(:,j),xi_eta_upd(:,:,j),xi_eta_upd(:,:,j+1),PowerFraction(beta,xi_eta_upd(:,num_Oscillator+1:dim,j)),GradU,dim);  
+   [rho_xi_eta_upd(:,j+1),comptime(r,j),niter(j)] = FixedPointIteration(beta,epsilon,h,rho_xi_eta_upd(:,j),xi_eta_upd(:,:,j),xi_eta_upd(:,:,j+1),PowerFraction(beta,xi_eta_upd(:,num_Oscillator+1:dim,j)),GradU,dim);  
     
    rho_theta_omega_upd(:,j+1) = rho_xi_eta_upd(:,j+1)*(prod(m./sigma));
 
-   mean_prox_omega(j+1,:) = sum(omega_upd(:,:,j+1).*rho_theta_omega_upd(:,j+1))/sum(rho_theta_omega_upd(:,j+1));  
+   %mean_prox_omega(j+1,:) = sum(omega_upd(:,:,j+1).*rho_theta_omega_upd(:,j+1))/sum(rho_theta_omega_upd(:,j+1));  
     
-   mean_prox_theta(j+1,:) = weighted_angle_mean(theta_upd(:,:,j+1),rho_theta_omega_upd(:,j+1));
+   %mean_prox_theta(j+1,:) = weighted_angle_mean(theta_upd(:,:,j+1),rho_theta_omega_upd(:,j+1));
 end
-toc;
-
+toc_50gen(r) = toc;
+end
+total_comptime_50gen = sum(comptime,2);
 %% MC and proximal mean vectors
 % mean_mc_omega  = mean(squeeze(omega_upd));
 % 
@@ -241,3 +245,6 @@ set(groot,'defaultLegendInterpreter','latex');
 % 
 % textfilename = 'WassBetweenMCvsProxSythetic50Gen.txt';
 % dlmwrite(textfilename, W,'delimiter','\t','precision','%.64f');
+
+textfilename = 'total_comptime_50gen.txt';
+dlmwrite(textfilename, 60*total_comptime_50gen,'delimiter','\t','precision','%.64f');

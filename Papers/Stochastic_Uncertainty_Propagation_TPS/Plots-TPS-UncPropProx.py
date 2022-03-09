@@ -873,57 +873,26 @@ Time_Synthetic = np.loadtxt("TimeSyntheticIEEE14bus.txt")
 # PLOT hist of loger horizon total computational time
 ################################################################################ 
 
-# alpha_param = np.loadtxt('alpha.txt')
-# beta_param = np.loadtxt('beta.txt')
+TotalComptime_IEEE14busCaseI = np.loadtxt('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/code/total_comptime_IEEE14bus_case0_nominal.txt')
+TotalComptime_IEEE14busCaseII = np.loadtxt('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/code/total_comptime_IEEE14bus_case1_line_13_failure.txt')
+TotalComptime_50gen = np.loadtxt('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/code/total_comptime_50gen.txt')
 
-# fig, (ax1, ax2) = plt.subplots(1,2, sharey=True)
 
-# wt_alpha = np.ones_like(alpha_param)/float(len(alpha_param))
-# ax1.hist(alpha_param, 50, weights=wt_alpha, normed=0, facecolor='dodgerblue', alpha=0.6)
-# ax1.get_xaxis().tick_bottom()
-# ax1.get_yaxis().tick_left()
-# ax1.tick_params(axis='x', direction='out')
-# ax1.yaxis.set_ticklabels([])
-# ax1.spines['top'].set_visible(False)
-# ax1.spines['right'].set_visible(False)
-# ax1.tick_params(
-#     axis='x',          # changes apply to the x-axis
-#     which='both',      # both major and minor ticks are affected
-#     bottom='on',      # ticks along the bottom edge are off
-#     top='off',         # ticks along the top edge are off
-#     labelbottom='off') # labels along the bottom edge are off
-# ax1.tick_params(
-#     axis='y',          # changes apply to the x-axis
-#     which='both',      # both major and minor ticks are affected
-#     left='on',      # ticks along the bottom edge are off
-#     right='off',         # ticks along the top edge are off
-#     labelbottom='off') # labels along the bottom edge are off
-# ax1.spines['bottom'].set_position(('outward', 5))
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1)
+ax.plot(range(1,len(TotalComptime_IEEE14busCaseI)+1),TotalComptime_IEEE14busCaseI,'bo',markerfacecolor='none',label='IEEE 14 bus, Case I')
+ax.plot(range(1,len(TotalComptime_IEEE14busCaseII)+1),TotalComptime_IEEE14busCaseII,'rd',markerfacecolor='none',label='IEEE 14 bus, Case II')
+ax.plot(range(1,len(TotalComptime_50gen)+1),TotalComptime_50gen,'ks',markerfacecolor='none',label='50 generator system')
 
-# wt_beta = np.ones_like(beta_param)/float(len(beta_param))
-# ax2.hist(beta_param, 50, weights=wt_beta, normed=0, facecolor='dodgerblue', alpha=0.6)
-# ax2.get_xaxis().tick_bottom()
-# ax2.tick_params(axis='x', direction='out')
-# ax2.spines['top'].set_visible(False)
-# ax2.spines['left'].set_visible(False)
-# ax2.spines['right'].set_visible(False)
-# ax2.tick_params(
-#     axis='x',          # changes apply to the x-axis
-#     which='both',      # both major and minor ticks are affected
-#     bottom='on',      # ticks along the bottom edge are off
-#     top='off',         # ticks along the top edge are off
-#     labelbottom='off') # labels along the bottom edge are off
-# ax2.tick_params(
-#     axis='y',          # changes apply to the x-axis
-#     which='both',      # both major and minor ticks are affected
-#     left='off',      # ticks along the bottom edge are off
-#     right='off',         # ticks along the top edge are off
-#     labelbottom='off') # labels along the bottom edge are off
-# ax2.spines['bottom'].set_position(('outward', 5))
-# # resize the figure
-# fig.set_size_inches(7.5, 5)
-# ax2.text(0.5, -0.5, r'$\beta$', fontsize=16)
-# fig.savefig("alphabeta.pdf")
+ax.tick_params(axis='both', labelsize=18)
+ax.set_xlabel(r"Simulation instances")
+ax.set_ylabel(r"Total computational time [s]")
+ax.set_xticks([1, 20, 40, 60, 80, 100])
+
+lgnd=ax.legend(bbox_to_anchor=(0.5,1.1), loc='upper center', frameon=False, ncol=3,columnspacing=1.0,labelspacing=0.2, handletextpad=0.2, handlelength=1,fancybox=False, shadow=False)
+
+
+fig.savefig("TotalCompTimeForSimulating1MinHist.png", dpi=300)
 
 
 

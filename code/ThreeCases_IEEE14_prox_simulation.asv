@@ -17,12 +17,12 @@ bus_init = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertain
 % case2_time_series_
 
 % parameters for the IEEE 14 bus system
-Y_reduced_imag = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/Data/case1_line_13_failure_Y_reduced_imag_part.csv');
-Y_reduced_real = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/Data/case1_line_13_failure_Y_reduced_real_part.csv');
+Y_reduced_imag = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/Data/case0_norminal_Y_reduced_imag_part.csv');
+Y_reduced_real = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/Data/case0_norminal_Y_reduced_real_part.csv');
 % reduced admittance matrix
 Y_reduced = complex(Y_reduced_real,Y_reduced_imag);
 
-gen_param = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/Data/case1_line_13_failure_gen_parameters.csv');
+gen_param = readmatrix('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/Data/case0_norminal_gen_parameters.csv');
 gen_bus_idx = gen_param(:,1);
 
 num_Oscillator = numel(gen_bus_idx); dim  = 2*num_Oscillator;
@@ -73,7 +73,8 @@ theta0_a = 0 ; theta0_b = 2*pi; omega0_a = -.1 ; omega0_b = .1;
 nSample = 1000;                      % number of samples                                                           
 epsilon = 0.5;                      % regularizing coefficient                                      
 h = 1e-3;                         % time step
-numSteps = 1e3;                    % number of steps k, in discretization t=kh
+tfinal = 10;                        % final time
+numSteps= tfinal/h;                    % number of steps k, in discretization t=kh
 cc = 1e7;
 t_vec = h*(1:1:numSteps);
 %% popagate joint PDF
@@ -141,6 +142,11 @@ rho_xi_eta_upd = zeros(nSample,numSteps+1);
 rho_xi_eta_upd(:,1) = rho_xi_eta_0/sum(rho_xi_eta_0);
 mean_prox(1,:) = sum(xi_eta_upd(:,:,1).*rho_xi_eta_upd(:,1))';
  
+numRun = 100;
+toc_50gen = zeros(numRun,1);
+
+for r=1:numRun
+disp(['Now doing run ' num2str(r)])
 tic;
 for j=1:numSteps
     
@@ -154,27 +160,29 @@ for j=1:numSteps
      omega_upd(:,:,j+1) = (psi_lower_diag\xi_eta_upd(:,num_Oscillator+1:dim,j+1)')';
         
     %proximal update for joint PDF
-    [rho_xi_eta_upd(:,j+1),comptime(j),niter(j)] = FixedPointIteration(beta,epsilon,h,rho_xi_eta_upd(:,j),xi_eta_upd(:,:,j),xi_eta_upd(:,:,j+1),PowerFraction(beta,xi_eta_upd(:,num_Oscillator+1:dim,j)),GradU,dim);  
+    [rho_xi_eta_upd(:,j+1),comptime(r,j),niter(j)] = FixedPointIteration(beta,epsilon,h,rho_xi_eta_upd(:,j),xi_eta_upd(:,:,j),xi_eta_upd(:,:,j+1),PowerFraction(beta,xi_eta_upd(:,num_Oscillator+1:dim,j)),GradU,dim);  
     
    rho_theta_omega_upd(:,j+1) = rho_xi_eta_upd(:,j+1)*(prod(m./sigma));
 
-   mean_prox_omega(j+1,:) = sum(omega_upd(:,:,j+1).*rho_theta_omega_upd(:,j+1))/sum(rho_theta_omega_upd(:,j+1));  
+   %mean_prox_omega(j+1,:) = sum(omega_upd(:,:,j+1).*rho_theta_omega_upd(:,j+1))/sum(rho_theta_omega_upd(:,j+1));  
     
-   mean_prox_theta(j+1,:) = weighted_angle_mean(theta_upd(:,:,j+1),rho_theta_omega_upd(:,j+1));
+   %mean_prox_theta(j+1,:) = weighted_angle_mean(theta_upd(:,:,j+1),rho_theta_omega_upd(:,j+1));
 end
-toc
+   toc_IEEE14bus_case1_line_13_failure(r) = toc;
+end
+total_comptime_IEEE14bus_case1_line_13_failure = sum(comptime,2);
 rho_theta_omega_upd(:,1) = rho_theta_omega_0;
 %% MC and proximal mean vectors
-mean_mc_omega  = mean(squeeze(omega_upd));
-
-mean_mc_theta = weighted_angle_mean(theta_upd,ones(nSample,1)/nSample);
-mean_mc_omega = squeeze(mean_mc_omega);
-mean_mc_theta = squeeze(mean_mc_theta);
-
-mean_mc = [mean_mc_theta;mean_mc_omega];
-mean_prox = [mean_prox_theta';mean_prox_omega'];
-
-norm_diff_mean_mc_vs_prox = sqrt(sum((mean_mc - mean_prox).^2,1))./sqrt(sum(mean_mc.^2,1));
+% mean_mc_omega  = mean(squeeze(omega_upd));
+% 
+% mean_mc_theta = weighted_angle_mean(theta_upd,ones(nSample,1)/nSample);
+% mean_mc_omega = squeeze(mean_mc_omega);
+% mean_mc_theta = squeeze(mean_mc_theta);
+% 
+% mean_mc = [mean_mc_theta;mean_mc_omega];
+% mean_prox = [mean_prox_theta';mean_prox_omega'];
+% 
+% norm_diff_mean_mc_vs_prox = sqrt(sum((mean_mc - mean_prox).^2,1))./sqrt(sum(mean_mc.^2,1));
 
 %% plots
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -344,18 +352,18 @@ norm_diff_mean_mc_vs_prox = sqrt(sum((mean_mc - mean_prox).^2,1))./sqrt(sum(mean
 %     end    
 % end
 %
-for j=1:num_Oscillator
-    % save univariate theta sample path data
-    %textfilename_theta1D = ['case0_norminal_IEEE14BusGenIdx' num2str(j) 'theta.txt'];
-    %dlmwrite(textfilename_theta1D, theta_upd(:,j,:),'delimiter','\t','precision','%f');
-    
-    
-    textfilename_theta1D = ['case1_line_13_failure_IEEE14BusGenIdx' num2str(j) 'theta.txt'];
-    dlmwrite(textfilename_theta1D, theta_upd(:,j,:),'delimiter','\t','precision','%f');
-    textfilename_Mean_theta1D = ['case1_line_13_failure_IEEE14bus_Mean' num2str(j) 'theta.txt'];
-    dlmwrite(textfilename_Mean_theta1D, (mean_prox_theta(j,:))','delimiter','\t','precision','%f');
-
-end
+% for j=1:num_Oscillator
+%     % save univariate theta sample path data
+%     %textfilename_theta1D = ['case0_norminal_IEEE14BusGenIdx' num2str(j) 'theta.txt'];
+%     %dlmwrite(textfilename_theta1D, theta_upd(:,j,:),'delimiter','\t','precision','%f');
+%     
+%     
+%     textfilename_theta1D = ['case1_line_13_failure_IEEE14BusGenIdx' num2str(j) 'theta.txt'];
+%     dlmwrite(textfilename_theta1D, theta_upd(:,j,:),'delimiter','\t','precision','%f');
+%     textfilename_Mean_theta1D = ['case1_line_13_failure_IEEE14bus_Mean' num2str(j) 'theta.txt'];
+%     dlmwrite(textfilename_Mean_theta1D, mean_prox_theta(:,j),'delimiter','\t','precision','%f');
+% 
+% end
 
 % %% save simulation time data
 % textfilename = 'case0_nominal_IEEE14bus_theta.txt';
@@ -366,3 +374,6 @@ end
 % 
 % textfilename = 'case0_norminal_ComptimeSytheticIEEE14bus.txt';
 % dlmwrite(textfilename, comptime,'delimiter','\t','precision','%.64f');
+
+textfilename = 'total_comptime_IEEE14bus_case1_line_13_failure.txt';
+dlmwrite(textfilename, 6*total_comptime_IEEE14bus_case1_line_13_failure,'delimiter','\t','precision','%.64f');
