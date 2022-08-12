@@ -1,0 +1,216 @@
+\documentclass[12pt,onecolumn]{IEEEtran}
+\usepackage{amsmath ,amssymb,euscript ,yfonts,psfrag,latexsym,dsfont,graphicx,bbm,color,amstext,wasysym,subfig,flushend,parskip}
+\usepackage{bm,cite,soul,url}
+\usepackage{verbatim}
+\usepackage[normalem]{ulem}
+\usepackage{amsthm}
+%\usepackage{refcheck}
+%\usepackage{showkeys}
+%\usepackage{epstopdf,hyperref,pdfsync,url}
+\graphicspath{{./},{./figures/}}
+\newcommand{\mR}{{\mathbb R}}
+\newcommand{\D}{{\mathbb D}}
+\newcommand{\E}{{\mathbb E}}
+\newcommand{\mcN}{{\mathcal N}}
+\newcommand{\mcR}{{\mathcal R}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\tr}{\operatorname{trace}}
+\newcommand{\ignore}[1]{}
+\newcommand{\mike}{\color{magenta}}
+
+\newcommand{\blue}{\color{blue}}
+\newcommand{\red}{\textcolor{red}}
+
+\newcommand{\bQ}{{\bm{Q}}}
+\newcommand{\bPi}{\bm{\Pi}}
+\newcommand{\bv}{{\bm{v}}}
+\newcommand{\balpha}{{\bm{\alpha}}}
+\newcommand{\bbeta}{{\bm{\beta}}}
+\newcommand{\bq}{{\bm{q}}}
+\newcommand{\bp}{{\bm{p}}}
+\newcommand{\bbf}{{\bm{f}}}
+\newcommand{\differential}{{\mathrm{d}}}
+
+\newtheorem{claim}{Claim}
+
+\def\spacingset#1{\def\baselinestretch{#1}\small\normalsize}
+\setlength{\parskip}{10pt}
+\setlength{\parindent}{20pt}
+\spacingset{1}
+
+\definecolor{grey}{rgb}{0.6,0.6,0.6}
+\definecolor{lg}{rgb}{0.6,.6,0.6}
+\newcommand{\nib}{\noindent  {\bf Response:} }
+
+\begin{document}
+%\newcommand{\bp}{{\bm{p}}}
+\noindent
+{\large {\bf Revision of
+Manuscript Number}: TPWRS-01391-2021.R1\hfill \today\\[.1in]
+{\bf Journal}: IEEE Transactions on Power Systems \\[.1in]
+{\bf Author}: Abhishek Halder, Kenneth F. Caluya, Pegah Ojaghi, Xinbo Geng}\\
+
+
+
+\section*{\large \bf Response to decision:}
+
+{\noindent\blue
+The perceptive input from all reviewers and the AE are much appreciated. 
+
+Please find below itemized responses to the individual comments addressing the concerns and detailing the revisions. All the edits in the revised manuscript are marked in blue.\\
+
+\noindent
+Sincerely,\\
+The authors
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\newpage
+\spacingset{1}
+
+\section*{\large \bf Response to AE:}
+
+\noindent
+{\bf AE.1. Comments by AE}:\\
+{\em Authors are requested to revise and resubmit the manuscript after addressing all reviewer comments that persist.
+}
+
+{\nib {\blue We. 
+}}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\spacingset{1}
+
+\section*{\large \bf Response to Reviewer \#1:}
+
+
+\noindent
+{\bf R1.1. Comment by reviewer}:\\
+{\em No further comments.}
+
+
+{\nib {\blue Thank you for your time and efforts to help improve the manuscript.}
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{\large \bf Response to Reviewer \#2:}
+
+\noindent
+{\bf R2.1. Comments by reviewer}:\\
+{\em This reviewer appreciates the authors' effort in revising the manuscript based on the feedback in the previous round while clarifying and addressing the remarks with due diligence. The revised version reads well and adequately takes into account several relevant facets. The authors are kindly requested to proofread the article prior to final submission.}
+
+{\nib \blue{Thank you, we have thoroughly proofread the article. We appreciate your comments from previous rounds to help us improve the manuscript.}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+\section*{\large \bf Response to Reviewer \#3:}
+
+\noindent
+{\bf R3.1. Comments by reviewer}:\\
+{\em First and very importantly, the authors are suggested to readdress my previous two questions.\\
+\noindent(1) Regarding my previous question about the classical model, I need to reemphasize here that the model is too simplistic that does not sufficiently reflect the responses from the exciter and the governor. Therefore, for a full paper on IEEE transactions on power systems, this model is incomplete, and cannot reflect reality. Also, for such an over-simplistic model, I still doubt the scalability of the method. Unfortunately, this problem is not addressed and improved after the revision.\\
+\noindent(2) Regarding my previous questions about the comparison studies with the state-of-the-art method, indeed, I am very disappointed to find that the revised version still has added no comparison study with the state-of-the-art method at all. The ONLY comparison is still with Monte Carlo.}
+
+{\nib \blue{The 
+}}
+
+
+\noindent
+{\bf R3.2. Comments by reviewer}:\\
+{\em Second and most importantly, I disagree with the theory and the claim behind the SDE model used in this paper.1.     Here, I am very familiar with the Ito SDE model in power systems that you cited here in your refs [16], [17], [45].
+
+Although the authors claim the model you used here in equation (7) is the same as the ones used in ref[16] and ref[17] and extended from ref[45], I would like to tell the authors: NO, you are not using the same one. 16][17][45] are all right, but the one used in this article is incorrect. Please pay very special attention to [16][17], they only add uncertainties directly on differential equations, namely wi here, but not from P and Q.  This is because transferring the power system model from DAE to Ito-SDE is still an unsolved problem where P and is contained in algebraic equations while Ito-SDE only considers differential equations. Also, [45] is one machine system that does not even have a network. That is different from your problem. Here, the authors might argue that you are using the Kron reductions to remove algebraic equations. However, I have to tell the authors the Kron reductions to apply to the SDE model here. It is because the Kron reduction is relying on constant P and Q to derive a constant admittance matrix.  However, the P and Q in this manuscript are also assumed to be uncertain, and also claimed in the response letter to be time-varying stochastic processes. Then, its assumptions do not hold.  Then, its Ito SDE form is inconsistent.  I highly suggest to the authors study the following article carefully and learn more about the basics of Kron reduction.
+
+Time-domain generalization of Kron Reduction, MK Singh, S Dhople, F Dorfler, GB Giannakis.
+}
+
+{\nib \blue{\ul{The.}}
+}
+
+
+\noindent
+{\bf R3.3. Comments by reviewer}:\\
+{\em The simulation results are weird. Just a simple check at fig 8. How a power system dynamic simulation with line 13 tripped can has no oscillations at all within the first 1 second?  If so, it has no practical meaning at all.}
+
+{\nib \blue{The.}}
+
+
+\noindent
+{\bf R3.4. Comments by reviewer}:\\
+{\em Third, my engineering motivation for me is not clear. The authors reclaim multiple times about the joint pdf for the output system state.  I understand that we consider joint pdf in the model inputs and understand its practical meaning. However, among the current literature, to my best knowledge, I saw no previous efforts in obtaining the ``joint" pdf of outputs. They only seed for marginal pdf for output states. So an important question is what motivates us to get joint pdf, instead of individual pdf, for model output? For which exactly applications, you must know the joint pdf of the output states?  What is its practical meaning and why it is important?}
+
+{\nib \blue{Thanks for this comment. The}}
+
+
+\noindent
+{\bf R3.5. Comments by reviewer}:\\
+{\em Also, the authors should put a very clear position about some of the references that you are making use to argue with the reviewer. For example,  [45] is a 10-year ago paper. Why do you claim it to the state-of-the-art?  How can this argument convince the reviewer?}
+
+{\nib \blue{The }}
+
+
+\noindent
+{\bf R3.5. Comments by reviewer}:\\
+{\em Regarding Ref [23]F. Milano, and R. Zarate-Minano, ``A systematic method to model power systems as stochastic differential-algebraic equations", IEEE transactions on Power Systems, Vol. 28, No. 4, pp. 4537--4544, 2013. I mentioned this article in the first-round review, not for the purpose of a simple cite, but trying to help you to improve the model and make your work realistic. However, a suggestion is ignored. This is indeed a pity. Besides, please do not argue again that this is a different work because this ref is well-known in modeling realistic stochastic power system dynamics, which should be the foundation of your model.}
+
+{\nib \blue{The }}
+
+
+\noindent
+{\bf R3.6. Comments by reviewer}:\\
+{\em In general, I need to claim here that math is fine in itself, but only publishable when connected to or interpreted correctly in a convincing engineering application.}
+ 
+{\nib \blue{The }}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+\section*{\large \bf Response to Reviewer \#4:}
+
+\noindent
+{\bf R4.1. Comments by reviewer}:\\
+{\em The authors have successfully addressed most of the reviewer's previous concerns. However, the reviewer still has some questions, mostly regarding the numerical simulations.}
+
+{\nib \blue{Thank you. Please find our itemized responses to the questions related to numerical simulations.}}
+
+
+\noindent
+{\bf R4.2. Comments by reviewer}:\\
+{\em It is stated that ``The Fig 9 shows that the computational time needed to perform the proximal updates, for all $t_k$, are indeed orders-of-magnitude faster than $h$."
+This statement doesn't seem to hold, since $h=10^{-3}$ and the computational time lies within the range of around $10^{-3}$ to $10^{-2}$. How does the computational time needed to perform the proximal updates relate to time step $h$? If they are not strongly related, does that mean the step size $h$ is constrained to be greater than that computational time?}
+
+{\nib \blue{The 
+}}
+
+
+\noindent
+{\bf R4.3. Comments by reviewer}:\\
+{\em In Fig. 10, could the authors please explain why the computational time of Case I is less than that of Case II?
+The computational cost for the 5-generator system is roughly 4 times that of Case II. Could the authors comment if such a scale makes sense intuitively considering the state dimension of the two systems?}
+
+{\nib \blue{Thanks for this comment. The ...}}
+
+
+\noindent
+{\bf R4.4. Comments by reviewer}:\\
+{\em Both Fig. 12 and Fig. 13 demonstrate a decreasing trend as k increases. Could the authors comment on this and link this to the property of the proposed proximal algorithm? Similarly, why is the trend in Fig. 14? Comparing Figs. 12, 13 and Fig. 14, did the authors omit the initial time instant in Figs. 12, 13?}
+
+{\nib \blue{Thanks for ...}}
+
+
+
+
+
+
+\end{document}
