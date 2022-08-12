@@ -190,8 +190,9 @@ Time-domain generalization of Kron Reduction, MK Singh, S Dhople, F Dorfler, GB 
 {\em It is stated that ``The Fig 9 shows that the computational time needed to perform the proximal updates, for all $t_k$, are indeed orders-of-magnitude faster than $h$."
 This statement doesn't seem to hold, since $h=10^{-3}$ and the computational time lies within the range of around $10^{-3}$ to $10^{-2}$. How does the computational time needed to perform the proximal updates relate to time step $h$? If they are not strongly related, does that mean the step size $h$ is constrained to be greater than that computational time?}
 
-{\nib \blue{The 
-}}
+{\nib \blue{The reviewer is right, we should have been more careful in phrasing that sentence. We meant to say that the computational time needed to perform a proximal update is \ul{statistically} comparable (in the big O sense) to $h$. The reason why the precise computational time is probabilistic is twofold: random sampling, and randomness in computational latency, power and memory footprint. Fig. 9 shows that $h=10^{-3}$ and the computational time needed to perform a single proximal update is $O(10^{-3})$ with high probability in the sense most time-steps incur $O(10^{-3})$ time. In Fig. 9, while instances when computational times are $O(10^{-2})$ do occur for Case I, they are rare. \ul{In the present revision, we have now rephrased the corresponding text (highlighted in blue) toward the end of Sec. V-A}.
+
+The proximal updates involve certain block coordinate ascent recursions in the dual co-ordinates $\bm{y},\bm{z}$; see lines 13-21 in Algorithm 1. This recursion is guaranteed to be contractive (hence existence, uniqueness and convergence are guaranteed) in the product orthant cone: $(\bm{y},\bm{z})\in\mathbb{R}^{N}_{>0}\times \mathbb{R}^{N}_{>0}$, see ref. [41, Sec. III-B, III-C] and especially Corollary 4 in that reference. We have cited that reference in this manuscript's Sec. IV.}}
 
 
 \noindent
