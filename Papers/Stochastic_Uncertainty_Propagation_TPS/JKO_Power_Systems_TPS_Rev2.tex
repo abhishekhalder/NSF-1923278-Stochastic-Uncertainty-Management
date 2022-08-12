@@ -554,7 +554,7 @@ and $\{\tilde{\varrho}_{k-1}^{i}\}_{i=1}^{N}$ as inputs, and outputs the proxima
 Algorithm \ref{algo:KineticProx} also needs input parameters $h,\varepsilon,N,\delta,L$. Specifically, $h$ is the time-step size, $\varepsilon$ is an entropic regularization weight internal to the \textproc{Prox} algorithm, and $N$ is the number of samples. The parameters $\delta$ and $\ell_{\max}$ codify the numerical tolerance and maximum number of iterations, respectively, for the while loop in Algorithm \ref{algo:KineticProx}. Its convergence guarantees can be found in \cite[Sec. III.C]{caluya2019TAC}.
 
 \begin{remark}\label{remark:timevaryingEffectivePowerInput}
-The proposed computational framework is also applicable when $P_{i}^{\rm{mech}}, P_{i}^{\rm{load}}$, and thus $P_{i}$ in \eqref{defPi}, are bounded time-varying functions. This can be the case, for instance, with rapid fluctuations from renewables {\blue{or from loads}} in the short term.
+The proposed computational framework is also applicable when $P_{i}^{\rm{mech}}, P_{i}^{\rm{load}}$, and thus $P_{i}$ in \eqref{defPi}, are bounded time-varying functions. This can be the case, for instance, with rapid fluctuations from renewables or from loads in the short term.
 \end{remark}
 
 
@@ -626,7 +626,7 @@ library ANDES \cite{cui2021andes}.
 
 Our numerical simulations for the IEEE 14 bus system consider the following two cases:
 
-\noindent\textbf{Case I.} \textbf{Nominal case} where the $P_{i}^{\text{mech}}$ and $P_{i}^{\text{load}}$ are from the steady state power flow solutions without the process noise, and {\blue{are assumed}} to remain constant over the simulation time horizon. The transient stochastic simulations (i.e., with process noise) are then performed using the proposed framework.
+\noindent\textbf{Case I.} \textbf{Nominal case} where the $P_{i}^{\text{mech}}$ and $P_{i}^{\text{load}}$ are from the steady state power flow solutions without the process noise, and are assumed to remain constant over the simulation time horizon. The transient stochastic simulations (i.e., with process noise) are then performed using the proposed framework.
 
 \noindent\textbf{Case II.} \textbf{Post-contingency case} where the line 13 (see Fig. \ref{fig:Motivating}) fails at time $t=0$, and starting with the parameters and initial conditions of \textbf{Case I}, we simulate the post-contingency stochastic state evolution with process noise. %In other words, \textbf{Case II} starts  and tracks the stochastic states towards a post-contingency equilibrium.
 
@@ -657,23 +657,22 @@ The mean angles \eqref{MeanAngleInitialIEEE14} were obtained from steady state A
 
 In \eqref{rho0IEEE14}, the $\bm{\omega}$ marginal $ \Omega_{0}\left(\bm{\omega}(0)\right)$ is a uniform PDF over the hypercube $\left([-0.1,0.1]\;\text{rad/s}\right)^{5}$. Thus, the PDF $\rho_0$ in \eqref{rho0IEEE14} is supported over $\mathbb{T}^{5}\times [-0.1,0.1]^{5}$.
 
-With step size $h=10^{-3}$, we discretized time $t\in[0,1]$. Using the algorithm detailed in Sec. \ref{sec:ProxAlgo}, for both cases, we propagated $N=1000$ random {\blue{state}} samples from \eqref{rho0IEEE14}, and {\blue{corresponding joint PDF values}} evaluated at \eqref{rho0IEEE14}, to update the scattered weighted point clouds $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ over $\mathbb{T}^{5}\times\mathbb{R}^{5}$ at times $t_{k}:=kh$, $k\in\mathbb{N}$. In Algorithm \ref{algo:KineticProx}, we used the algorithmic parameters $\varepsilon=0.05$, $\delta=10^{-3}$, $\ell_{\max}=300$.
+With step size $h=10^{-3}$, we discretized time $t\in[0,1]$. Using the algorithm detailed in Sec. \ref{sec:ProxAlgo}, for both cases, we propagated $N=1000$ random state samples from \eqref{rho0IEEE14}, and corresponding joint PDF values evaluated at \eqref{rho0IEEE14}, to update the scattered weighted point clouds $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ over $\mathbb{T}^{5}\times\mathbb{R}^{5}$ at times $t_{k}:=kh$, $k\in\mathbb{N}$. In Algorithm \ref{algo:KineticProx}, we used the algorithmic parameters $\varepsilon=0.05$, $\delta=10^{-3}$, $\ell_{\max}=300$.
 
 Fig. \ref{fig:IEEE14marginalsCase0} and Fig. \ref{fig:IEEE14marginalsCase1} show the time snapshots of the $(\theta_{i},\omega_{i})$ bivariate marginal PDFs for \textbf{Case I} and \textbf{Case II} respectively, associated with the generator $i=1,\hdots, n=5$. These marginals are computed using the corresponding weighted point clouds $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$.
 
  %Notice that in Fig. \ref{fig:IEEE14marginals}, the horizontal axes of the subfigures have periodic boundary conditions, i.e., $(\theta_{i},\omega_{i})\in\mathbb{T}\times\mathbb{R}$ (cylinder).
 
-Fig. \ref{fig:IEEE14omegamarginalsCase12} shows the corresponding univariate $\omega_{i}$-marginal PDFs. In particular, Fig. \ref{fig:IEEE14omegamarginalsCase12}(c) helps compare the $\omega_{4}$ marginal evolution for bus 6 in the nominal (\textbf{Case I}) and post-fault (\textbf{Case II}) scenarios. Since \textbf{Case II} considers the failure of line 13, from Fig. \ref{fig:Motivating} we intuitively expect that the transient effects of this fault will be prominent for bus 6 (generator 4). Indeed, Fig. \ref{fig:IEEE14omegamarginalsCase12}(c) shows that although the $\omega_{4}$ marginals in both \textbf{Case I} and \textbf{II}, at all times have the highest probability around $0$ rad/s, the post-fault marginals show larger spread or dispersion of the probability mass, as expected. That the generator 4 states in \textbf{Case II} have larger uncertainties than in \textbf{Case I}, is also visible in the bivariate marginal plots if we compare the fourth row in Fig. \ref{fig:IEEE14marginalsCase0} with the same in Fig. \ref{fig:IEEE14marginalsCase1}. {\blue{The statistical uncertainties in the rotor angles are shown in Fig. \ref{fig:IEEE14theta} for both \textbf{Case I} and \textbf{Case II}.}}
+Fig. \ref{fig:IEEE14omegamarginalsCase12} shows the corresponding univariate $\omega_{i}$-marginal PDFs. In particular, Fig. \ref{fig:IEEE14omegamarginalsCase12}(c) helps compare the $\omega_{4}$ marginal evolution for bus 6 in the nominal (\textbf{Case I}) and post-fault (\textbf{Case II}) scenarios. Since \textbf{Case II} considers the failure of line 13, from Fig. \ref{fig:Motivating} we intuitively expect that the transient effects of this fault will be prominent for bus 6 (generator 4). Indeed, Fig. \ref{fig:IEEE14omegamarginalsCase12}(c) shows that although the $\omega_{4}$ marginals in both \textbf{Case I} and \textbf{II}, at all times have the highest probability around $0$ rad/s, the post-fault marginals show larger spread or dispersion of the probability mass, as expected. That the generator 4 states in \textbf{Case II} have larger uncertainties than in \textbf{Case I}, is also visible in the bivariate marginal plots if we compare the fourth row in Fig. \ref{fig:IEEE14marginalsCase0} with the same in Fig. \ref{fig:IEEE14marginalsCase1}. The statistical uncertainties in the rotor angles are shown in Fig. \ref{fig:IEEE14theta} for both \textbf{Case I} and \textbf{Case II}.
 
 
 
 
-Fig. \ref{fig:CompTimeIEEE14bus} shows the computational times needed to update $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ via the algorithm in Sec. \ref{sec:ProxAlgo}, for both \textbf{Cases I} and \textbf{II}. {\blue{While the depiction of the computational times in Fig. \ref{fig:CompTimeIEEE14bus} appears unconventional, we next explain why that is meaningful in our framework.
+Fig. \ref{fig:CompTimeIEEE14bus} shows the computational times needed to update $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$ via the algorithm in Sec. \ref{sec:ProxAlgo}, for both \textbf{Cases I} and \textbf{II}. While the depiction of the computational times in Fig. \ref{fig:CompTimeIEEE14bus} appears unconventional, we next explain why that is meaningful in our framework.
 
 At each fixed physical time $t_{k}=kh$, $k\in\mathbb{N}$, where $h$ is the fixed step-size, we perform the proximal update $\varrho_{k-1}\mapsto\varrho_{k}$ via Algorithm 1. This proximal update has no analytical solution and instead requires execution of a contractive fixed point recursion. The physical time $t_{k}$ is ``frozen" (zero-order-hold) during the fixed point recursions underlying this one-step proximal update. For the proposed method to be practical, we therefore, need to demonstrate that the computational timescale is faster than the physical dynamics timescale, i.e., computational times needed to complete the zero-order-hold fixed point recursions are orders-of-magnitude faster than $h$, the step-size of physical time. On the other hand, theoretical consistency (see the last paragraph of Sec. \ref{subsec:ProxUpdate}) requires that $h$ itself should be small. Thus, even if one has a provably convergent algorithm that can perform the one step proximal update, it is not clear \emph{a priori} if the computational time needed to do so can be much faster than $h$. If not, then the method would be statistically consistent but practically not useful. The Fig \ref{fig:CompTimeIEEE14bus} shows that the computational time needed to perform the proximal updates, for all $t_{k}$, are indeed orders-of-magnitude faster than $h$.
 
-Fig. \ref{fig:TotalCompTime} (circle markers for the \textbf{Case I}, diamond markers for the \textbf{Case II}) shows the total computational times needed for propagating the transient joint state PDFs over a longer horizon $[0, 1\;\text{min}]$ for 100 different simulation instances.
-}}  
+Fig. \ref{fig:TotalCompTime} (circle markers for the \textbf{Case I}, diamond markers for the \textbf{Case II}) shows the total computational times needed for propagating the transient joint state PDFs over a longer horizon $[0, 1\;\text{min}]$ for 100 different simulation instances.  
 
 
 \begin{figure}[htpb]
@@ -769,16 +768,16 @@ and following \cite[Sec. 5]{dorfler2012synchronization}, randomly generate the p
 
 With $N=2000$ random samples from the initial joint PDF \eqref{rho0synthetic}, and with the aforesaid randomly generated parameters, we employed the procedure detailed in Sec. \ref{sec:ProxAlgo} for propagating $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. As in Sec. \ref{subsec:NumSimIEEEBus}, we used $h=10^{-3}$, $\varepsilon = 0.05$, $\delta = 10^{-3}$, $\ell_{\max} = 300$ in Algorithm \ref{algo:KineticProx}.
 
-Fig. \ref{fig:CompTimeSynthetic} highlights that for computing high dimensional transient joint state PDFs as in here, the proposed variational framework enjoys remarkably fast computational time. Notice that constructing histograms or other conventional density estimators for the joint state PDF by making a grid over the 100 dimensional state space, is computationally prohibitive in a general purpose computer. {\blue{Fig. \ref{fig:TotalCompTime} (square markers) shows the total computational times needed for propagating the transient joint state PDFs over the time horizon $[0, 1\;\text{min}]$ for 100 different simulation instances.}}
+Fig. \ref{fig:CompTimeSynthetic} highlights that for computing high dimensional transient joint state PDFs as in here, the proposed variational framework enjoys remarkably fast computational time. Notice that constructing histograms or other conventional density estimators for the joint state PDF by making a grid over the 100 dimensional state space, is computationally prohibitive in a general purpose computer. Fig. \ref{fig:TotalCompTime} (square markers) shows the total computational times needed for propagating the transient joint state PDFs over the time horizon $[0, 1\;\text{min}]$ for 100 different simulation instances.
 
-To depict the numerical accuracy, Fig. \ref{fig:RelErrSynthetic} plots the (time-varying) relative error between the empirical (i.e., Monte Carlo estimate) mean vector $\bm{\mu}_{k}^{\text{MC}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$, and the ``proximal mean" vector $\bm{\mu}_{k}^{\text{Prox}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$. The latter was computed using the proximal updates $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. {\blue{Likewise, Fig. \ref{fig:RelErrCovSynthetic} plots the time-varying normalized Bures-Wasserstein distance $d_{\rm{BW}}(\cdot,\cdot)$ between the empirical covariance matrix (i.e., Monte Carlo estimate) ${\rm{Cov}}^{\rm{MC}}\in\mathbb{R}^{100\times 100}$, and the ensemble covariance matrix ${\rm{Cov}}^{\rm{Prox}}\in\mathbb{R}^{100\times 100}$ obtained using the proximal updates. The unnormalized Bures-Wasserstein distance \cite{bhatia2019bures} given by 
+To depict the numerical accuracy, Fig. \ref{fig:RelErrSynthetic} plots the (time-varying) relative error between the empirical (i.e., Monte Carlo estimate) mean vector $\bm{\mu}_{k}^{\text{MC}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$, and the ``proximal mean" vector $\bm{\mu}_{k}^{\text{Prox}}\in\mathbb{T}^{50}\times\mathbb{R}^{50}$. The latter was computed using the proximal updates $\{\bm{x}_{k}^{i},\varrho_{k}^{i}\}_{i=1}^{N}$. Likewise, Fig. \ref{fig:RelErrCovSynthetic} plots the time-varying normalized Bures-Wasserstein distance $d_{\rm{BW}}(\cdot,\cdot)$ between the empirical covariance matrix (i.e., Monte Carlo estimate) ${\rm{Cov}}^{\rm{MC}}\in\mathbb{R}^{100\times 100}$, and the ensemble covariance matrix ${\rm{Cov}}^{\rm{Prox}}\in\mathbb{R}^{100\times 100}$ obtained using the proximal updates. The unnormalized Bures-Wasserstein distance \cite{bhatia2019bures} given by 
 \begin{align*}
 &d_{\rm{BW}}(\rm{Cov}^{\rm{MC}},\rm{Cov}^{\rm{Prox}}) := \left[\operatorname{trace}\left(\rm{Cov}^{\rm{MC}}+\rm{Cov}^{\rm{Prox}}\right)\right.\\
 &\qquad\qquad \left.-2\operatorname{trace}\left(\left(\sqrt{\rm{Cov}^{\rm{MC}}}\:\rm{Cov}^{\rm{Prox}}\:\sqrt{\rm{Cov}^{\rm{MC}}}\right)^{\frac{1}{2}}\right)\right]^{\frac{1}{2}},	
 \end{align*}
-is a metric on the cone of symmetric positive definite matrices such as the covariance matrices, and can be seen as an absolute error between the covariances. Thus, Fig. \ref{fig:RelErrCovSynthetic} can be viewed as a relative error curve between the covariances. In summary, Figs. \ref{fig:RelErrSynthetic} and \ref{fig:RelErrCovSynthetic} show that the time-varying statistics between the Monte Carlo and the proposed proximal computation remain close at all times.}}
+is a metric on the cone of symmetric positive definite matrices such as the covariance matrices, and can be seen as an absolute error between the covariances. Thus, Fig. \ref{fig:RelErrCovSynthetic} can be viewed as a relative error curve between the covariances. In summary, Figs. \ref{fig:RelErrSynthetic} and \ref{fig:RelErrCovSynthetic} show that the time-varying statistics between the Monte Carlo and the proposed proximal computation remain close at all times.
 
-{\blue{Since it is not possible to \emph{a priori} determine the dimension of the sufficient statistic of the transient joint state PDFs, Fig. \ref{fig:WassJointPDFSynthetic} shows the 2-Wasserstein metric between the empirical joint PDF (i.e., Monte Carlo estimate) $\rho^{\rm{MC}}$, and the proximal update $\varrho^{k}$. In other words, Fig. \ref{fig:WassJointPDFSynthetic} can be viewed as a nonparametric absolute error curve between $\rho^{\rm{MC}}$ and $\varrho^{k}$. Each snapshot value in Fig. \ref{fig:WassJointPDFSynthetic} is computed by solving the well-known optimal transport linear program (see e.g., \cite[Sec. 4.2-4.3]{halder2014probabilistic}, \cite[Ch. 3]{peyre2019computational}) using the corresponding time-varying weighted point clouds.}}
+Since it is not possible to \emph{a priori} determine the dimension of the sufficient statistic of the transient joint state PDFs, Fig. \ref{fig:WassJointPDFSynthetic} shows the 2-Wasserstein metric between the empirical joint PDF (i.e., Monte Carlo estimate) $\rho^{\rm{MC}}$, and the proximal update $\varrho^{k}$. In other words, Fig. \ref{fig:WassJointPDFSynthetic} can be viewed as a nonparametric absolute error curve between $\rho^{\rm{MC}}$ and $\varrho^{k}$. Each snapshot value in Fig. \ref{fig:WassJointPDFSynthetic} is computed by solving the well-known optimal transport linear program (see e.g., \cite[Sec. 4.2-4.3]{halder2014probabilistic}, \cite[Ch. 3]{peyre2019computational}) using the corresponding time-varying weighted point clouds.
 
 
 
@@ -943,11 +942,11 @@ D.A. Maldonado, M. Schanen, and M. Anitescu, ``Uncertainty Propagation in Power 
 
 % === stochastic DAEs ======
 
-{\blue{\bibitem{wang2011numerical}
+\bibitem{wang2011numerical}
 K.~Wang, and M.L.~Crow, ``Numerical simulation of stochastic differential algebraic equations for power system transient stability with random loads", \emph{2011 IEEE Power \& Energy Society General Meeting (PESGM)}, pp. 1--8, 2011. doi: 10.1109/PES.2011.6039188 
 
 \bibitem{milano2013systematic}
-F.~Milano, and R.~Z{\'a}rate-Mi{\~n}ano, ``A systematic method to model power systems as stochastic differential algebraic equations", \emph{IEEE Transactions on Power Systems}, Vol. 28, No. 4, pp. 4537--4544, 2013.}} 
+F.~Milano, and R.~Z{\'a}rate-Mi{\~n}ano, ``A systematic method to model power systems as stochastic differential algebraic equations", \emph{IEEE Transactions on Power Systems}, Vol. 28, No. 4, pp. 4537--4544, 2013.
 
  
 
@@ -965,8 +964,8 @@ Y.C. Chen, and A.D. Dominguez-Garcia, ``A Method to Study the Effect of Renewabl
 \bibitem{althoff2014formal}
 M. Althoff, ``Formal and Compositional Analysis of Power Systems using Reachable Sets", \emph{IEEE Transactions on Power Systems}, Vol. 29, No. 5, pp. 2270--2280, 2014.
 
-{\blue{\bibitem{geng2020reach}
-S.~Geng, and I.A.~Hiskens, ``Reach-Set Estimation for DAE Systems under Uncertainty and Disturbances Using Trajectory Sensitivity and Logarithmic Norm", \emph{21st IFAC World Congress}, Vol. 53, No. 2, pp. 1955--1961, 2020.}} 
+\bibitem{geng2020reach}
+S.~Geng, and I.A.~Hiskens, ``Reach-Set Estimation for DAE Systems under Uncertainty and Disturbances Using Trajectory Sensitivity and Logarithmic Norm", \emph{21st IFAC World Congress}, Vol. 53, No. 2, pp. 1955--1961, 2020.
 
 \bibitem{choi2017propagating}
 H. Choi, P.J. Seiler, and S.V. Dhople, ``Propagating Uncertainty in Power-System DAE Models with Semidefinite Programming", \emph{IEEE Transactions on Power Systems}, Vol. 32, No. 4, pp. 3146--3156, 2017.
@@ -1050,7 +1049,7 @@ F.~Santambrogio, ``$\{$Euclidean, Metric, and Wasserstein$\}$ Gradient Flows: An
 % === density estimation ====
 
 \bibitem{silverman1998density}
-{\blue{B.W.~Silverman, \emph{Density Estimation for Statistics and Data Analysis}, 1st ed., Chapman \& Hall/CRC, 1998.}} 
+B.W.~Silverman, \emph{Density Estimation for Statistics and Data Analysis}, 1st ed., Chapman \& Hall/CRC, 1998. 
 
 
 % ==== Einstein relation =====
@@ -1108,7 +1107,7 @@ H.~Cui, F.~Li, and K.~Tomsovic, ``Hybrid Symbolic-Numeric Framework for Power Sy
 
 % == Bures-Wasserstein ====
 
-{\blue{\bibitem{bhatia2019bures}
+\bibitem{bhatia2019bures}
 R.~Bhatia, T.~Jain, and Y.~Lim, ``On the Bures--Wasserstein Distance between Positive Definite Matrices", \emph{Expositiones Mathematicae}, Vol. 37, No. 2, pp. 165--191, 2019.
 
 \bibitem{halder2014probabilistic}
@@ -1117,8 +1116,6 @@ A.~Halder, and R.~Bhattacharya, ``Probabilistic Model Validation for Uncertain N
 \bibitem{peyre2019computational}
 G.~Peyr{\'e}, and M.~Cuturi, ``Computational Optimal Transport: With Applications to Data Science", \emph{Foundations and Trends{\textregistered} in Machine Learning}, Vol. 11, No. 5-6, pp. 355--607, 2019.
 
-
-}}
 
 	
 \end{thebibliography}
