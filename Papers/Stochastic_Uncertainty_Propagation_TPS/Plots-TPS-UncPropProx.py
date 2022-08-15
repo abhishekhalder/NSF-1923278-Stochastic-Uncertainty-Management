@@ -126,39 +126,41 @@ Time_Synthetic = np.loadtxt("TimeSyntheticIEEE14bus.txt")
 # =============================================================================
 # Relative error in mean vector and covariance matrix: MC versus Prox plot
 # =============================================================================
-# RelErrMeanVectorMCvsProx_Synthetic = np.loadtxt("RelErrMeanVectorMCvsProxSythetic50Gen.txt")
+RelErrMeanVectorMCvsProx_Synthetic = np.loadtxt("RelErrMeanVectorMCvsProxSythetic50Gen.txt")
 
-# DistCovMatrixMCvsProx_Synthetic = np.loadtxt("/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/code/RelErrCovMCvsProxSythetic50Gen.txt")
+DistCovMatrixMCvsProx_Synthetic = np.loadtxt("/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/code/RelErrCovMCvsProxSythetic50Gen.txt")
 
-# fig = plt.figure()
-# ax = fig.add_subplot(1, 1, 1)
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1)
 
-# # ax.semilogy(Time_Synthetic[3:-1], RelErrMeanVectorMCvsProx_Synthetic[4:-1],'-', color='k', lw=1.5)
-# ax.semilogy(Time_Synthetic[3:-1], DistCovMatrixMCvsProx_Synthetic[3:-1],'-', color='k', lw=1.5)
+# DistCovMatrixMCvsProx_Synthetic[0] = 0
+
+#ax.semilogy(Time_Synthetic[0:-1], RelErrMeanVectorMCvsProx_Synthetic[1:-1],'-', color='k', lw=1.5)
+ax.semilogy(Time_Synthetic[0:-1], DistCovMatrixMCvsProx_Synthetic[0:-1],'-', color='k', lw=1.5)
 
 # # ax.set_ylim(3*10**-2, 2*10**-1)
 
-# ax.tick_params(direction='in',which='both')
+ax.tick_params(direction='in',which='both')
 # #  # axx.xaxis.tick_top()
 
-# ax.grid(True,which="both",ls="-", color='0.75')
+ax.grid(True,which="both",ls="-", color='0.75')
 # # # axx2.grid(True,which="both",ls="-", color='0.75')
-# ax.tick_params(axis='both', labelsize=18)
+ax.tick_params(axis='both', labelsize=18)
 
 
-# # ax.set_ylabel(r"Realtive error $\frac{\|\boldsymbol{\mu}_{k}^{\rm{MC}}-\boldsymbol{\mu}_{k}^{\rm{Prox}}\|_{2}}{\|\boldsymbol{\mu}_{k}^{\rm{MC}}\|_{2}}$")
-# ax.set_ylabel(r"$d_{\rm{BW}}(\rm{Cov}^{\rm{MC}},\rm{Cov}^{\rm{Prox}})/\sqrt{\rm{trace}(\rm{Cov}^{\rm{MC}})}$")
+# ax.set_ylabel(r"Realtive error $\frac{\|\boldsymbol{\mu}_{k}^{\rm{MC}}-\boldsymbol{\mu}_{k}^{\rm{Prox}}\|_{2}}{\|\boldsymbol{\mu}_{k}^{\rm{MC}}\|_{2}}$")
+ax.set_ylabel(r"$d_{\rm{BW}}(\rm{Cov}^{\rm{MC}},\rm{Cov}^{\rm{Prox}})/\sqrt{\rm{trace}(\rm{Cov}^{\rm{MC}})}$")
 
-# ax.set_xlabel(r"Physical time $t=kh$ [s]")
+ax.set_xlabel(r"Physical time $t=kh$ [s]")
 # # # # axx.yaxis.set_label_coords(-0.125,-0.05)
 
 # # # axx.legend(markerscale=1.5, numpoints=1,  ncol=1, bbox_to_anchor=(1.005, 1), frameon=False, prop={'size': 10.5})
-# fig.set_size_inches(10.2, 6.2)
+fig.set_size_inches(10.2, 6.2)
 
-# # plt.savefig('RelativeErrorMeanMCVersusProxSynthetic50Gen.png', dpi=400)
+#plt.savefig('RelativeErrorMeanMCVersusProxSynthetic50Gen.png', dpi=400)
 
 # #plt.savefig('DistBetweenCovMCvsProxSythetic50Gen.png', dpi=400)
-# plt.savefig('RelErrCovMCvsProxSythetic50Gen.png', dpi=400)
+plt.savefig('RelErrCovMCvsProxSythetic50Gen.png', dpi=400)
 
 
 # =============================================================================
@@ -873,26 +875,26 @@ Time_Synthetic = np.loadtxt("TimeSyntheticIEEE14bus.txt")
 # PLOT hist of loger horizon total computational time
 ################################################################################ 
 
-TotalComptime_IEEE14busCaseI = np.loadtxt('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/code/total_comptime_IEEE14bus_case0_nominal.txt')
-TotalComptime_IEEE14busCaseII = np.loadtxt('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/code/total_comptime_IEEE14bus_case1_line_13_failure.txt')
-TotalComptime_50gen = np.loadtxt('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/code/total_comptime_50gen.txt')
+# TotalComptime_IEEE14busCaseI = np.loadtxt('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/code/total_comptime_IEEE14bus_case0_nominal.txt')
+# TotalComptime_IEEE14busCaseII = np.loadtxt('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/code/total_comptime_IEEE14bus_case1_line_13_failure.txt')
+# TotalComptime_50gen = np.loadtxt('/Users/abhishekhaldermac/NSF-1923278-Stochastic-Uncertainty-Management/code/total_comptime_50gen.txt')
 
 
-fig = plt.figure()
-ax = fig.add_subplot(1, 1, 1)
-ax.plot(range(1,len(TotalComptime_IEEE14busCaseI)+1),TotalComptime_IEEE14busCaseI,'bo',markerfacecolor='none',label='IEEE 14 bus, Case I')
-ax.plot(range(1,len(TotalComptime_IEEE14busCaseII)+1),TotalComptime_IEEE14busCaseII,'rd',markerfacecolor='none',label='IEEE 14 bus, Case II')
-ax.plot(range(1,len(TotalComptime_50gen)+1),TotalComptime_50gen,'ks',markerfacecolor='none',label='50 generator system')
+# fig = plt.figure()
+# ax = fig.add_subplot(1, 1, 1)
+# ax.plot(range(1,len(TotalComptime_IEEE14busCaseI)+1),TotalComptime_IEEE14busCaseI,'bo',markerfacecolor='none',label='IEEE 14 bus, Case I')
+# ax.plot(range(1,len(TotalComptime_IEEE14busCaseII)+1),TotalComptime_IEEE14busCaseII,'rd',markerfacecolor='none',label='IEEE 14 bus, Case II')
+# ax.plot(range(1,len(TotalComptime_50gen)+1),TotalComptime_50gen,'ks',markerfacecolor='none',label='50 generator system')
 
-ax.tick_params(axis='both', labelsize=18)
-ax.set_xlabel(r"Simulation instances")
-ax.set_ylabel(r"Total computational time [s]")
-ax.set_xticks([1, 20, 40, 60, 80, 100])
+# ax.tick_params(axis='both', labelsize=18)
+# ax.set_xlabel(r"Simulation instances")
+# ax.set_ylabel(r"Total computational time [s]")
+# ax.set_xticks([1, 20, 40, 60, 80, 100])
 
-lgnd=ax.legend(bbox_to_anchor=(0.5,1.1), loc='upper center', frameon=False, ncol=3,columnspacing=1.0,labelspacing=0.2, handletextpad=0.2, handlelength=1,fancybox=False, shadow=False)
+# lgnd=ax.legend(bbox_to_anchor=(0.5,1.1), loc='upper center', frameon=False, ncol=3,columnspacing=1.0,labelspacing=0.2, handletextpad=0.2, handlelength=1,fancybox=False, shadow=False)
 
 
-fig.savefig("TotalCompTimeForSimulating1MinHist.png", dpi=300)
+# fig.savefig("TotalCompTimeForSimulating1MinHist.png", dpi=300)
 
 
 
